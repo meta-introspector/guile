@@ -1,0 +1,12 @@
+Guile-GnuTLS is released under the GNU Lesser General Public License
+(LGPL) version 2.1 or later, see COPYING.LESSERv2.
+
+Build infrastructure, self-tests and some other files are licensed
+under the GNU General Public License (GPL) version 3 or later, see
+COPYINGv3.
+
+The documentation (see doc/) is under the GNU Free Documentation
+License version 1.3 or later, see doc/fdl-1.3.texi.
+
+For any copyright year range specified as YYYY-ZZZZ in this package
+note that the range specifies every single year in that closed interval.

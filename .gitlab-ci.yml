@@ -1,0 +1,162 @@
+.test:
+  artifacts:
+    expire_in: 2 weeks
+    when: always
+    paths:
+    - "*.tar.gz"
+    - ./*.log
+    - ./config.h
+    - ./**/*.log
+
+Trisquel10-git:
+  extends: .test
+  image: kpengboy/trisquel:10.0
+  stage: build
+  before_script:
+  - apt-get update -q
+  - env DEBIAN_FRONTEND=noninteractive apt-get install -y -q git make gcc guile-3.0-dev libgnutls28-dev texinfo
+  script:
+  - ./bootstrap.sh
+  - ./configure
+  - make -j$(nproc) check V=1 VERBOSE=t
+  - make dist
+  - git diff --exit-code # nothing should change version controlled files
+
+PureOS10-git:
+  extends: .test
+  image: pureos/byzantium:latest
+  stage: build
+  before_script:
+  - apt-get update -q
+  - env DEBIAN_FRONTEND=noninteractive apt-get install -y -q git make gcc guile-3.0-dev libgnutls28-dev texinfo
+  script:
+  - ./bootstrap.sh
+  - ./configure
+  - make -j$(nproc) check V=1 VERBOSE=t
+  - make dist
+  - git diff --exit-code # nothing should change version controlled files
+
+Debian11-git:
+  extends: .test
+  image: debian:11
+  stage: build
+  before_script:
+  - apt-get update -q
+  - env DEBIAN_FRONTEND=noninteractive apt-get install -y -q git make gcc guile-3.0-dev libgnutls28-dev texinfo texlive
+  script:
+  - ./bootstrap.sh
+  - ./configure
+  - make -j$(nproc) distcheck V=1 VERBOSE=t
+  - git diff --exit-code # nothing should change version controlled files
+
+CentOS7-git:
+  allow_failure: true # XXX FIXME bug in guile-gnutls?
+  extends: .test
+  image: centos:7
+  stage: build
+  before_script:
+  - yum -y update
+  - yum -y install git autoconf automake libtool make guile-devel gnutls-devel
+  script:
+  - ./bootstrap.sh
+  - ./configure
+  - make check V=1 VERBOSE=t
+  - git diff --exit-code # nothing should change version controlled files
+
+AlmaLinux9-git:
+  allow_failure: true # XXX FIXME how to install guile30 on this platform?
+  extends: .test
+  image: almalinux:9
+  stage: build
+  before_script:
+  - yum -y update
+  - yum -y install epel-release
+  - yum -y install git autoconf automake libtool make guile30-devel gnutls-devel
+  script:
+  - ./bootstrap.sh
+  - ./configure
+  - make check V=1 VERBOSE=t
+  - git diff --exit-code # nothing should change version controlled files
+
+Fedora36-git:
+  extends: .test
+  image: fedora:36
+  stage: build
+  before_script:
+  - yum -y update
+  - yum -y install git autoconf automake libtool make guile-devel gnutls-devel texinfo
+  script:
+  - ./bootstrap.sh
+  - ./configure
+  - make check V=1 VERBOSE=t
+  - make dist
+  - git diff --exit-code # nothing should change version controlled files
+
+Trisquel10-tarball:
+  extends: .test
+  image: kpengboy/trisquel:10.0
+  stage: test
+  needs: [Trisquel10-git]
+  before_script:
+  - apt-get update -q
+  - env DEBIAN_FRONTEND=noninteractive apt-get install -y -q make gcc guile-3.0-dev libgnutls28-dev
+  script:
+  - tar xfa guile-gnutls-*.tar.gz
+  - cd `ls -d guile-gnutls-* | grep -v tar.gz`
+  - ./configure
+  - make check V=1 VERBOSE=t
+
+Alpine-tarball:
+  extends: .test
+  image: alpine:latest
+  stage: test
+  needs: [Trisquel10-git]
+  before_script:
+  - apk update
+  - apk add build-base guile-dev gnutls-dev
+  script:
+  - tar xfa guile-gnutls-*.tar.gz
+  - cd `ls -d guile-gnutls-* | grep -v tar.gz`
+  - ./configure
+  - make check V=1 VERBOSE=t
+
+ArchLinux-tarball:
+  extends: .test
+  image: archlinux:latest
+  stage: test
+  needs: [Trisquel10-git]
+  before_script:
+  - pacman -Syu --noconfirm make gcc pkgconf guile gnutls
+  script:
+  - tar xfa guile-gnutls-*.tar.gz
+  - cd `ls -d guile-gnutls-* | grep -v tar.gz`
+  - ./configure
+  - make check V=1 VERBOSE=t
+
+Fedora36-tarball:
+  extends: .test
+  image: fedora:36
+  stage: test
+  needs: [Trisquel10-git]
+  before_script:
+  - yum -y update
+  - yum -y install make clang guile-devel gnutls-devel
+  script:
+  - tar xfa guile-gnutls-*.tar.gz
+  - cd `ls -d guile-gnutls-* | grep -v tar.gz`
+  - ./configure
+  - make check V=1 VERBOSE=t
+
+Ubuntu-22.04-tarball:
+  extends: .test
+  image: ubuntu:22.04
+  stage: test
+  needs: [Trisquel10-git]
+  before_script:
+  - apt-get update -q
+  - env DEBIAN_FRONTEND=noninteractive apt-get install -y -q make gcc guile-3.0-dev libgnutls28-dev
+  script:
+  - tar xfa guile-gnutls-*.tar.gz
+  - cd `ls -d guile-gnutls-* | grep -v tar.gz`
+  - ./configure
+  - make check V=1 VERBOSE=t

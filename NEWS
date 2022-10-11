@@ -1,0 +1,17 @@
+Guile-GnuTLS NEWS                                    -*- outline -*-
+
+* Noteworthy changes in release ?.? (????-??-??) [?]
+
+** Extracted into a separate project, based on GnuTLS 3.7.8.
+For earlier NEWS entries, see upstream NEWS file:
+https://gitlab.com/gnutls/gnutls/-/blob/master/NEWS
+
+To reproduce the initial guile-gnutls git repository on which
+subsequent commits have been added to, you may use:
+
+```
+git clone https://gitlab.com/gnutls/gnutls.git guile-gnutls
+cd guile-gnutls/
+git checkout f5dcbdb46df52458e3756193c2a23bf558a3ecfd
+git-filter-repo --path guile/ --path m4/guile.m4 --path doc/gnutls-guile.texi --path doc/extract-guile-c-doc.scm --path doc/cha-copying.texi --path doc/fdl-1.3.texi
+```

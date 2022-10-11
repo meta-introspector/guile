@@ -38,8 +38,7 @@ Documentation License''.
 @title GnuTLS-Guile
 @subtitle Guile binding for GNU TLS
 @subtitle for version @value{VERSION}, @value{UPDATED}
-@sp 7
-@image{gnutls-logo,6cm,6cm}
+@author Ludovic Courtès
 @page
 @vskip 0pt plus 1filll
 @insertcopying

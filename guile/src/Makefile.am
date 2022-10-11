@@ -1,19 +1,19 @@
-#  GnuTLS --- Guile bindings for GnuTLS.
-#  Copyright (C) 2007-2014, 2016 Free Software Foundation, Inc.
+# Guile-GnuTLS --- Guile bindings for GnuTLS.
+# Copyright (C) 2007-2022 Free Software Foundation, Inc.
 #
-#  GnuTLS is free software; you can redistribute it and/or
-#  modify it under the terms of the GNU Lesser General Public
-#  License as published by the Free Software Foundation; either
-#  version 2.1 of the License, or (at your option) any later version.
+# Guile-GnuTLS is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
 #
-#  GnuTLS is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-#  Lesser General Public License for more details.
+# Guile-GnuTLS is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
 #
-#  You should have received a copy of the GNU Lesser General Public
-#  License along with GnuTLS; if not, write to the Free Software
-#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+# You should have received a copy of the GNU Lesser General Public License
+# along with Guile-GnuTLS; if not, write to the Free Software Foundation,
+# Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
 GUILE_FOR_BUILD =						\
   GUILE_AUTO_COMPILE=0 $(GUILE) -L $(top_srcdir)/guile/modules
@@ -41,19 +41,11 @@ guileextension_LTLIBRARIES  = guile-gnutls-v-2.la
 # <https://lists.gnutls.org/pipermail/gnutls-devel/2014-December/007294.html>.
 guile_gnutls_v_2_la_LDFLAGS = -module -no-undefined
 
-# Linking against GnuTLS.
-GNUTLS_CORE_LIBS  = $(top_builddir)/lib/libgnutls.la
-
-# Linking against Gnulib modules.
-GNULIB_LIBS    = $(top_builddir)/gl/libgnu.la
-GNULIB_CFLAGS  = -I$(top_builddir)/gl -I$(top_srcdir)/gl
-
-
 guile_gnutls_v_2_la_SOURCES = core.c errors.c utils.c
 guile_gnutls_v_2_la_CFLAGS =			\
   $(AM_CFLAGS) $(GNULIB_CFLAGS) $(GUILE_CFLAGS)
 guile_gnutls_v_2_la_LIBADD = \
-	$(GNUTLS_CORE_LIBS) $(GNULIB_LIBS) \
+	$(GNUTLS_LIBS) \
 	$(GUILE_LDFLAGS)
 
 AM_CPPFLAGS = \

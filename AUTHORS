@@ -1,0 +1,9 @@
+Guile-GnuTLS was written by Ludovic Courtès and contributed to
+upstream GnuTLS project around 2007 but extracted into a separate
+project around 2022.
+
+Releases are published by Ludovic Courtès and Simon Josefsson.
+
+Other contributors can be discovered by running the following:
+
+git shortlog -sen --no-merges --group author --group trailer:co-authored-by
