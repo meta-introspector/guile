@@ -1,6 +1,6 @@
 Guile-GnuTLS NEWS                                    -*- outline -*-
 
-* Noteworthy changes in release ?.? (????-??-??) [?]
+* Noteworthy changes in release 3.7.9 (2022-10-14) [stable]
 
 ** Extracted into a separate project, based on GnuTLS 3.7.8.
 For earlier NEWS entries, see upstream NEWS file:
