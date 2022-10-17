@@ -36,7 +36,7 @@ AC_CONFIG_HEADERS([config.h])
 dnl Checks for programs.
 AC_PROG_CC
 AM_PROG_AR
-LT_INIT
+LT_INIT([disable-static])
 
 PKG_CHECK_MODULES(GNUTLS, [gnutls])
 
