@@ -102,25 +102,6 @@ Fedora36-git:
   - make dist
   - git diff --exit-code # nothing should change version controlled files
 
-Fedora-clanganalyzer:
-  image: fedora:latest
-  stage: build
-  before_script:
-  - yum -y update
-  - yum -y install git autoconf automake libtool make guile-devel gnutls-devel texinfo
-  - yum -y install -y clang clang-analyzer texlive
-  script:
-  - ./bootstrap
-  - scan-build ./configure
-  - scan-build -o clang-analyzer make V=1
-  - make web-manual
-  - git diff --exit-code # nothing should change version controlled files
-  artifacts:
-    when: on_success
-    paths:
-      - clang-analyzer
-      - doc/manual
-
 Trisquel10-tarball:
   extends: .test
   image: kpengboy/trisquel:10.0
@@ -190,12 +171,29 @@ Ubuntu-22.04-tarball:
   - ./configure
   - make check V=1 VERBOSE=t
 
+web-manual:
+  image: fedora:latest
+  stage: build
+  before_script:
+  - yum -y update
+  - yum -y install git autoconf automake libtool make guile-devel gnutls-devel texinfo
+  - yum -y install texlive texinfo-tex
+  script:
+  - ./bootstrap
+  - ./configure
+  - make
+  - make web-manual
+  - git diff --exit-code # nothing should change version controlled files
+  artifacts:
+    when: on_success
+    paths:
+      - doc/manual
+
 .pages:
   stage: deploy
-  needs: ["Fedora-clanganalyzer"]
+  needs: ["web-manual"]
   script:
     - mkdir public
-    - mv clang-analyzer/* public/clang-analyzer
     - mv doc/manual public/manual
   artifacts:
     paths:
