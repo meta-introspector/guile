@@ -305,7 +305,7 @@ in the PEM format can be done as follows:
 
 @example
 (let* ((dh  (make-dh-parameters 1024))
-       (pem (pkcs3-export-dh-parameters dh 
+       (pem (pkcs3-export-dh-parameters dh
                                         x509-certificate-format/pem)))
   (call-with-output-file "some-file.pem"
     (lambda (port)

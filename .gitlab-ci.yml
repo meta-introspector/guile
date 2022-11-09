@@ -22,6 +22,7 @@ Trisquel10-git:
   script:
   - ./bootstrap
   - ./configure
+  - make syntax-check
   - make -j$(nproc) check V=1 VERBOSE=t
   - make dist
   - git diff --exit-code # nothing should change version controlled files
@@ -36,6 +37,7 @@ PureOS10-git:
   script:
   - ./bootstrap
   - ./configure
+  - make syntax-check
   - make -j$(nproc) check V=1 VERBOSE=t
   - make dist
   - git diff --exit-code # nothing should change version controlled files
@@ -50,6 +52,7 @@ Debian11-git:
   script:
   - ./bootstrap
   - ./configure
+  - make syntax-check
   - make -j$(nproc) distcheck V=1 VERBOSE=t
   - git diff --exit-code # nothing should change version controlled files
 
@@ -64,6 +67,7 @@ CentOS7-git:
   script:
   - ./bootstrap
   - ./configure
+  - make syntax-check
   - make check V=1 VERBOSE=t
   - git diff --exit-code # nothing should change version controlled files
 
@@ -79,6 +83,7 @@ AlmaLinux9-git:
   script:
   - ./bootstrap
   - ./configure
+  - make syntax-check
   - make check V=1 VERBOSE=t
   - git diff --exit-code # nothing should change version controlled files
 
@@ -92,9 +97,29 @@ Fedora36-git:
   script:
   - ./bootstrap
   - ./configure
+  - make syntax-check
   - make check V=1 VERBOSE=t
   - make dist
   - git diff --exit-code # nothing should change version controlled files
+
+Fedora-clanganalyzer:
+  image: fedora:latest
+  stage: build
+  before_script:
+  - yum -y update
+  - yum -y install git autoconf automake libtool make guile-devel gnutls-devel texinfo
+  - yum -y install -y clang clang-analyzer texlive
+  script:
+  - ./bootstrap
+  - scan-build ./configure
+  - scan-build -o clang-analyzer make V=1
+  - make web-manual
+  - git diff --exit-code # nothing should change version controlled files
+  artifacts:
+    when: on_success
+    paths:
+      - clang-analyzer
+      - doc/manual
 
 Trisquel10-tarball:
   extends: .test
@@ -164,3 +189,25 @@ Ubuntu-22.04-tarball:
   - cd `ls -d guile-gnutls-* | grep -v tar.gz`
   - ./configure
   - make check V=1 VERBOSE=t
+
+.pages:
+  stage: deploy
+  needs: ["Fedora-clanganalyzer"]
+  script:
+    - mkdir public
+    - mv clang-analyzer/* public/clang-analyzer
+    - mv doc/manual public/manual
+  artifacts:
+    paths:
+    - public
+    expire_in: 30 days
+
+pages:
+  extends: .pages
+  only:
+    - master
+
+pages-test:
+  extends: .pages
+  except:
+    - master
