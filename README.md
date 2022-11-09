@@ -27,6 +27,11 @@ rpm-based distributions:
 yum install -y dash make guile22-devel gnutls-devel
 ```
 
+Mac OS with Xcode and Homebrew:
+```
+brew install guile gnutls
+```
+
 ## Build dependencies -- git builds
 
 To build from git you need the following additional tools:
@@ -46,21 +51,33 @@ rpm-based distributions:
 yum install -y git automake autoconf libtool
 ```
 
+Mac OS with Xcode and Homebrew:
+```
+brew install git autoconf automake libtool
+```
+
 ## Build dependencies -- git tarball builds
 
 To build the tarball from git you need the following additional tools:
 
 * [Tar](https://www.gnu.org/software/tar/)
 * [Gzip](https://www.gnu.org/software/gzip/)
+* [Texinfo](https://www.gnu.org/software/texinfo/)
+* [TeX Live](https://www.tug.org/texlive/)
 
 dpkg-based distributions:
 ```
-apt-get install -y tar gzip
+apt-get install -y tar gzip texinfo texlive
 ```
 
 rpm-based distributions:
 ```
-yum install -y tar gzip
+yum install -y tar gzip texinfo texlive
+```
+
+Mac OS with Xcode and Homebrew:
+```
+brew install texinfo texlive
 ```
 
 ## Contributing
