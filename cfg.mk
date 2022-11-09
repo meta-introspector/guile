@@ -20,6 +20,9 @@
 
 manual_title = Guile binding for GnuTLS
 
+VC_LIST_ALWAYS_EXCLUDE_REGEX = doc/fdl-1.3.texi
+update-copyright-env = UPDATE_COPYRIGHT_USE_INTERVALS=2
+
 gendocs_options_ = -s gnutls-guile.texi
 
 old_NEWS_hash = d41d8cd98f00b204e9800998ecf8427e
