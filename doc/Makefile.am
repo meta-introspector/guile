@@ -47,7 +47,7 @@ SNARF_CPPFLAGS = -I$(top_srcdir) -I$(top_builddir)			\
 	 -I$(top_srcdir)/lib/includes -I$(top_builddir)/lib/includes	\
 	 -I$(top_srcdir)/extra/includes				\
          -I$(top_srcdir)/guile/src -I$(top_builddir)/guile/src		\
-	 $(GUILE_CFLAGS)
+	 $(GUILE_CFLAGS) $(GNUTLS_CFLAGS)
 
 core.c.texi: $(top_srcdir)/guile/src/core.c
 	$(MAKE) -C ../guile/src built-sources &&			\

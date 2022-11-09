@@ -43,7 +43,7 @@ guile_gnutls_v_2_la_LDFLAGS = -module -no-undefined
 
 guile_gnutls_v_2_la_SOURCES = core.c errors.c utils.c
 guile_gnutls_v_2_la_CFLAGS =			\
-  $(AM_CFLAGS) $(GNULIB_CFLAGS) $(GUILE_CFLAGS)
+  $(AM_CFLAGS) $(GNULIB_CFLAGS) $(GUILE_CFLAGS) $(GNUTLS_CFLAGS)
 guile_gnutls_v_2_la_LIBADD = \
 	$(GNUTLS_LIBS) \
 	$(GUILE_LDFLAGS)
