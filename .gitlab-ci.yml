@@ -1,3 +1,7 @@
+variables:
+  GIT_DEPTH: 100
+  GIT_SUBMODULE_STRATEGY: normal
+
 .test:
   artifacts:
     expire_in: 2 weeks
@@ -16,7 +20,7 @@ Trisquel10-git:
   - apt-get update -q
   - env DEBIAN_FRONTEND=noninteractive apt-get install -y -q git make gcc guile-3.0-dev libgnutls28-dev texinfo
   script:
-  - ./bootstrap.sh
+  - ./bootstrap
   - ./configure
   - make -j$(nproc) check V=1 VERBOSE=t
   - make dist
@@ -30,7 +34,7 @@ PureOS10-git:
   - apt-get update -q
   - env DEBIAN_FRONTEND=noninteractive apt-get install -y -q git make gcc guile-3.0-dev libgnutls28-dev texinfo
   script:
-  - ./bootstrap.sh
+  - ./bootstrap
   - ./configure
   - make -j$(nproc) check V=1 VERBOSE=t
   - make dist
@@ -44,7 +48,7 @@ Debian11-git:
   - apt-get update -q
   - env DEBIAN_FRONTEND=noninteractive apt-get install -y -q git make gcc guile-3.0-dev libgnutls28-dev texinfo texlive
   script:
-  - ./bootstrap.sh
+  - ./bootstrap
   - ./configure
   - make -j$(nproc) distcheck V=1 VERBOSE=t
   - git diff --exit-code # nothing should change version controlled files
@@ -58,7 +62,7 @@ CentOS7-git:
   - yum -y update
   - yum -y install git autoconf automake libtool make guile-devel gnutls-devel
   script:
-  - ./bootstrap.sh
+  - ./bootstrap
   - ./configure
   - make check V=1 VERBOSE=t
   - git diff --exit-code # nothing should change version controlled files
@@ -73,7 +77,7 @@ AlmaLinux9-git:
   - yum -y install epel-release
   - yum -y install git autoconf automake libtool make guile30-devel gnutls-devel
   script:
-  - ./bootstrap.sh
+  - ./bootstrap
   - ./configure
   - make check V=1 VERBOSE=t
   - git diff --exit-code # nothing should change version controlled files
@@ -86,7 +90,7 @@ Fedora36-git:
   - yum -y update
   - yum -y install git autoconf automake libtool make guile-devel gnutls-devel texinfo
   script:
-  - ./bootstrap.sh
+  - ./bootstrap
   - ./configure
   - make check V=1 VERBOSE=t
   - make dist
