@@ -18,7 +18,7 @@ Trisquel10-git:
   stage: build
   before_script:
   - apt-get update -q
-  - env DEBIAN_FRONTEND=noninteractive apt-get install -y -q git make gcc guile-3.0-dev libgnutls28-dev texinfo
+  - apt-get install -qqy git make gcc guile-3.0-dev libgnutls28-dev texinfo
   script:
   - ./bootstrap
   - ./configure
@@ -33,7 +33,7 @@ PureOS10-git:
   stage: build
   before_script:
   - apt-get update -q
-  - env DEBIAN_FRONTEND=noninteractive apt-get install -y -q git make gcc guile-3.0-dev libgnutls28-dev texinfo
+  - apt-get install -qqy git make gcc guile-3.0-dev libgnutls28-dev texinfo
   script:
   - ./bootstrap
   - ./configure
@@ -48,7 +48,7 @@ Debian11-git:
   stage: build
   before_script:
   - apt-get update -q
-  - env DEBIAN_FRONTEND=noninteractive apt-get install -y -q git make gcc guile-3.0-dev libgnutls28-dev texinfo texlive
+  - apt-get install -qqy git make gcc guile-3.0-dev libgnutls28-dev texinfo texlive
   script:
   - ./bootstrap
   - ./configure
@@ -102,6 +102,35 @@ Fedora36-git:
   - make dist
   - git diff --exit-code # nothing should change version controlled files
 
+Ubuntu2204-release:
+  extends: .test
+  image: ubuntu:22.04
+  stage: build
+  except:
+    - tags # do-release-commit-and-tag: not on branch
+  before_script:
+  - apt-get update -q
+  - apt-get install -qqy git make gcc guile-3.0-dev libgnutls28-dev texinfo indent
+  script:
+  - ./bootstrap
+  - ./configure
+  - make syntax-check
+  - make
+  - make dist
+  - git diff --exit-code # nothing should change version controlled files
+  - apt-get install -qqy texlive gpg gpgv2
+  - gpg --batch --passphrase '' --quick-gen-key gnutls-help@lists.gnutls.org
+  - git checkout $CI_COMMIT_BRANCH
+  - git config user.email "gnutls-help@lists.gnutls.org"
+  - git config user.name "Guile-GnuTLS CICD Builder"
+  - git config user.signingkey gnutls-help@lists.gnutls.org
+  - sed -i '5i ** WARNING This release was prepared automatically with no testing.\n' NEWS
+  - git commit -m "Warn about automatic release." NEWS
+  - make release-commit RELEASE='17.42.23 stable'
+  - make
+  - make release RELEASE='17.42.23 stable' V=1 VERBOSE=t
+  - git diff --exit-code # nothing should change version controlled files
+
 Trisquel10-tarball:
   extends: .test
   image: kpengboy/trisquel:10.0
@@ -109,7 +138,7 @@ Trisquel10-tarball:
   needs: [Trisquel10-git]
   before_script:
   - apt-get update -q
-  - env DEBIAN_FRONTEND=noninteractive apt-get install -y -q make gcc guile-3.0-dev libgnutls28-dev
+  - apt-get install -qqy make gcc guile-3.0-dev libgnutls28-dev
   script:
   - tar xfa guile-gnutls-*.tar.gz
   - cd `ls -d guile-gnutls-* | grep -v tar.gz`
@@ -164,7 +193,7 @@ Ubuntu-22.04-tarball:
   needs: [Trisquel10-git]
   before_script:
   - apt-get update -q
-  - env DEBIAN_FRONTEND=noninteractive apt-get install -y -q make gcc guile-3.0-dev libgnutls28-dev
+  - apt-get install -qqy make gcc guile-3.0-dev libgnutls28-dev
   script:
   - tar xfa guile-gnutls-*.tar.gz
   - cd `ls -d guile-gnutls-* | grep -v tar.gz`
