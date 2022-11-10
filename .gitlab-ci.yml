@@ -102,7 +102,7 @@ Fedora36-git:
   - make dist
   - git diff --exit-code # nothing should change version controlled files
 
-Ubuntu2204-release:
+Ubuntu22.04-release:
   extends: .test
   image: ubuntu:22.04
   stage: build
@@ -186,7 +186,7 @@ Fedora36-tarball:
   - ./configure
   - make check V=1 VERBOSE=t
 
-Ubuntu-22.04-tarball:
+Ubuntu22.04-tarball:
   extends: .test
   image: ubuntu:22.04
   stage: test
