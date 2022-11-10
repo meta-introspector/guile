@@ -20,7 +20,7 @@ dnl Process this file with autoconf to produce a configure script.
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301
 # USA
 
-AC_INIT([Guile-GnuTLS], [3.7.9], [gnutls-help@lists.gnutls.org],
+AC_INIT([Guile-GnuTLS], [3.7.10], [gnutls-help@lists.gnutls.org],
   [guile-gnutls], [https://gitlab.com/gnutls/guile])
 
 AC_MSG_NOTICE([$PACKAGE_NAME $PACKAGE_VERSION $PACKAGE_TARNAME])

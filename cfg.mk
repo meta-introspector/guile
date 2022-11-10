@@ -25,7 +25,7 @@ update-copyright-env = UPDATE_COPYRIGHT_USE_INTERVALS=2
 
 gendocs_options_ = -s gnutls-guile.texi
 
-old_NEWS_hash = d41d8cd98f00b204e9800998ecf8427e
+old_NEWS_hash = b1f688fc3bebe6a145c44ed137934374
 
 bootstrap-tools = autoconf,automake,libtoolize,gnulib,makeinfo,tar,gzip
 
@@ -33,3 +33,5 @@ local-checks-to-skip = sc_GPL_version sc_error_message_uppercase	\
 	sc_prohibit_have_config_h
 
 exclude_file_name_regexp--sc_prohibit_test_minus_ao = ^m4/guile.m4$$
+exclude_file_name_regexp--sc_trailing_blank = ^gl/top/README-release.diff$$
+exclude_file_name_regexp--sc_unportable_grep_q = ^gl/top/README-release.diff$$
