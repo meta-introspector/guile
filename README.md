@@ -2,6 +2,13 @@
 
 Guile-GnuTLS provides Guile bindings for the GnuTLS library.
 
+## Documentation
+
+The [Guile GnuTLS manual](https://gnutls.gitlab.io/guile/manual/) is
+available in different formats, including [one-page HTML Guile-GnuTLS
+manual](https://gnutls.gitlab.io/guile/manual/gnutls-guile.html).  See
+`doc/`for source code.
+
 ## Build dependencies
 
 To build from tarball you need the following tools:
