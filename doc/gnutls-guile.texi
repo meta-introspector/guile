@@ -71,11 +71,10 @@ Documentation License''.
 @chapter Preface
 
 This manual describes the @uref{https://www.gnu.org/software/guile/,
-GNU Guile} Scheme programming interface to GnuTLS, which is distributed
-as part of @uref{https://gnutls.org,GnuTLS}.  The reader is
-assumed to have basic knowledge of the protocol and library.  Details
-missing from this chapter may be found in Function reference,
-of the C API reference.
+GNU Guile} Scheme programming interface to
+@uref{https://gnutls.org,GnuTLS}.  The reader is assumed to have basic
+knowledge of the protocol and library.  Details missing from this
+chapter may be found in Function reference, of the C API reference.
 
 At this stage, not all the C functions are available from Scheme, but
 a large subset thereof is available.
