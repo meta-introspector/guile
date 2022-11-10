@@ -103,9 +103,9 @@ Ubuntu22.04-release:
   - git config user.signingkey gnutls-help@lists.gnutls.org
   - sed -i '5i ** WARNING This release was prepared automatically with no testing.\n' NEWS
   - git commit -m "Warn about automatic release." NEWS
-  - make release-commit RELEASE='3.7.10 stable'
+  - make release-commit RELEASE='17.42.23 stable'
   - make
-  - make release RELEASE='3.7.10 stable' V=1 VERBOSE=t
+  - make release RELEASE='17.42.23 stable' V=1 VERBOSE=t
   - git diff --exit-code # nothing should change version controlled files
 
 Trisquel10-tarball:
