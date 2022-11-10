@@ -1,5 +1,5 @@
---- README-release.orig	2022-11-10 01:27:55
-+++ README-release	2022-11-10 01:31:40
+--- gnulib/top/README-release	2022-11-10 12:01:25
++++ README-release	2022-11-10 19:01:52
 @@ -19,9 +19,9 @@
  
      git push origin master
@@ -22,15 +22,29 @@
  
  * To (i) set the date, version number, and release TYPE on line 3 of
    NEWS, (ii) commit that, and (iii) tag the release, run
-@@ -54,48 +53,11 @@
+@@ -38,10 +37,7 @@
+     # "TYPE" must be stable, beta or alpha
+     make release-commit RELEASE='X.Y TYPE'
+ 
+-* Run the following to create release tarballs.  Your choice selects the
+-  corresponding upload-to destination in the emitted gnupload command.
+-  The different destinations are specified in cfg.mk.  See the definitions
+-  of gnu_ftp_host-{alpha,beta,stable}.
++* Run the following to create release tarballs.
+ 
+     make release RELEASE='X.Y TYPE'
+ 
+@@ -54,48 +50,23 @@
  
  Once all the builds and tests have passed,
  
 -* Run the gnupload command that was suggested by your "make release"
 -  run above, or run
--
++* Run the following command to sign the tarball.
+ 
 -    make upload RELEASE='X.Y TYPE'
--
++    gpg -b guile-gnutls*.tar.gz
+ 
 -* Wait a few minutes (maybe up to 30?) and then use the release URLs to
 -  download all tarball/signature pairs and use gpg --verify to ensure
 -  that they're all valid.
@@ -42,7 +56,8 @@
  
 -* Announce it on Savannah first, so you can include the savannah.org
 -  announcement link in the email message.
-+* Create a GitLab release based on the tag and attach the tarball
++* Create a GitLab release based on the tag and attach the tarball and
++  signature: guile-gnutls*.tar.gz*
  
 -  Go to the news-submission form:
 -
@@ -64,11 +79,16 @@
 -    https://savannah.gnu.org/news/approve.php?group=@PACKAGE@
 -
  * Send the announcement email message.
--
+ 
 -* After each non-alpha release, run
--
++* Update this file with any missing steps, re-generate diff and commit
++  the result.
+ 
 -    make web-manual-update
 -
 -  to update the on-line manual accessible at
 -
 -    https://www.gnu.org/software/@PACKAGE@/manual/
++    diff -u gnulib/top/README-release README-release \
++         > gl/top/README-release.diff
++    git commit -m "Improve README-release." gl/top/README-release.diff
