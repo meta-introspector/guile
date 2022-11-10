@@ -18,7 +18,7 @@
 /* Written by Ludovic Courtès <ludo@chbouib.org>.  */
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+# include <config.h>
 #endif
 
 #include <libguile.h>
@@ -53,16 +53,16 @@ scm_gnutls_error (int c_err, const char *c_func)
 }
 
 SCM_DEFINE (scm_gnutls_fatal_error_p, "fatal-error?", 1, 0, 0,
-	    (SCM err),
-	    "Return true if @var{error} is fatal.")
+	    (SCM err), "Return true if @var{error} is fatal.")
 #define FUNC_NAME s_scm_gnutls_fatal_error_p
 {
   int c_err = scm_to_gnutls_error (err, 1, FUNC_NAME);
   return scm_from_bool (gnutls_error_is_fatal (c_err));
 }
-#undef FUNC_NAME
 
+#undef FUNC_NAME
 
+
 
 void
 scm_init_gnutls_error (void)

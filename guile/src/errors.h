@@ -16,18 +16,18 @@
    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA  */
 
 #ifndef GUILE_GNUTLS_ERRORS_H
-#define GUILE_GNUTLS_ERRORS_H
+# define GUILE_GNUTLS_ERRORS_H
 
-#include <libguile.h>
+# include <libguile.h>
 
-#include "utils.h"
+# include "utils.h"
 
-SCM_API void scm_gnutls_error_with_args (int, const char *, SCM)
+SCM_API void
+scm_gnutls_error_with_args (int, const char *, SCM)
   NO_RETURN;
 
-SCM_API void scm_gnutls_error (int, const char *)
-  NO_RETURN;
+     SCM_API void scm_gnutls_error (int, const char *) NO_RETURN;
 
-SCM_API void scm_init_gnutls_error (void);
+     SCM_API void scm_init_gnutls_error (void);
 
 #endif
