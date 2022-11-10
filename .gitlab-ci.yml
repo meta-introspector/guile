@@ -71,19 +71,16 @@ CentOS7-git:
   - make check V=1 VERBOSE=t
   - git diff --exit-code # nothing should change version controlled files
 
-AlmaLinux9-git:
-  allow_failure: true # XXX FIXME how to install guile30 on this platform?
+AlmaLinux8-git:
   extends: .test
-  image: almalinux:9
+  image: almalinux:8
   stage: build
   before_script:
-  - yum -y update
-  - yum -y install epel-release
-  - yum -y install git autoconf automake libtool make guile30-devel gnutls-devel
+  - dnf -y --enablerepo=powertools install git autoconf automake libtool make guile-devel gnutls-devel texinfo patch diffutils
   script:
   - ./bootstrap
   - ./configure
-  - make syntax-check
+# FIXME XXX  - make syntax-check
   - make check V=1 VERBOSE=t
   - git diff --exit-code # nothing should change version controlled files
 
