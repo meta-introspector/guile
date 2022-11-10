@@ -2,7 +2,8 @@ variables:
   GIT_DEPTH: 100
   GIT_SUBMODULE_STRATEGY: normal
 
-.test:
+default:
+  interruptible: true
   artifacts:
     expire_in: 2 weeks
     when: always
@@ -13,7 +14,6 @@ variables:
     - ./**/*.log
 
 Trisquel10-git:
-  extends: .test
   image: kpengboy/trisquel:10.0
   stage: build
   before_script:
@@ -28,7 +28,6 @@ Trisquel10-git:
   - git diff --exit-code # nothing should change version controlled files
 
 PureOS10-git:
-  extends: .test
   image: pureos/byzantium:latest
   stage: build
   before_script:
@@ -43,7 +42,6 @@ PureOS10-git:
   - git diff --exit-code # nothing should change version controlled files
 
 Debian11-git:
-  extends: .test
   image: debian:11
   stage: build
   before_script:
@@ -58,7 +56,6 @@ Debian11-git:
 
 CentOS7-git:
   allow_failure: true # XXX FIXME bug in guile-gnutls?
-  extends: .test
   image: centos:7
   stage: build
   before_script:
@@ -72,7 +69,6 @@ CentOS7-git:
   - git diff --exit-code # nothing should change version controlled files
 
 AlmaLinux8-git:
-  extends: .test
   image: almalinux:8
   stage: build
   before_script:
@@ -85,7 +81,6 @@ AlmaLinux8-git:
   - git diff --exit-code # nothing should change version controlled files
 
 Fedora36-git:
-  extends: .test
   image: fedora:36
   stage: build
   before_script:
@@ -100,7 +95,6 @@ Fedora36-git:
   - git diff --exit-code # nothing should change version controlled files
 
 Ubuntu22.04-release:
-  extends: .test
   image: ubuntu:22.04
   stage: build
   except:
@@ -129,7 +123,6 @@ Ubuntu22.04-release:
   - git diff --exit-code # nothing should change version controlled files
 
 Trisquel10-tarball:
-  extends: .test
   image: kpengboy/trisquel:10.0
   stage: test
   needs: [Trisquel10-git]
@@ -143,7 +136,6 @@ Trisquel10-tarball:
   - make check V=1 VERBOSE=t
 
 Alpine-tarball:
-  extends: .test
   image: alpine:latest
   stage: test
   needs: [Trisquel10-git]
@@ -157,7 +149,6 @@ Alpine-tarball:
   - make check V=1 VERBOSE=t
 
 ArchLinux-tarball:
-  extends: .test
   image: archlinux:latest
   stage: test
   needs: [Trisquel10-git]
@@ -170,7 +161,6 @@ ArchLinux-tarball:
   - make check V=1 VERBOSE=t
 
 Fedora36-tarball:
-  extends: .test
   image: fedora:36
   stage: test
   needs: [Trisquel10-git]
@@ -184,7 +174,6 @@ Fedora36-tarball:
   - make check V=1 VERBOSE=t
 
 Ubuntu22.04-tarball:
-  extends: .test
   image: ubuntu:22.04
   stage: test
   needs: [Trisquel10-git]
