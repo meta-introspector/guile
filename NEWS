@@ -5,6 +5,8 @@ Guile-GnuTLS NEWS                                    -*- outline -*-
 ** Gnulib is used to improve code-reuse and maintainability.
 Closes: #1.
 
+** Build fixes wrt static libraries and GNUTLS_CFLAGS.
+
 * Noteworthy changes in release 3.7.9 (2022-10-14) [stable]
 
 ** Extracted into a separate project, based on GnuTLS 3.7.8.
