@@ -27,7 +27,7 @@ gendocs_options_ = -s gnutls-guile.texi
 
 old_NEWS_hash = b1f688fc3bebe6a145c44ed137934374
 
-bootstrap-tools = autoconf,automake,libtoolize,gnulib,makeinfo,tar,gzip
+bootstrap-tools = autoconf,automake,gnulib,makeinfo
 
 local-checks-to-skip = sc_GPL_version sc_error_message_uppercase	\
 	sc_prohibit_have_config_h
