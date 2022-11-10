@@ -1,6 +1,6 @@
 Guile-GnuTLS NEWS                                    -*- outline -*-
 
-* Noteworthy changes in release ?.? (????-??-??) [?]
+* Noteworthy changes in release 3.7.10 (2022-11-10) [stable]
 
 ** Gnulib is used to improve code-reuse and maintainability.
 Closes: #1.
