@@ -54,20 +54,6 @@ Debian11-git:
   - make -j$(nproc) distcheck V=1 VERBOSE=t
   - git diff --exit-code # nothing should change version controlled files
 
-CentOS7-git:
-  allow_failure: true # XXX FIXME bug in guile-gnutls?
-  image: centos:7
-  stage: build
-  before_script:
-  - yum -y update
-  - yum -y install git autoconf automake libtool make guile-devel gnutls-devel
-  script:
-  - ./bootstrap
-  - ./configure
-  - make syntax-check
-  - make check V=1 VERBOSE=t
-  - git diff --exit-code # nothing should change version controlled files
-
 AlmaLinux8-git:
   image: almalinux:8
   stage: build
