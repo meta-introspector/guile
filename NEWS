@@ -2,6 +2,8 @@ Guile-GnuTLS NEWS                                    -*- outline -*-
 
 * Noteworthy changes in release ?.? (????-??-??) [?]
 
+** Build fixes related to git-version-gen.  Fixes: #9.
+It is now possible to run 'autoreconf' from within a tarball.
 
 * Noteworthy changes in release 3.7.10 (2022-11-10) [stable]
 
