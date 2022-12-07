@@ -34,3 +34,5 @@ $(top_srcdir)/.version:
 	mv $@-t $@
 dist-hook:
 	echo '$(VERSION)' > $(distdir)/.tarball-version
+
+EXTRA_DIST += m4/gnulib-cache.m4
