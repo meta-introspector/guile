@@ -15,7 +15,7 @@
 @finalout
 @copying
 This manual is last updated @value{UPDATED} for version
-@value{VERSION} of GnuTLS.
+@value{VERSION} of Guile-GnuTLS.
 
 Copyright @copyright{} 2001-2022 Free Software Foundation, Inc.
 
@@ -84,7 +84,7 @@ a large subset thereof is available.
 @node Guile Preparations
 @chapter Guile Preparations
 
-The GnuTLS Guile bindings are available for the Guile 3.0 and 2.2
+The Guile bindings for GnuTLS are available for the Guile 3.0 and 2.2
 series, as well as the legacy 2.0 series.
 
 By default they are installed into
@@ -128,7 +128,7 @@ $ ./configure --with-guile-site-dir=/opt/guile/share/guile/site
 
 The second solution requires some more work but may be easier to use
 if you do not have system administrator rights to your machine.  You
-need to instruct Guile so that it finds the GnuTLS Guile bindings.
+need to instruct Guile so that it finds the Guile-GnuTLS bindings.
 Either use the @code{GUILE_LOAD_PATH} environment variable as follows:
 
 @example
