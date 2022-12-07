@@ -1,3 +1,4 @@
+!/gl/top
 *~
 /ChangeLog
 /GNUmakefile
@@ -22,6 +23,7 @@
 /doc/gnutls-guile.info
 /doc/stamp-vti
 /doc/version-guile.texi
+/gl/*
 /guile-gnutls-*.tar.gz
 /guile-gnutls-*.tar.gz.sig
 /guile/Makefile

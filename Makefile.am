@@ -24,4 +24,4 @@ AM_DISTCHECK_CONFIGURE_FLAGS = \
 	--with-guile-site-ccache-dir='$$(libdir)/guile/$$(GUILE_EFFECTIVE_VERSION)/site-ccache' \
 	--with-guile-extension-dir='$$(libdir)/guile/$$(GUILE_EFFECTIVE_VERSION)/extensions'
 
-SUBDIRS = guile doc
+SUBDIRS = gl guile doc
