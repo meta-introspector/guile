@@ -1,5 +1,6 @@
 !/gl/top
 *~
+/.version
 /ChangeLog
 /GNUmakefile
 /INSTALL
@@ -24,8 +25,7 @@
 /doc/stamp-vti
 /doc/version-guile.texi
 /gl/*
-/guile-gnutls-*.tar.gz
-/guile-gnutls-*.tar.gz.sig
+/guile-gnutls-*
 /guile/Makefile
 /guile/Makefile.in
 /guile/modules/gnutls.go
