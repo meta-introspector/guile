@@ -2,7 +2,7 @@
 @comment %**start of header
 @setfilename gnutls-guile.info
 @include version-guile.texi
-@settitle GnuTLS-Guile @value{VERSION}
+@settitle Guile-GnuTLS @value{VERSION}
 
 @c don't indent the paragraphs.
 @paragraphindent 0
@@ -31,12 +31,12 @@ Documentation License''.
 
 @dircategory Software libraries
 @direntry
-* GnuTLS-Guile: (gnutls-guile).		GNU Transport Layer Security Library. Guile bindings.
+* Guile-GnuTLS: (gnutls-guile).		Guile bindings for GNU Transport Layer Security Library.
 @end direntry
 
 @titlepage
-@title GnuTLS-Guile
-@subtitle Guile binding for GNU TLS
+@title Guile-GnuTLS
+@subtitle Guile binding for GnuTLS
 @subtitle for version @value{VERSION}, @value{UPDATED}
 @author Ludovic Courtès
 @page
@@ -51,7 +51,7 @@ Documentation License''.
 @contents
 
 @node Top
-@top GnuTLS-Guile
+@top Guile-GnuTLS
 
 @insertcopying
 
@@ -70,11 +70,12 @@ Documentation License''.
 @node Preface
 @chapter Preface
 
-This manual describes the @uref{https://www.gnu.org/software/guile/,
-GNU Guile} Scheme programming interface to
-@uref{https://gnutls.org,GnuTLS}.  The reader is assumed to have basic
-knowledge of the protocol and library.  Details missing from this
-chapter may be found in Function reference, of the C API reference.
+This manual describes @code{Guile-GnuTLS}, the
+@uref{https://www.gnu.org/software/guile/, GNU Guile} Scheme
+programming interface to @uref{https://gnutls.org,GnuTLS}.  The reader
+is assumed to have basic knowledge of the TLS protocol and GnuTLS
+library (@pxref{Introduction to GnuTLS, GnuTLS intro,, gnutls, GnuTLS
+Manual}).
 
 At this stage, not all the C functions are available from Scheme, but
 a large subset thereof is available.
