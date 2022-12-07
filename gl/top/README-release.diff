@@ -1,5 +1,5 @@
 --- gnulib/top/README-release	2022-11-10 12:01:25
-+++ README-release	2022-11-10 19:01:52
++++ README-release	2022-12-07 22:09:09
 @@ -19,9 +19,9 @@
  
      git push origin master
@@ -22,35 +22,7 @@
  
  * To (i) set the date, version number, and release TYPE on line 3 of
    NEWS, (ii) commit that, and (iii) tag the release, run
-@@ -38,10 +37,7 @@
-     # "TYPE" must be stable, beta or alpha
-     make release-commit RELEASE='X.Y TYPE'
- 
--* Run the following to create release tarballs.  Your choice selects the
--  corresponding upload-to destination in the emitted gnupload command.
--  The different destinations are specified in cfg.mk.  See the definitions
--  of gnu_ftp_host-{alpha,beta,stable}.
-+* Run the following to create release tarballs.
- 
-     make release RELEASE='X.Y TYPE'
- 
-@@ -54,48 +50,23 @@
- 
- Once all the builds and tests have passed,
- 
--* Run the gnupload command that was suggested by your "make release"
--  run above, or run
-+* Run the following command to sign the tarball.
- 
--    make upload RELEASE='X.Y TYPE'
-+    gpg -b guile-gnutls*.tar.gz
- 
--* Wait a few minutes (maybe up to 30?) and then use the release URLs to
--  download all tarball/signature pairs and use gpg --verify to ensure
--  that they're all valid.
--
- * Push the NEWS-updating changes and the new tag:
- 
+@@ -68,34 +67,14 @@
      v=$(cat .prev-version)
      git push origin master tag v$v
  

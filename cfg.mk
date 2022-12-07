@@ -29,6 +29,8 @@ old_NEWS_hash = 8010c59f3dc1610732145eec321662b8
 
 bootstrap-tools = autoconf,automake,gnulib,makeinfo
 
+upload_dest_dir_ = gnutls
+
 local-checks-to-skip = sc_GPL_version sc_error_message_uppercase	\
 	sc_prohibit_have_config_h
 
