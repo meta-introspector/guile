@@ -134,6 +134,7 @@ Debian10-tarball-autoreconf:
   - cd `ls -d guile-gnutls-* | grep -v tar.gz`
   - autoreconf -fvi
   - ./configure
+  - grep "^VERSION='UNKNOWN'" config.log && exit 1
   - make check V=1 VERBOSE=t
 
 Alpine-tarball:
