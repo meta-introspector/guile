@@ -121,6 +121,21 @@ Trisquel10-tarball:
   - ./configure
   - make check V=1 VERBOSE=t
 
+Debian10-tarball-autoreconf:
+  image: debian:10
+  stage: test
+  needs: [Trisquel10-git]
+  before_script:
+  - apt-get update -q
+  - apt-get install -qqy make gcc guile-2.2-dev libgnutls28-dev
+  - apt-get install -qqy autoconf
+  script:
+  - tar xfa guile-gnutls-*.tar.gz
+  - cd `ls -d guile-gnutls-* | grep -v tar.gz`
+  - autoreconf -fvi
+  - ./configure
+  - make check V=1 VERBOSE=t
+
 Alpine-tarball:
   image: alpine:latest
   stage: test
