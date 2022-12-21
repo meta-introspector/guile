@@ -320,7 +320,14 @@
 
 (define %mac-enum
   (make-enum-type 'mac "gnutls_mac_algorithm_t"
-                  '(unknown null md5 sha1 rmd160 md2)
+                  '(unknown null md5 sha1 rmd160 md2 sha256 sha384 sha512
+                    sha224 sha3-224 sha3-256 sha3-384 sha3-512 md5-sha1
+                    gostr-94 streebog-256 streebog-512 aead umac-96 umac-128
+                    aes-cmac-128 aes-cmac-256 aes-gmac-128 aes-gmac-192
+                    aes-gmac-256 gost28147-tc26z-imit shake-128 shake-256
+                    ;; These are not available on supported gnutls versions:
+                    ;; magma-omac kuznyechik-omac
+                    )
                   "gnutls_mac_get_name"))
 
 (define %digest-enum

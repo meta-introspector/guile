@@ -148,6 +148,31 @@
            mac/sha1
            mac/rmd160
            mac/md2
+           mac/sha256
+           mac/sha384
+           mac/sha512
+           mac/sha224
+           mac/sha3-224
+           mac/sha3-256
+           mac/sha3-384
+           mac/sha3-512
+           mac/md5-sha1
+           mac/gostr-94
+           mac/streebog-256
+           mac/streebog-512
+           mac/aead
+           mac/umac-96
+           mac/umac-128
+           mac/aes-cmac-128
+           mac/aes-cmac-256
+           mac/aes-gmac-128
+           mac/aes-gmac-192
+           mac/aes-gmac-256
+           mac/gost28147-tc26z-imit
+           mac/shake-128
+           mac/shake-256
+           mac/magma-omac
+           mac/kuznyechik-omac
            digest/null
            digest/md5
            digest/sha1
