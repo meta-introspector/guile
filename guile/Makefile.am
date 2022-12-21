@@ -110,7 +110,8 @@ TESTS =						\
   tests/x509-auth.scm				\
   tests/reauth.scm				\
   tests/premature-termination.scm		\
-  tests/priorities.scm
+  tests/priorities.scm				\
+  tests/hmac.scm
 
 if ENABLE_SRP
 TESTS +=					\

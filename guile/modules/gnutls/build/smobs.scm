@@ -209,6 +209,14 @@
   (make-smob-type "gnutls_openpgp_keyring_t" 'openpgp-keyring
                   "gnutls_openpgp_keyring_deinit"))
 
+(define %hmac-smob
+  ;; The hmac object in gnutls does not contain enough information to be used
+  ;; safely. The output length of the hmac algorithm cannot be found from an
+  ;; hmac state. So, we define our own compound structure that packs the hmac
+  ;; state and the algorithm.
+  (make-smob-type "scm_gnutls_hmac_and_algorithm_t" 'hmac
+                  "hmac_and_algorithm_deinit"))
+
 
 (define %gnutls-smobs
   ;; All SMOB types.
@@ -217,7 +225,7 @@
         %certificate-credentials-smob
         %srp-server-credentials-smob %srp-client-credentials-smob
         %psk-server-credentials-smob %psk-client-credentials-smob
-        %x509-certificate-smob %x509-private-key-smob
+        %x509-certificate-smob %x509-private-key-smob %hmac-smob
 
         %openpgp-certificate-smob %openpgp-private-key-smob
         %openpgp-keyring-smob))

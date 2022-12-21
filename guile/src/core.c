@@ -26,10 +26,27 @@
 #include <string.h>
 #include <gnutls/gnutls.h>
 #include <gnutls/openpgp.h>
+#include <gnutls/crypto.h>
 #include <libguile.h>
 
 #include <alloca.h>
 #include <assert.h>
+
+
+/* The gnutls API does not let you find the mac algorithm from a given hmac
+   state. This is required to know the size of the output to allocate. So we
+   have to remember it as well. */
+
+struct scm_gnutls_hmac_and_algorithm
+{
+  gnutls_hmac_hd_t handle;
+  gnutls_mac_algorithm_t algorithm;
+};
+
+typedef struct scm_gnutls_hmac_and_algorithm *scm_gnutls_hmac_and_algorithm_t;
+
+static void hmac_and_algorithm_deinit (scm_gnutls_hmac_and_algorithm_t
+				       c_hmac);
 
 #include "enums.h"
 #include "smobs.h"
@@ -3515,6 +3532,212 @@ SCM_DEFINE (scm_gnutls_set_log_level_x, "set-log-level!", 1, 0, 0,
 
 #undef FUNC_NAME
 
+
+/* Hmac */
+
+SCM_DEFINE (scm_gnutls_hmac_direct, "hmac-direct", 3, 0, 0,
+	    (SCM algorithm, SCM key, SCM text),
+	    "Hash @var{text} with @var{algorithm}, and "
+	    "the secret @var{key}. It will not work if "
+	    "@var{algorithm} requires a nonce, such as "
+	    "UMAC or GMAC. Both @var{key} and @var{text} "
+	    "must be bytevectors.")
+#define FUNC_NAME s_scm_gnutls_hmac_direct
+{
+  int error;
+  gnutls_mac_algorithm_t c_algorithm =
+    scm_to_gnutls_mac (algorithm, 1, FUNC_NAME);
+  size_t c_key_length = scm_c_bytevector_length (key);
+  const void *c_key = SCM_BYTEVECTOR_CONTENTS (key);
+  size_t c_ptext_length = scm_c_bytevector_length (text);
+  const void *c_ptext = SCM_BYTEVECTOR_CONTENTS (text);
+  unsigned digest_length = gnutls_hmac_get_len (c_algorithm);
+  if (EXPECT_FALSE (digest_length == 0))
+    {
+      /* I guess throwing unknown-algorithm is correct, if gnutls can’t find a
+         meaningful value for the algorithm digest size. */
+      scm_gnutls_error (GNUTLS_E_UNKNOWN_ALGORITHM, FUNC_NAME);
+    }
+  SCM digest = scm_c_make_bytevector (digest_length);
+  void *c_digest = SCM_BYTEVECTOR_CONTENTS (digest);
+  error =
+    gnutls_hmac_fast (c_algorithm, c_key, c_key_length, c_ptext,
+		      c_ptext_length, c_digest);
+  if (EXPECT_FALSE (error))
+    {
+      scm_gnutls_error (error, FUNC_NAME);
+    }
+  return digest;
+}
+
+#undef FUNC_NAME
+
+SCM_DEFINE (scm_gnutls_make_hmac, "make-hmac", 2, 0, 0,
+	    (SCM algorithm, SCM key),
+	    "Return a new hmac object that can be fed "
+	    "further input to hash. Use the given MAC "
+	    "or HMAC @var{algorithm}, and use "
+	    "@var{key} (a bytevector) as the secret.")
+#define FUNC_NAME s_scm_gnutls_make_hmac
+{
+  int error;
+  scm_gnutls_hmac_and_algorithm_t c_hmac =
+    scm_gc_malloc (sizeof (struct scm_gnutls_hmac_and_algorithm),
+		   "hmac-and-algorithm");
+  gnutls_mac_algorithm_t c_algorithm;
+  size_t c_key_length = scm_c_bytevector_length (key);
+  const void *c_key = SCM_BYTEVECTOR_CONTENTS (key);
+  c_algorithm = scm_to_gnutls_mac (algorithm, 1, FUNC_NAME);
+  c_hmac->algorithm = c_algorithm;
+  error =
+    gnutls_hmac_init (&(c_hmac->handle), c_algorithm, c_key, c_key_length);
+  if (EXPECT_FALSE (error))
+    {
+      scm_gnutls_error (error, FUNC_NAME);
+    }
+  return scm_from_gnutls_hmac (c_hmac);
+}
+
+#undef FUNC_NAME
+
+static void
+hmac_and_algorithm_deinit (scm_gnutls_hmac_and_algorithm_t c_hmac)
+{
+  gnutls_hmac_deinit (c_hmac->handle, NULL);
+}
+
+SCM_DEFINE (scm_gnutls_hmac_x, "hmac!", 2, 0, 0,
+	    (SCM hmac, SCM text),
+	    "Hash the @var{text} bytes in the @var{hmac} state.")
+#define FUNC_NAME s_scm_gnutls_hmac_x
+{
+  int error;
+  scm_gnutls_hmac_and_algorithm_t c_hmac =
+    scm_to_gnutls_hmac (hmac, 1, FUNC_NAME);
+  size_t c_ptext_length = scm_c_bytevector_length (text);
+  const void *c_ptext = SCM_BYTEVECTOR_CONTENTS (text);
+  error = gnutls_hmac (c_hmac->handle, c_ptext, c_ptext_length);
+  if (EXPECT_FALSE (error))
+    {
+      scm_gnutls_error (error, FUNC_NAME);
+    }
+  return SCM_UNSPECIFIED;
+}
+
+#undef FUNC_NAME
+
+SCM_DEFINE (scm_gnutls_hmac_copy, "hmac-copy", 1, 0, 0,
+	    (SCM hmac),
+	    "Return a copy of the current @var{hmac} state, "
+	    "or @code{#f} if this is not supported.")
+#define FUNC_NAME s_scm_gnutls_hmac_copy
+{
+  scm_gnutls_hmac_and_algorithm_t c_hmac =
+    scm_to_gnutls_hmac (hmac, 1, FUNC_NAME);
+  gnutls_hmac_hd_t c_ret = NULL;
+  c_ret = gnutls_hmac_copy (c_hmac->handle);
+  if (EXPECT_FALSE (c_ret == NULL))
+    {
+      scm_gnutls_error (GNUTLS_E_ILLEGAL_PARAMETER, FUNC_NAME);
+    }
+  scm_gnutls_hmac_and_algorithm_t c_combined =
+    scm_gc_malloc (sizeof (struct scm_gnutls_hmac_and_algorithm),
+		   "hmac-and-algorithm");
+  c_combined->handle = c_ret;
+  c_combined->algorithm = c_hmac->algorithm;
+  return scm_from_gnutls_hmac (c_combined);
+}
+
+#undef FUNC_NAME
+
+SCM_DEFINE (scm_gnutls_hmac_key_size, "hmac-key-size", 1, 0, 0,
+	    (SCM algorithm),
+	    "Return the default key size for @var{algorithm}, "
+	    "or 0 if unavailable.")
+#define FUNC_NAME s_scm_gnutls_hmac_key_size
+{
+  gnutls_mac_algorithm_t c_algorithm =
+    scm_to_gnutls_mac (algorithm, 1, FUNC_NAME);
+  return scm_from_uint (gnutls_hmac_get_key_size (c_algorithm));
+}
+
+#undef FUNC_NAME
+
+SCM_DEFINE (scm_gnutls_hmac_algorithm, "hmac-algorithm", 1, 0, 0,
+	    (SCM hmac),
+	    "Return the algorithm that @var{hmac} has been built for.")
+#define FUNC_NAME s_scm_gnutls_hmac_algorithm
+{
+  scm_gnutls_hmac_and_algorithm_t c_hmac =
+    scm_to_gnutls_hmac (hmac, 1, FUNC_NAME);
+  return scm_from_gnutls_mac (c_hmac->algorithm);
+}
+
+#undef FUNC_NAME
+
+SCM_DEFINE (scm_gnutls_hmac_length, "hmac-length", 1, 0, 0,
+	    (SCM algorithm),
+	    "Return the length of the @var{algorithm} "
+	    "HMAC output, or 0 if unavailable.")
+#define FUNC_NAME s_scm_gnutls_hmac_length
+{
+  gnutls_mac_algorithm_t c_algorithm =
+    scm_to_gnutls_mac (algorithm, 1, FUNC_NAME);
+  unsigned int c_ret = gnutls_hmac_get_len (c_algorithm);
+  return scm_from_uint (c_ret);
+}
+
+#undef FUNC_NAME
+
+SCM_DEFINE (scm_gnutls_hmac_output, "hmac-output", 1, 0, 0,
+	    (SCM hmac), "Return the digest of the current @var{hmac} state.")
+#define FUNC_NAME s_scm_gnutls_hmac_output
+{
+  scm_gnutls_hmac_and_algorithm_t c_hmac =
+    scm_to_gnutls_hmac (hmac, 1, FUNC_NAME);
+  unsigned digest_length = gnutls_hmac_get_len (c_hmac->algorithm);
+  if (EXPECT_FALSE (digest_length == 0))
+    {
+      /* See hmac-direct. */
+      scm_gnutls_error (GNUTLS_E_UNKNOWN_ALGORITHM, FUNC_NAME);
+    }
+  SCM digest = scm_c_make_bytevector (digest_length);
+  void *c_digest = SCM_BYTEVECTOR_CONTENTS (digest);
+  gnutls_hmac_output (c_hmac->handle, c_digest);
+  return digest;
+}
+
+#undef FUNC_NAME
+
+SCM_DEFINE (scm_gnutls_set_hmac_nonce_x, "set-hmac-nonce!", 2, 0, 0,
+	    (SCM hmac, SCM nonce), "Set @var{nonce} in the @var{hmac} state.")
+#define FUNC_NAME s_scm_gnutls_set_hmac_nonce_x
+{
+  scm_gnutls_hmac_and_algorithm_t c_hmac =
+    scm_to_gnutls_hmac (hmac, 1, FUNC_NAME);
+  size_t c_nonce_length = scm_c_bytevector_length (nonce);
+  const void *c_nonce = SCM_BYTEVECTOR_CONTENTS (nonce);
+  gnutls_hmac_set_nonce (c_hmac->handle, c_nonce, c_nonce_length);
+  return SCM_UNSPECIFIED;
+}
+
+#undef FUNC_NAME
+
+SCM_DEFINE (scm_gnutls_mac_nonce_size, "mac-nonce-size", 1, 0, 0,
+	    (SCM algorithm),
+	    "Return the length of the nonce for @var{algorithm}, "
+	    "or 0 if unavailable.")
+#define FUNC_NAME s_scm_gnutls_mac_nonce_size
+{
+  gnutls_mac_algorithm_t c_algorithm =
+    scm_to_gnutls_mac (algorithm, 1, FUNC_NAME);
+  size_t ret = gnutls_mac_get_nonce_size (c_algorithm);
+  return scm_from_size_t (ret);
+}
+
+#undef FUNC_NAME
+
+
 
 /* Initialization.  */
 

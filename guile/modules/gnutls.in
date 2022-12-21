@@ -92,6 +92,11 @@
            x509-certificate-fingerprint import-x509-private-key
            pkcs8-import-x509-private-key
 
+           ;; HMAC and MAC
+           mac-nonce-size
+           hmac? make-hmac hmac! hmac-copy hmac-direct hmac-key-size
+           hmac-length hmac-output set-hmac-nonce! hmac-algorithm
+
            ;; record layer
            record-send record-receive!
            session-record-port
