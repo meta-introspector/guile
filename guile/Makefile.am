@@ -122,7 +122,9 @@ TESTS_ENVIRONMENT =				\
   GUILE_AUTO_COMPILE=0				\
   GUILE_WARN_DEPRECATED=detailed
 
-LOG_COMPILER = $(top_builddir)/guile/pre-inst-guile -L $(srcdir)/tests
+LOG_COMPILER = $(top_builddir)/guile/pre-inst-guile \
+  -L $(srcdir)/tests \
+  -L $(srcdir)/examples
 
 
 EXTRA_DIST +=					\
@@ -130,4 +132,7 @@ EXTRA_DIST +=					\
   tests/rsa-parameters.pem			\
   tests/dh-parameters.pem			\
   tests/x509-certificate.pem			\
-  tests/x509-key.pem
+  tests/x509-key.pem                            \
+  examples/hmac-example-1.scm                   \
+  examples/hmac-example-2.scm                   \
+  examples/hmac-example-3.scm

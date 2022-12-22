@@ -2,6 +2,7 @@
 @comment %**start of header
 @setfilename gnutls-guile.info
 @include version-guile.texi
+@include abs-top-srcdir.texi
 @settitle Guile-GnuTLS @value{VERSION}
 
 @c don't indent the paragraphs.
@@ -453,6 +454,7 @@ This chapter provides examples that illustrate common use cases.
 
 @menu
 * Anonymous Authentication Guile Example::    Simplest client and server.
+* Using GnuTLS as a cryptography library::    Use the lower-level API.
 @end menu
 
 @node Anonymous Authentication Guile Example
@@ -535,6 +537,33 @@ The corresponding server would look like this (again, assuming
 
 This is it!
 
+@node Using GnuTLS as a cryptography library
+@section Using GnuTLS as a cryptography library
+
+The library provides support for @dfn{Hash Message Authentication
+Code} (@emph{hmac}). This API provides a way to hash a message in a
+way that is only reproducible with the knowledge of a secret.
+
+This first example demonstrates how to use @code{hmac-fast} to hash a
+bytevector in memory.
+
+@example
+@verbatiminclude @value{abs_top_srcdir}/guile/examples/hmac-example-1.scm
+@end example
+
+The next example shows how to hash a whole file that might not fit in
+memory.
+
+@example
+@verbatiminclude @value{abs_top_srcdir}/guile/examples/hmac-example-2.scm
+@end example
+
+The final example shows how you can re-use a state to continue hashing
+different inputs.
+
+@example
+@verbatiminclude @value{abs_top_srcdir}/guile/examples/hmac-example-3.scm
+@end example
 
 @c *********************************************************************
 @node Guile Reference

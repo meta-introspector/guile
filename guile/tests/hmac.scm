@@ -42,6 +42,8 @@
 
 (run-test
  (lambda ()
+   ;; This checks that make-hmac and hmac-direct work, and that hmac-copy does
+   ;; not alter the source state.
    (let ((secret (string->utf8 "secret!"))
          (payload (string->utf8 "Example data to hash."))
          (sha256-output
@@ -60,4 +62,79 @@
                "288a7d4b6fddac45a99fbefbfed287ca1c58c6ab011a579f47c6f3313422b39b"))
            (error "The hmac state copy failed.")))
        (unless (equal? (hmac-output state) sha256-output)
-         (error "The indirect method failed."))))))
+         (error "The indirect method failed."))))
+   ;; This is the examples in the manual.
+   (let ((manual-example-1
+          (lambda ()
+            (load-from-path "hmac-example-1.scm")))
+         (manual-example-2
+          (lambda ()
+            (load-from-path "hmac-example-2.scm")))
+         (manual-example-3
+          (lambda ()
+            (load-from-path "hmac-example-3.scm")))
+         ;; This is how we run the examples for the purpose of testing the code.
+         (manual-example-1-environment
+          (lambda (f)
+            (let* ((input (call-with-output-string
+                            (lambda (port)
+                              ;; What is the secret?
+                              (format port "secret!\n")
+                              ;; What message do you want to hash?
+                              (format port "Example data to hash.\n"))))
+                   (expected-output
+                    (call-with-output-string
+                      (lambda (port)
+                        (format port "What is the secret?\n")
+                        ;; secret is input
+                        (format port "What message do you want to hash?\n")
+                        ;; message is input
+                        (format port "The digest is: ~s\n"
+                                (hex->bytevector
+                                 "9d40ad76c2b12c5057e9f31bb35a7a382ade69d870e94510eb93dc35b14d262e")))))
+                   (true-output
+                    (call-with-output-string
+                      (lambda (output-port)
+                        (with-input-from-port
+                            (open-input-string input)
+                          (lambda ()
+                            (with-output-to-port output-port
+                              f)))))))
+              (unless (equal? expected-output true-output)
+                (error "Manual example 1 failed.")))))
+         (manual-example-2-environment
+          (lambda (f)
+            (call-with-output-file "manual-example-2-data"
+              (lambda (port)
+                (format port "Example data to hash."))
+              #:encoding "UTF-8")
+            (let* ((input (call-with-output-string
+                            (lambda (port)
+                              ;; What is the secret?
+                              (format port "secret!\n")
+                              ;; Which file do you want to hash?
+                              (format port "./manual-example-2-data\n"))))
+                   (expected-output
+                    (call-with-output-string
+                      (lambda (port)
+                        (format port "What is the secret?\n")
+                        ;; secret is input
+                        (format port "Which file do you want to hash?\n")
+                        ;; message is input
+                        (format port "The digest is: ~s\n"
+                                (hex->bytevector
+                                 "9d40ad76c2b12c5057e9f31bb35a7a382ade69d870e94510eb93dc35b14d262e")))))
+                   (true-output
+                    (call-with-output-string
+                      (lambda (output-port)
+                        (with-input-from-port
+                            (open-input-string input)
+                          (lambda ()
+                            (with-output-to-port output-port
+                              f)))))))
+              (delete-file "manual-example-2-data")
+              (unless (equal? expected-output true-output)
+                (error "Manual example 2 failed."))))))
+     (manual-example-1-environment manual-example-1)
+     (manual-example-2-environment manual-example-2)
+     (manual-example-3))))

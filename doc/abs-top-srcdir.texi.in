@@ -1,0 +1,5 @@
+@c Do not mark this file as a dependency for gnutls-guile.texi,
+@c because gnutls-guile.info, .html and .pdf do not depend on the
+@c value of abs_top_srcdir.
+
+@set abs_top_srcdir @abs_top_srcdir@

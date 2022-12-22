@@ -148,10 +148,17 @@ AM_CONDITIONAL([CROSS_COMPILING], [test "x$cross_compiling" = "xyes"])
 AM_CONDITIONAL(HAVE_GCC_GNU89_INLINE_OPTION, test "$gnu89_inline" = "yes"])
 AM_CONDITIONAL(HAVE_GCC, test "$GCC" = "yes")
 
+# Inclusion of example files in the manual requires the absolute
+# directory of source, because texi2dvi and pdflatex do not have the
+# same search path for included files. So a relative file name will
+# never be found by both tools at the same time.
+AC_SUBST([abs_top_srcdir])
+
 AC_CONFIG_FILES([guile/pre-inst-guile], [chmod +x guile/pre-inst-guile])
 AC_CONFIG_FILES([
   Makefile
   doc/Makefile
+  doc/abs-top-srcdir.texi
   guile/Makefile
   guile/src/Makefile
 ])
