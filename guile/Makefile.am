@@ -134,5 +134,4 @@ EXTRA_DIST +=					\
   tests/x509-certificate.pem			\
   tests/x509-key.pem                            \
   examples/hmac-example-1.scm                   \
-  examples/hmac-example-2.scm                   \
-  examples/hmac-example-3.scm
+  examples/hmac-example-2.scm

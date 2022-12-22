@@ -94,7 +94,7 @@
 
            ;; HMAC and MAC
            mac-nonce-size
-           hmac? make-hmac hmac! hmac-copy hmac-direct hmac-key-size
+           hmac? make-hmac hmac! hmac-direct
            hmac-length hmac-output set-hmac-nonce! hmac-algorithm
 
            ;; record layer
