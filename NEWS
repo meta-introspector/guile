@@ -2,6 +2,7 @@ Guile-GnuTLS NEWS                                    -*- outline -*-
 
 * Noteworthy changes in release ?.? (????-??-??) [?]
 
+** Bind the HMAC functions from GnuTLS.
 
 * Noteworthy changes in release 3.7.11 (2022-12-07) [stable]
 
