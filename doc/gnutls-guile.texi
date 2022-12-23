@@ -179,12 +179,21 @@ This chapter details the conventions used by Guile API, as well as
 specificities of the mapping of the C API to Scheme.
 
 @menu
+* Living on the cutting edge::    Checking for newer functions.
 * Enumerates and Constants::      Representation of C-side constants.
 * Procedure Names::               Naming conventions.
 * Representation of Binary Data:: Binary data buffers.
 * Input and Output::              Input and output.
 * Exception Handling::            Exceptions.
 @end menu
+
+@node Living on the cutting edge
+@section Living on the cutting edge
+Some GnuTLS features have been introduced recently. To keep
+compatibility with older GnuTLS versions, they may not all be
+available. If a GnuTLS feature is not available, then its
+corresponding variable will not be exported by the @code{(gnutls)}
+module.
 
 @node Enumerates and Constants
 @section Enumerates and Constants

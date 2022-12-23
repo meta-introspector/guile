@@ -603,6 +603,10 @@ This defines 'variable' as an alias for 'alias', and emits a warning when
 (define certificate-verify/allow-x509-v1-ca-certificate
   certificate-verify/allow-x509-v1-ca-crt)
 
+;; Optional newer features.
+(when (defined? 'hmac-key-size)
+  (export hmac-key-size))
+
 ;; Deprecated OpenPGP bindings.
 (define-deprecated certificate-type/openpgp)
 (define-deprecated error/openpgp-getkey-failed)

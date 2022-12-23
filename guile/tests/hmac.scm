@@ -54,6 +54,9 @@
        (hmac! state payload)
        (unless (equal? (hmac-output state) sha256-output)
          (error "The indirect method failed."))))
+   (when (defined? 'hmac-key-size)
+     (unless (equal? (hmac-key-size mac/sha256) 32)
+       (error "hmac-key-size does not work")))
    ;; This is the examples in the manual.
    (let ((manual-example-1
           (lambda ()

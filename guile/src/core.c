@@ -77,7 +77,6 @@ static void hmac_and_algorithm_deinit (scm_gnutls_hmac_and_algorithm_t
 const char scm_gnutls_array_error_message[] =
   "cannot handle non-contiguous array: ~A";
 
-
 /* Data that are attached to `gnutls_session_t' objects.
 
    We need to keep several pieces of information along with each session:
@@ -3625,6 +3624,24 @@ SCM_DEFINE (scm_gnutls_hmac_x, "hmac!", 2, 0, 0,
 }
 
 #undef FUNC_NAME
+
+#ifdef HAVE_GNUTLS_HMAC_GET_KEY_SIZE
+SCM_DEFINE (scm_gnutls_hmac_key_size, "hmac-key-size", 1, 0, 0,
+	    (SCM algorithm),
+	    "Return the default key size for @var{algorithm}, "
+	    "or 0 if unavailable. "
+	    "This function is only provided under the "
+	    "@code{'gnutls-hmac-key-size} Guile feature check "
+	    "(@pxref{Living on the cutting edge}).")
+# define FUNC_NAME s_scm_gnutls_hmac_key_size
+{
+  gnutls_mac_algorithm_t c_algorithm =
+    scm_to_gnutls_mac (algorithm, 1, FUNC_NAME);
+  return scm_from_uint (gnutls_hmac_get_key_size (c_algorithm));
+}
+
+# undef FUNC_NAME
+#endif /* HAVE_GNUTLS_HMAC_GET_KEY_SIZE */
 
 SCM_DEFINE (scm_gnutls_hmac_algorithm, "hmac-algorithm", 1, 0, 0,
 	    (SCM hmac),

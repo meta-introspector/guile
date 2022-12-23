@@ -134,6 +134,23 @@ AC_CHECK_FUNCS([scm_gc_malloc_pointerless])
 CFLAGS="$save_CFLAGS"
 LIBS="$save_LIBS"
 
+save_CFLAGS="$CFLAGS"
+save_LIBS="$LIBS"
+CFLAGS="$CFLAGS $GNUTLS_CFLAGS"
+LIBS="$LIBS $GNUTLS_LIBS"
+AC_MSG_CHECKING([whether gnutls comes with gnutls_hmac_get_key_size])
+feature_gnutls_hmac_key_size=no
+AC_LINK_IFELSE([AC_LANG_PROGRAM([
+#include <gnutls/gnutls.h>
+#include <gnutls/crypto.h>
+], [gnutls_hmac_get_key_size (0)])],
+  [feature_gnutls_hmac_key_size=yes
+   AC_DEFINE([HAVE_GNUTLS_HMAC_GET_KEY_SIZE], 1, [Can bind gnutls_hmac_get_key_size])],
+  [])
+AC_MSG_RESULT($feature_gnutls_hmac_key_size)
+CFLAGS="$save_CFLAGS"
+LIBS="$save_LIBS"
+
 # Do we need to hard-code $guileextensiondir in gnutls.scm?
 # This is not necessary when $guileextensiondir is equal to
 # Guile's 'extensiondir' as specified in 'guile-MAJOR.MINOR.pc'.
@@ -189,4 +206,9 @@ AC_MSG_NOTICE([Summary of build options:
     extensiondir:    $guileextensiondir - $GUILE_EXTENSION
      guile-snarf:    $guile_snarf
            GUILD:    $GUILD
+])
+
+AC_MSG_NOTICE([Summary of optional GnuTLS features:
+
+  hmac-key-size:     $feature_gnutls_hmac_key_size
 ])
