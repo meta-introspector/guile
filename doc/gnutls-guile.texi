@@ -567,6 +567,14 @@ memory.
 @verbatiminclude @value{abs_top_srcdir}/guile/examples/hmac-example-2.scm
 @end example
 
+The final example shows how you can re-use a state to continue hashing
+different inputs. This requires the @code{hmac-copy} function, which
+is not always available (@pxref{Living on the cutting edge}).
+
+@example
+@verbatiminclude @value{abs_top_srcdir}/guile/examples/hmac-example-3.scm
+@end example
+
 @c *********************************************************************
 @node Guile Reference
 @chapter Guile Reference

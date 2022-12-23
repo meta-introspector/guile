@@ -42,7 +42,8 @@
 
 (run-test
  (lambda ()
-   ;; This checks that make-hmac and hmac-direct work.
+   ;; This checks that make-hmac and hmac-direct work, and that hmac-copy does
+   ;; not alter the source state.
    (let ((secret (string->utf8 "secret!"))
          (payload (string->utf8 "Example data to hash."))
          (sha256-output
@@ -52,6 +53,15 @@
        (error "The sha256 direct method failed."))
      (let ((state (make-hmac mac/sha256 secret)))
        (hmac! state payload)
+       (when (defined? 'hmac-copy)
+         (let ((copy (hmac-copy state)))
+           (hmac! copy (string->utf8 " More data."))
+           (unless
+               (equal?
+                (hmac-output copy)
+                (hex->bytevector
+                 "288a7d4b6fddac45a99fbefbfed287ca1c58c6ab011a579f47c6f3313422b39b"))
+             (error "The hmac state copy failed."))))
        (unless (equal? (hmac-output state) sha256-output)
          (error "The indirect method failed."))))
    (when (defined? 'hmac-key-size)
@@ -64,6 +74,9 @@
          (manual-example-2
           (lambda ()
             (load-from-path "hmac-example-2.scm")))
+         (manual-example-3
+          (lambda ()
+            (load-from-path "hmac-example-3.scm")))
          ;; This is how we run the examples for the purpose of testing the code.
          (manual-example-1-environment
           (lambda (f)
@@ -127,4 +140,5 @@
               (unless (equal? expected-output true-output)
                 (error "Manual example 2 failed."))))))
      (manual-example-1-environment manual-example-1)
-     (manual-example-2-environment manual-example-2))))
+     (manual-example-2-environment manual-example-2)
+     (manual-example-3))))

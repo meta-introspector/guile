@@ -140,6 +140,7 @@ save_LIBS="$LIBS"
 CFLAGS="$CFLAGS $GNUTLS_CFLAGS"
 LIBS="$LIBS $GNUTLS_LIBS"
 feature_gnutls_hmac_key_size=no
+feature_gnutls_hmac_copy=no
 feature_gnutls_mac_aes_gmac=no
 feature_gnutls_mac_shake=no
 feature_gnutls_mac_gost28147_tc26z_imit=no
@@ -155,6 +156,16 @@ AC_LINK_IFELSE([AC_LANG_PROGRAM([
    AC_DEFINE([HAVE_GNUTLS_HMAC_GET_KEY_SIZE], 1, [Can bind gnutls_hmac_get_key_size])],
   [])
 AC_MSG_RESULT($feature_gnutls_hmac_key_size)
+
+AC_MSG_CHECKING([whether gnutls comes with gnutls_hmac_copy])
+AC_LINK_IFELSE([AC_LANG_PROGRAM([
+#include <gnutls/gnutls.h>
+#include <gnutls/crypto.h>
+], [gnutls_hmac_copy (NULL)])],
+  [feature_gnutls_hmac_copy=yes
+   AC_DEFINE([HAVE_GNUTLS_HMAC_COPY], 1, [Can bind gnutls_hmac_copy])],
+  [])
+AC_MSG_RESULT($feature_gnutls_hmac_copy)
 
 AC_MSG_CHECKING([whether gnutls supports the AES_GMAC algorithms])
 AC_LINK_IFELSE([AC_LANG_PROGRAM([
@@ -279,6 +290,7 @@ AC_MSG_NOTICE([Summary of build options:
 AC_MSG_NOTICE([Summary of optional GnuTLS features:
 
   hmac-key-size:     $feature_gnutls_hmac_key_size
+      hmac-copy:     $feature_gnutls_hmac_copy
 ])
 
 AC_MSG_NOTICE([Availability of MAC algorithms:

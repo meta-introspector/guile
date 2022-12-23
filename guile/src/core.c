@@ -3643,6 +3643,33 @@ SCM_DEFINE (scm_gnutls_hmac_key_size, "hmac-key-size", 1, 0, 0,
 # undef FUNC_NAME
 #endif /* HAVE_GNUTLS_HMAC_GET_KEY_SIZE */
 
+#ifdef HAVE_GNUTLS_HMAC_COPY
+SCM_DEFINE (scm_gnutls_hmac_copy, "hmac-copy", 1, 0, 0,
+	    (SCM hmac),
+	    "Return a copy of the current @var{hmac} state, "
+	    "or throw an @code{error/illegal-parameter} "
+	    "if this is not supported. ")
+# define FUNC_NAME s_scm_gnutls_hmac_copy
+{
+  scm_gnutls_hmac_and_algorithm_t c_hmac =
+    scm_to_gnutls_hmac (hmac, 1, FUNC_NAME);
+  gnutls_hmac_hd_t c_ret = NULL;
+  c_ret = gnutls_hmac_copy (c_hmac->handle);
+  if (EXPECT_FALSE (c_ret == NULL))
+    {
+      scm_gnutls_error (GNUTLS_E_ILLEGAL_PARAMETER, FUNC_NAME);
+    }
+  scm_gnutls_hmac_and_algorithm_t c_combined =
+    scm_gc_malloc (sizeof (struct scm_gnutls_hmac_and_algorithm),
+		   "hmac-and-algorithm");
+  c_combined->handle = c_ret;
+  c_combined->algorithm = c_hmac->algorithm;
+  return scm_from_gnutls_hmac (c_combined);
+}
+#endif /* HAVE_GNUTLS_HMAC_COPY */
+
+#undef FUNC_NAME
+
 SCM_DEFINE (scm_gnutls_hmac_algorithm, "hmac-algorithm", 1, 0, 0,
 	    (SCM hmac),
 	    "Return the algorithm that @var{hmac} has been built for.")
