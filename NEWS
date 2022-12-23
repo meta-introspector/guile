@@ -2,6 +2,14 @@ Guile-GnuTLS NEWS                                    -*- outline -*-
 
 * Noteworthy changes in release ?.? (????-??-??) [?]
 
+** The gnutls-guile library can now use newer gnutls features.
+It is possible to use newer GnuTLS features, such as new algorithms
+and new functions, without sacrificing compatibility with older GnuTLS
+implementations. The enumeration values that are not available for the
+GnuTLS you build gnutls-guile against will simply be undefined. You
+can check whether a function is available with `(defined? 'hmac-copy)`
+(here for hmac-copy).
+
 ** Bind the HMAC functions from GnuTLS.
 
 * Noteworthy changes in release 3.7.11 (2022-12-07) [stable]
