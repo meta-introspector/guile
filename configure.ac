@@ -134,12 +134,19 @@ AC_CHECK_FUNCS([scm_gc_malloc_pointerless])
 CFLAGS="$save_CFLAGS"
 LIBS="$save_LIBS"
 
+# Check for run-time guile features to enable
 save_CFLAGS="$CFLAGS"
 save_LIBS="$LIBS"
 CFLAGS="$CFLAGS $GNUTLS_CFLAGS"
 LIBS="$LIBS $GNUTLS_LIBS"
-AC_MSG_CHECKING([whether gnutls comes with gnutls_hmac_get_key_size])
 feature_gnutls_hmac_key_size=no
+feature_gnutls_mac_aes_gmac=no
+feature_gnutls_mac_shake=no
+feature_gnutls_mac_gost28147_tc26z_imit=no
+feature_gnutls_mac_magma_omac=no
+feature_gnutls_mac_kuznyechik_omac=no
+
+AC_MSG_CHECKING([whether gnutls comes with gnutls_hmac_get_key_size])
 AC_LINK_IFELSE([AC_LANG_PROGRAM([
 #include <gnutls/gnutls.h>
 #include <gnutls/crypto.h>
@@ -148,6 +155,67 @@ AC_LINK_IFELSE([AC_LANG_PROGRAM([
    AC_DEFINE([HAVE_GNUTLS_HMAC_GET_KEY_SIZE], 1, [Can bind gnutls_hmac_get_key_size])],
   [])
 AC_MSG_RESULT($feature_gnutls_hmac_key_size)
+
+AC_MSG_CHECKING([whether gnutls supports the AES_GMAC algorithms])
+AC_LINK_IFELSE([AC_LANG_PROGRAM([
+#include <gnutls/gnutls.h>
+#include <gnutls/crypto.h>
+], [GNUTLS_MAC_AES_GMAC_128 + GNUTLS_MAC_AES_GMAC_192 + GNUTLS_MAC_AES_GMAC_256])],
+  [feature_gnutls_mac_aes_gmac=yes
+   AC_DEFINE([HAVE_GNUTLS_MAC_AES_GMAC], 1, [The aes-gmac-* algorithms are defined])],
+  [AC_DEFINE([NO_GNUTLS_MAC_AES_GMAC_128], 1, [The aes-gmac-128 is not available])
+   AC_DEFINE([NO_GNUTLS_MAC_AES_GMAC_192], 1, [The aes-gmac-192 is not available])
+   AC_DEFINE([NO_GNUTLS_MAC_AES_GMAC_256], 1, [The aes-gmac-256 is not available])])
+AC_MSG_RESULT($feature_gnutls_mac_aes_gmac)
+
+AC_MSG_CHECKING([whether gnutls supports the SHAKE algorithms])
+AC_LINK_IFELSE([AC_LANG_PROGRAM([
+#include <gnutls/gnutls.h>
+#include <gnutls/crypto.h>
+], [GNUTLS_MAC_SHAKE_128 + GNUTLS_MAC_SHAKE_256])],
+  [feature_gnutls_mac_shake=yes
+   AC_DEFINE([HAVE_GNUTLS_MAC_SHAKE], 1, [The shake-* algorithms are defined])],
+  [AC_DEFINE([NO_GNUTLS_MAC_SHAKE_128], 1, [The shake-128 algorithm is not available])
+   AC_DEFINE([NO_GNUTLS_MAC_SHAKE_256], 1, [The shake-256 algorithm is not available])])
+AC_MSG_RESULT($feature_gnutls_mac_shake)
+
+AC_MSG_CHECKING([whether gnutls supports the gost28147-tc26z-imit algorithm])
+AC_LINK_IFELSE([AC_LANG_PROGRAM([
+#include <gnutls/gnutls.h>
+#include <gnutls/crypto.h>
+], [GNUTLS_MAC_GOST28147_TC26Z_IMIT])],
+  [feature_gnutls_mac_gost28147_tc26z_imit=yes
+   AC_DEFINE([HAVE_GNUTLS_MAC_GOST28147_TC26Z_IMIT], 1,
+     [The gost28147_tc26z_imit algorithm is defined])],
+  [AC_DEFINE([NO_GNUTLS_MAC_GOST28147_TC26Z_IMIT],
+             1, [The gost28147-tc26z-imit algorithm is not available])])
+AC_MSG_RESULT($feature_gnutls_mac_gost28147_tc26z_imit)
+
+AC_MSG_CHECKING([whether gnutls supports the magma-omac algorithm])
+AC_LINK_IFELSE([AC_LANG_PROGRAM([
+#include <gnutls/gnutls.h>
+#include <gnutls/crypto.h>
+], [GNUTLS_MAC_MAGMA_OMAC])],
+  [feature_gnutls_mac_magma_omac=yes
+   AC_DEFINE([HAVE_GNUTLS_MAC_MAGMA_OMAC], 1,
+     [The magma_omac algorithm is defined])],
+  [AC_DEFINE([NO_GNUTLS_MAC_MAGMA_OMAC],
+             1, [The magma-omac algorithm is not available])])
+AC_MSG_RESULT($feature_gnutls_mac_magma_omac)
+CFLAGS="$save_CFLAGS"
+LIBS="$save_LIBS"
+
+AC_MSG_CHECKING([whether gnutls supports the kuznyechik-omac algorithm])
+AC_LINK_IFELSE([AC_LANG_PROGRAM([
+#include <gnutls/gnutls.h>
+#include <gnutls/crypto.h>
+], [GNUTLS_MAC_KUZNYECHIK_OMAC])],
+  [feature_gnutls_mac_kuznyechik_omac=yes
+   AC_DEFINE([HAVE_GNUTLS_MAC_KUZNYECHIK_OMAC], 1,
+     [The kuznyechik_omac algorithm is defined])],
+  [AC_DEFINE([NO_GNUTLS_MAC_KUZNYECHIK_OMAC],
+             1, [The kuznyechik-omac algorithm is not available])])
+AC_MSG_RESULT($feature_gnutls_mac_kuznyechik_omac)
 CFLAGS="$save_CFLAGS"
 LIBS="$save_LIBS"
 
@@ -211,4 +279,13 @@ AC_MSG_NOTICE([Summary of build options:
 AC_MSG_NOTICE([Summary of optional GnuTLS features:
 
   hmac-key-size:     $feature_gnutls_hmac_key_size
+])
+
+AC_MSG_NOTICE([Availability of MAC algorithms:
+
+            mac/aes-gmac-*:     $feature_gnutls_mac_aes_gmac
+               mac/shake-*:     $feature_gnutls_mac_shake
+  mac/gost28147-tc26z-imit:     $feature_gnutls_mac_gost28147_tc26z_imit
+            mac/magma-omac:     $feature_gnutls_mac_magma_omac
+       mac/kuznyechik-omac:     $feature_gnutls_mac_kuznyechik_omac
 ])

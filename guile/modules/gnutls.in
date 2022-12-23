@@ -94,7 +94,7 @@
 
            ;; HMAC and MAC
            mac-nonce-size
-           hmac? make-hmac hmac! hmac-direct
+           hmac? make-hmac hmac! hmac-direct hmac-key-size
            hmac-length hmac-output set-hmac-nonce! hmac-algorithm
 
            ;; record layer
@@ -602,10 +602,6 @@ This defines 'variable' as an alias for 'alias', and emits a warning when
   certificate-verify/allow-any-x509-v1-ca-crt)
 (define certificate-verify/allow-x509-v1-ca-certificate
   certificate-verify/allow-x509-v1-ca-crt)
-
-;; Optional newer features.
-(when (defined? 'hmac-key-size)
-  (export hmac-key-size))
 
 ;; Deprecated OpenPGP bindings.
 (define-deprecated certificate-type/openpgp)

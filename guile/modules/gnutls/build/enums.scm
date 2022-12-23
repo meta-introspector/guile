@@ -184,6 +184,8 @@
   (let ((subsystem (scheme-symbol->c-name (enum-type-subsystem enum))))
     (format port "  enum_values = SCM_EOL;~%")
     (for-each (lambda (c+scheme)
+                (format port "#ifndef NO_~a~%"
+                        (car c+scheme))
                 (format port "  SCM_NEWSMOB (enum_smob, ~a, "
                         (enum-type-smob-name enum))
                 (format port "(scm_t_bits) ~a);~%"
@@ -192,7 +194,9 @@
                 (format port "enum_values);~%")
                 (format port "  scm_c_define (\"~a\", enum_smob);~%"
                         (symbol-append (enum-type-subsystem enum) '/
-                                       (cdr c+scheme))))
+                                       (cdr c+scheme)))
+                (format port "#endif /* not NO_~a */~%"
+                        (car c+scheme)))
               (enum-type-value-alist enum))
     (format port "  ~a = scm_permanent_object (enum_values);~%"
             (enum-type-smob-list enum))))
@@ -272,14 +276,17 @@
     (format port "table[] =~%")
     (format port "    {~%")
     (for-each (lambda (c+scheme)
+                (format port "#ifndef NO_~a~%"
+                        (car c+scheme))
                 (format port "       { ~a, \"~a\" },~%"
-                        (car c+scheme) (cdr c+scheme)))
+                        (car c+scheme) (cdr c+scheme))
+                (format port "#endif /* not NO_~a */~%"
+                        (car c+scheme)))
               (enum-type-value-alist enum))
     (format port "    };~%")
     (format port "  unsigned i;~%")
     (format port "  const char *name = NULL;~%")
-    (format port "  for (i = 0; i < ~a; i++)~%"
-            (length (enum-type-value-alist enum)))
+    (format port "  for (i = 0; i < sizeof (table) / sizeof (table[0]); i++)~%")
     (format port "    {~%")
     (format port "      if (table[i].value == c_obj)~%")
     (format port "        {~%")
@@ -324,11 +331,9 @@
                     sha224 sha3-224 sha3-256 sha3-384 sha3-512 md5-sha1
                     gostr-94 streebog-256 streebog-512 aead umac-96 umac-128
                     aes-cmac-128 aes-cmac-256
-                    ;; These are not yet supported for compatibility with
-                    ;; older GnuTLS releases:
-                    ;; aes-gmac-128 aes-gmac-192 aes-gmac-256
-                    ;; gost28147-tc26z-imit shake-128 shake-256magma-omac
-                    ;; kuznyechik-omac
+                    aes-gmac-128 aes-gmac-192 aes-gmac-256
+                    gost28147-tc26z-imit shake-128 shake-256 magma-omac
+                    kuznyechik-omac
                     )
                   "gnutls_mac_get_name"))
 
