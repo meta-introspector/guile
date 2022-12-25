@@ -48,6 +48,7 @@ Debian11-git:
   - apt-get update -q
   - apt-get install -qqy git make gcc guile-3.0-dev libgnutls28-dev texinfo texlive
   script:
+  - git submodule deinit --all # make sure we can bootstrap without gnulib submodule
   - ./bootstrap
   - ./configure
   - make syntax-check
@@ -89,6 +90,7 @@ Ubuntu22.04-release:
   - apt-get update -q
   - apt-get install -qqy git make gcc guile-3.0-dev libgnutls28-dev texinfo indent
   script:
+  - git submodule deinit --all # make sure we can bootstrap without gnulib submodule
   - ./bootstrap
   - ./configure
   - make syntax-check
@@ -106,6 +108,7 @@ Ubuntu22.04-release:
   - make release-commit RELEASE='17.42.23 stable'
   - make
   - make release RELEASE='17.42.23 stable' V=1 VERBOSE=t
+  - cat ~/announce-guile-gnutls-17.42.23
   - git diff --exit-code # nothing should change version controlled files
 
 Trisquel10-tarball:

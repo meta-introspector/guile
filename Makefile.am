@@ -24,7 +24,7 @@ AM_DISTCHECK_CONFIGURE_FLAGS = \
 	--with-guile-site-ccache-dir='$$(libdir)/guile/$$(GUILE_EFFECTIVE_VERSION)/site-ccache' \
 	--with-guile-extension-dir='$$(libdir)/guile/$$(GUILE_EFFECTIVE_VERSION)/extensions'
 
-SUBDIRS = gl guile doc
+SUBDIRS = guile doc
 
 # git-version-gen
 EXTRA_DIST = $(top_srcdir)/.version
@@ -35,8 +35,6 @@ $(top_srcdir)/.version:
 dist-hook: gen-ChangeLog
 	echo '$(VERSION)' > $(distdir)/.tarball-version
 
-EXTRA_DIST += m4/gnulib-cache.m4
-
 .PHONY: gen-ChangeLog
 gen-ChangeLog:
 	$(AM_V_GEN)if test -d .git; then				\
@@ -45,3 +43,17 @@ gen-ChangeLog:
 	    { rm -f $(distdir)/ChangeLog &&				\
 	      mv $(distdir)/cl-t $(distdir)/ChangeLog; }		\
 	fi
+
+EXTRA_DIST += $(top_srcdir)/build-aux/announce-gen
+EXTRA_DIST += $(top_srcdir)/build-aux/do-release-commit-and-tag
+EXTRA_DIST += $(top_srcdir)/build-aux/gendocs.sh
+EXTRA_DIST += $(top_srcdir)/build-aux/git-version-gen
+EXTRA_DIST += $(top_srcdir)/build-aux/gitlog-to-changelog
+EXTRA_DIST += $(top_srcdir)/build-aux/gnu-web-doc-update
+EXTRA_DIST += $(top_srcdir)/GNUmakefile
+EXTRA_DIST += $(top_srcdir)/build-aux/gnupload
+EXTRA_DIST += $(top_srcdir)/build-aux/config.rpath
+EXTRA_DIST += $(top_srcdir)/maint.mk
+EXTRA_DIST += $(top_srcdir)/build-aux/update-copyright
+EXTRA_DIST += $(top_srcdir)/build-aux/useless-if-before-free
+EXTRA_DIST += $(top_srcdir)/build-aux/vc-list-files

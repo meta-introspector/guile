@@ -152,7 +152,6 @@ AC_CONFIG_FILES([guile/pre-inst-guile], [chmod +x guile/pre-inst-guile])
 AC_CONFIG_FILES([
   Makefile
   doc/Makefile
-  gl/Makefile
   guile/Makefile
   guile/src/Makefile
 ])

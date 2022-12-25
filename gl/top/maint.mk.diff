@@ -1,0 +1,11 @@
+--- maint.mk.orig	2022-12-26 00:03:14.711775535 +0100
++++ maint.mk	2022-12-26 00:03:30.823468142 +0100
+@@ -909,7 +909,7 @@
+ 
+ # Don't define macros that we already get from gnulib header files.
+ sc_prohibit_always-defined_macros:
+-	@if test -d $(gnulib_dir); then					\
++	@if test -f $(gnulib_dir)/gnulib-tool; then					\
+ 	  case $$(echo all: | $(GREP) -l -f - Makefile) in Makefile);; *) \
+ 	    echo '$(ME): skipping $@: you lack GNU grep' 1>&2; exit 0;;	\
+ 	  esac;								\

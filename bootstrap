@@ -1,7 +1,8 @@
 #! /bin/sh
 
-touch ChangeLog
-
-gnulib/gnulib-tool --no-changelog --aux-dir=build-aux --doc-base=doc --lib=libgl --m4-base=m4/ --source-base=gl/ --tests-base=tests --local-dir=gl --no-vc-files --libtool --import git-version-gen havelib gitlog-to-changelog readme-release update-copyright
+if test -x gnulib/gnulib-tool; then
+    gnulib/gnulib-tool --no-changelog --aux-dir=build-aux --doc-base=doc --lib=libgl --m4-base=m4/ --source-base=gl/ --tests-base=tests --local-dir=gl --no-vc-files --libtool --import git-version-gen havelib gitlog-to-changelog readme-release update-copyright
+    rm -fv gl/* m4/00gnulib.m4 m4/gnulib-common.m4 m4/zzgnulib.m4 m4/gnulib-cache.m4  m4/gnulib-comp.m4  m4/gnulib-tool.m4
+fi
 
 autoreconf -vif
