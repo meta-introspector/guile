@@ -184,6 +184,19 @@
            digest/rmd160
            digest/md2
            digest/sha256
+           digest/sha384
+           digest/sha512
+           digest/sha224
+           digest/sha3-224
+           digest/sha3-256
+           digest/sha3-384
+           digest/sha3-512
+           digest/md5-sha1
+           digest/gostr-94
+           digest/streebog-256
+           digest/streebog-512
+           digest/shake-128
+           digest/shake-256
            compression-method/null
            compression-method/deflate
            compression-method/lzo
