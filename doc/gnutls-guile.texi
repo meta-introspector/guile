@@ -549,6 +549,16 @@ This is it!
 @node Using GnuTLS as a cryptography library
 @section Using GnuTLS as a cryptography library
 
+The low-level functions in GnuTLS can be accessed for various tasks.
+
+@menu
+* Hash Message Authentication Code:: Hashing with a secret.
+* Hash Digest Algorithms:: Hashes.
+@end menu
+
+@node Hash Message Authentication Code
+@subsection Hash Message Authentication Code
+
 The library provides support for @dfn{Hash Message Authentication
 Code} (@emph{hmac}). This API provides a way to hash a message in a
 way that is only reproducible with the knowledge of a secret.
@@ -573,6 +583,18 @@ is not always available (@pxref{Living on the cutting edge}).
 
 @example
 @verbatiminclude @value{abs_top_srcdir}/guile/examples/hmac-example-3.scm
+@end example
+
+@node Hash Digest Algorithms
+@subsection Hash Digest Algorithms
+
+The API for hash algorithm is similar to that for hmac, except that
+there is no secret data to reproduce the hash. So for instance, the
+second hmac example becomes (@pxref{Hash Message Authentication
+Code}):
+
+@example
+@verbatiminclude @value{abs_top_srcdir}/guile/examples/hash-example.scm
 @end example
 
 @c *********************************************************************

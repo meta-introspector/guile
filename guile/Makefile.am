@@ -111,7 +111,8 @@ TESTS =						\
   tests/reauth.scm				\
   tests/premature-termination.scm		\
   tests/priorities.scm				\
-  tests/hmac.scm
+  tests/hmac.scm				\
+  tests/hash.scm
 
 if ENABLE_SRP
 TESTS +=					\
@@ -135,4 +136,5 @@ EXTRA_DIST +=					\
   tests/x509-key.pem                            \
   examples/hmac-example-1.scm                   \
   examples/hmac-example-2.scm                   \
-  examples/hmac-example-3.scm
+  examples/hmac-example-3.scm                   \
+  examples/hash-example.scm

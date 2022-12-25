@@ -97,6 +97,10 @@
            hmac? make-hmac hmac! hmac-copy hmac-direct
            hmac-length hmac-output set-hmac-nonce! hmac-algorithm
 
+           ;; Hash
+           hash? make-hash hash! hash-copy hash-direct
+           hash-length hash-output hash-algorithm
+
            ;; record layer
            record-send record-receive!
            session-record-port

@@ -33,9 +33,9 @@
 #include <assert.h>
 
 
-/* The gnutls API does not let you find the mac algorithm from a given hmac
-   state. This is required to know the size of the output to allocate. So we
-   have to remember it as well. */
+/* The gnutls API does not let you find the mac algorithm from a given hmac or
+   hash state. This is required to know the size of the output to allocate. So
+   we have to remember it as well. */
 
 struct scm_gnutls_hmac_and_algorithm
 {
@@ -43,10 +43,19 @@ struct scm_gnutls_hmac_and_algorithm
   gnutls_mac_algorithm_t algorithm;
 };
 
+struct scm_gnutls_hash_and_algorithm
+{
+  gnutls_hash_hd_t handle;
+  gnutls_digest_algorithm_t algorithm;
+};
+
 typedef struct scm_gnutls_hmac_and_algorithm *scm_gnutls_hmac_and_algorithm_t;
+typedef struct scm_gnutls_hash_and_algorithm *scm_gnutls_hash_and_algorithm_t;
 
 static void hmac_and_algorithm_deinit (scm_gnutls_hmac_and_algorithm_t
 				       c_hmac);
+static void hash_and_algorithm_deinit (scm_gnutls_hash_and_algorithm_t
+				       c_hash);
 
 #include "enums.h"
 #include "smobs.h"
@@ -3744,6 +3753,160 @@ SCM_DEFINE (scm_gnutls_mac_nonce_size, "mac-nonce-size", 1, 0, 0,
 
 #undef FUNC_NAME
 
+
+/* Hash functions */
+
+SCM_DEFINE (scm_gnutls_hash_direct, "hash-direct", 2, 0, 0,
+	    (SCM algorithm, SCM text),
+	    "Hash @var{text} according to @var{algorithm}. "
+	    "Return the digest as a bytevector.")
+#define FUNC_NAME s_scm_gnutls_hash_direct
+{
+  int error;
+  gnutls_digest_algorithm_t c_algorithm =
+    scm_to_gnutls_digest (algorithm, 1, FUNC_NAME);
+  size_t c_ptext_length = scm_c_bytevector_length (text);
+  const void *c_ptext = SCM_BYTEVECTOR_CONTENTS (text);
+  unsigned digest_length = gnutls_hash_get_len (c_algorithm);
+  if (EXPECT_FALSE (digest_length == 0))
+    {
+      /* See hmac-direct */
+      scm_gnutls_error (GNUTLS_E_UNKNOWN_ALGORITHM, FUNC_NAME);
+    }
+  SCM digest = scm_c_make_bytevector (digest_length);
+  void *c_digest = SCM_BYTEVECTOR_CONTENTS (digest);
+  error = gnutls_hash_fast (c_algorithm, c_ptext, c_ptext_length, c_digest);
+  if (EXPECT_FALSE (error))
+    {
+      scm_gnutls_error (error, FUNC_NAME);
+    }
+  return digest;
+}
+
+#undef FUNC_NAME
+
+SCM_DEFINE (scm_gnutls_make_hash, "make-hash", 1, 0, 0,
+	    (SCM algorithm),
+	    "Start a hash operation according to @var{algorithm}.")
+#define FUNC_NAME s_scm_gnutls_make_hash
+{
+  int error;
+  scm_gnutls_hash_and_algorithm_t c_hash =
+    scm_gc_malloc (sizeof (struct scm_gnutls_hash_and_algorithm),
+		   "hash-and-algorithm");
+  gnutls_digest_algorithm_t c_algorithm =
+    scm_to_gnutls_digest (algorithm, 1, FUNC_NAME);
+  c_hash->algorithm = c_algorithm;
+  error = gnutls_hash_init (&(c_hash->handle), c_algorithm);
+  if (EXPECT_FALSE (error))
+    {
+      scm_gnutls_error (error, FUNC_NAME);
+    }
+  return scm_from_gnutls_hash (c_hash);
+}
+
+#undef FUNC_NAME
+
+static void
+hash_and_algorithm_deinit (scm_gnutls_hash_and_algorithm_t c_hash)
+{
+  gnutls_hash_deinit (c_hash->handle, NULL);
+}
+
+SCM_DEFINE (scm_gnutls_hash_x, "hash!", 2, 0, 0,
+	    (SCM hash, SCM text),
+	    "Hash the @var{text} bytes in the @var{hash} state.")
+#define FUNC_NAME s_scm_gnutls_hash_x
+{
+  int error;
+  scm_gnutls_hash_and_algorithm_t c_hash =
+    scm_to_gnutls_hash (hash, 1, FUNC_NAME);
+  size_t c_ptext_length = scm_c_bytevector_length (text);
+  const void *c_ptext = SCM_BYTEVECTOR_CONTENTS (text);
+  error = gnutls_hash (c_hash->handle, c_ptext, c_ptext_length);
+  if (EXPECT_FALSE (error))
+    {
+      scm_gnutls_error (error, FUNC_NAME);
+    }
+  return SCM_UNSPECIFIED;
+}
+
+#undef FUNC_NAME
+
+#ifdef HAVE_GNUTLS_HASH_COPY
+SCM_DEFINE (scm_gnutls_hash_copy, "hash-copy", 1, 0, 0,
+	    (SCM hash),
+	    "Return a copy of the current @var{hash} state, "
+	    "or throw an @code{error/illegal-parameter} "
+	    "if this is not supported. ")
+# define FUNC_NAME s_scm_gnutls_hash_copy
+{
+  scm_gnutls_hash_and_algorithm_t c_hash =
+    scm_to_gnutls_hash (hash, 1, FUNC_NAME);
+  gnutls_hash_hd_t c_ret = NULL;
+  c_ret = gnutls_hash_copy (c_hash->handle);
+  if (EXPECT_FALSE (c_ret == NULL))
+    {
+      scm_gnutls_error (GNUTLS_E_ILLEGAL_PARAMETER, FUNC_NAME);
+    }
+  scm_gnutls_hash_and_algorithm_t c_combined =
+    scm_gc_malloc (sizeof (struct scm_gnutls_hash_and_algorithm),
+		   "hash-and-algorithm");
+  c_combined->handle = c_ret;
+  c_combined->algorithm = c_hash->algorithm;
+  return scm_from_gnutls_hash (c_combined);
+}
+
+# undef FUNC_NAME
+#endif /* HAVE_GNUTLS_HASH_COPY */
+
+SCM_DEFINE (scm_gnutls_hash_algorithm, "hash-algorithm", 1, 0, 0,
+	    (SCM hash),
+	    "Return the algorithm that @var{hash} has been built for.")
+#define FUNC_NAME s_scm_gnutls_hash_algorithm
+{
+  scm_gnutls_hash_and_algorithm_t c_hash =
+    scm_to_gnutls_hash (hash, 1, FUNC_NAME);
+  return scm_from_gnutls_digest (c_hash->algorithm);
+}
+
+#undef FUNC_NAME
+
+SCM_DEFINE (scm_gnutls_hash_length, "hash-length", 1, 0, 0,
+	    (SCM algorithm),
+	    "Return the length of the @var{algorithm} "
+	    "digest output, or 0 if unavailable.")
+#define FUNC_NAME s_scm_gnutls_hash_length
+{
+  gnutls_digest_algorithm_t c_algorithm =
+    scm_to_gnutls_digest (algorithm, 1, FUNC_NAME);
+  unsigned int c_ret = gnutls_hash_get_len (c_algorithm);
+  return scm_from_uint (c_ret);
+}
+
+#undef FUNC_NAME
+
+SCM_DEFINE (scm_gnutls_hash_output, "hash-output", 1, 0, 0,
+	    (SCM hash), "Return the digest of the current @var{hash} state.")
+#define FUNC_NAME s_scm_gnutls_hash_output
+{
+  scm_gnutls_hash_and_algorithm_t c_hash =
+    scm_to_gnutls_hash (hash, 1, FUNC_NAME);
+  unsigned digest_length = gnutls_hash_get_len (c_hash->algorithm);
+  if (EXPECT_FALSE (digest_length == 0))
+    {
+      /* See hash-direct. */
+      scm_gnutls_error (GNUTLS_E_UNKNOWN_ALGORITHM, FUNC_NAME);
+    }
+  SCM digest = scm_c_make_bytevector (digest_length);
+  void *c_digest = SCM_BYTEVECTOR_CONTENTS (digest);
+  gnutls_hash_output (c_hash->handle, c_digest);
+  return digest;
+}
+
+#undef FUNC_NAME
+
+
 
 
 /* Initialization.  */

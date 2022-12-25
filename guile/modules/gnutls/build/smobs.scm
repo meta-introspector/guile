@@ -217,6 +217,11 @@
   (make-smob-type "scm_gnutls_hmac_and_algorithm_t" 'hmac
                   "hmac_and_algorithm_deinit"))
 
+(define %hash-smob
+  ;; The hash object suffers from the same problem as the hmac object.
+  (make-smob-type "scm_gnutls_hash_and_algorithm_t" 'hash
+                  "hash_and_algorithm_deinit"))
+
 
 (define %gnutls-smobs
   ;; All SMOB types.
@@ -226,6 +231,7 @@
         %srp-server-credentials-smob %srp-client-credentials-smob
         %psk-server-credentials-smob %psk-client-credentials-smob
         %x509-certificate-smob %x509-private-key-smob %hmac-smob
+        %hash-smob
 
         %openpgp-certificate-smob %openpgp-private-key-smob
         %openpgp-keyring-smob))
