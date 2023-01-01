@@ -87,8 +87,8 @@ Ubuntu22.04-release:
   except:
     - tags # do-release-commit-and-tag: not on branch
   before_script:
-  - apt-get update -q
-  - apt-get install -qqy git make gcc guile-3.0-dev libgnutls28-dev texinfo indent
+  - apt-get update -q | tail
+  - apt-get install -qqy git make gcc guile-3.0-dev libgnutls28-dev texinfo indent | tail
   script:
   - git submodule deinit --all # make sure we can bootstrap without gnulib submodule
   - ./bootstrap
@@ -97,9 +97,9 @@ Ubuntu22.04-release:
   - make
   - make dist
   - git diff --exit-code # nothing should change version controlled files
-  - apt-get install -qqy texlive gpg gpgv2
+  - apt-get install -qqy texlive gpg gpgv2 | tail
   - gpg --batch --passphrase '' --quick-gen-key gnutls-help@lists.gnutls.org
-  - git checkout $CI_COMMIT_BRANCH
+  - git checkout -B my-release-branch $CI_COMMIT_SHA
   - git config user.email "gnutls-help@lists.gnutls.org"
   - git config user.name "Guile-GnuTLS CICD Builder"
   - git config user.signingkey gnutls-help@lists.gnutls.org
@@ -108,7 +108,7 @@ Ubuntu22.04-release:
   - make release-commit RELEASE='17.42.23 stable'
   - make
   - make release RELEASE='17.42.23 stable' V=1 VERBOSE=t
-  - cat ~/announce-guile-gnutls-17.42.23
+  - cat -n ~/announce-guile-gnutls-17.42.23
   - git diff --exit-code # nothing should change version controlled files
 
 Trisquel10-tarball:
