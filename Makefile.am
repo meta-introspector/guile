@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-# Copyright (C) 2007-2022 Free Software Foundation, Inc.
+# Copyright (C) 2007-2023 Free Software Foundation, Inc.
 #
 # Author: Ludovic Courtès
 #

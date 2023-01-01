@@ -1,5 +1,5 @@
 # Guile-GnuTLS --- Guile bindings for GnuTLS.
-# Copyright (C) 2007-2022 Free Software Foundation, Inc.
+# Copyright (C) 2007-2023 Free Software Foundation, Inc.
 #
 # Guile-GnuTLS is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
