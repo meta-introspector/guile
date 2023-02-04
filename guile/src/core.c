@@ -50,13 +50,24 @@ struct scm_gnutls_hash_and_algorithm
   gnutls_digest_algorithm_t algorithm;
 };
 
+struct scm_gnutls_aead_cipher_and_algorithm
+{
+  gnutls_aead_cipher_hd_t handle;
+  gnutls_cipher_algorithm_t algorithm;
+};
+
 typedef struct scm_gnutls_hmac_and_algorithm *scm_gnutls_hmac_and_algorithm_t;
 typedef struct scm_gnutls_hash_and_algorithm *scm_gnutls_hash_and_algorithm_t;
+typedef struct scm_gnutls_aead_cipher_and_algorithm
+  *scm_gnutls_aead_cipher_and_algorithm_t;
 
 static void hmac_and_algorithm_deinit (scm_gnutls_hmac_and_algorithm_t
 				       c_hmac);
 static void hash_and_algorithm_deinit (scm_gnutls_hash_and_algorithm_t
 				       c_hash);
+static void
+aead_cipher_and_algorithm_deinit (scm_gnutls_aead_cipher_and_algorithm_t
+				  c_aead);
 
 #include "enums.h"
 #include "smobs.h"
@@ -4369,6 +4380,176 @@ SCM_DEFINE (scm_gnutls_hash_output, "hash-output", 1, 0, 0,
   void *c_digest = SCM_BYTEVECTOR_CONTENTS (digest);
   gnutls_hash_output (c_hash->handle, c_digest);
   return digest;
+}
+
+#undef FUNC_NAME
+
+SCM_DEFINE (scm_gnutls_cipher_tag_size, "cipher-tag-size", 1, 0, 0,
+	    (SCM algorithm),
+	    "Return the default tag size for @var{algorithm}, "
+	    "or 0 if this is not an AEAD algorithm.")
+#define FUNC_NAME s_scm_gnutls_cipher_tag_size
+{
+  gnutls_cipher_algorithm_t c_algorithm;
+  c_algorithm = scm_to_gnutls_cipher (algorithm, 1, FUNC_NAME);
+  return scm_from_uint (gnutls_cipher_get_tag_size (c_algorithm));
+}
+
+#undef FUNC_NAME
+
+SCM_DEFINE (scm_gnutls_cipher_key_size, "cipher-key-size", 1, 0, 0,
+	    (SCM algorithm),
+	    "Return the required key size for @var{algorithm}.")
+#define FUNC_NAME s_scm_gnutls_cipher_key_size
+{
+  gnutls_cipher_algorithm_t c_algorithm;
+  c_algorithm = scm_to_gnutls_cipher (algorithm, 1, FUNC_NAME);
+  return scm_from_uint (gnutls_cipher_get_key_size (c_algorithm));
+}
+
+#undef FUNC_NAME
+
+SCM_DEFINE (scm_gnutls_cipher_block_size, "cipher-block-size", 1, 0, 0,
+	    (SCM algorithm),
+	    "Return the required block size for @var{algorithm}.")
+#define FUNC_NAME s_scm_gnutls_cipher_block_size
+{
+  gnutls_cipher_algorithm_t c_algorithm;
+  c_algorithm = scm_to_gnutls_cipher (algorithm, 1, FUNC_NAME);
+  return scm_from_uint (gnutls_cipher_get_block_size (c_algorithm));
+}
+
+#undef FUNC_NAME
+
+SCM_DEFINE (scm_gnutls_make_aead_cipher, "make-aead-cipher", 2, 0, 0,
+	    (SCM algorithm, SCM key),
+	    "Return a new AEAD cipher context, using the AEAD @var{algorithm}, "
+	    "and with @var{key} (a bytevector) as the secret.")
+#define FUNC_NAME s_scm_gnutls_make_aead_cipher
+{
+  int error;
+  scm_gnutls_aead_cipher_and_algorithm_t c_aead =
+    scm_gc_malloc (sizeof (struct scm_gnutls_aead_cipher_and_algorithm),
+		   "aead-cipher-and-algorithm");
+  gnutls_cipher_algorithm_t c_algorithm;
+  size_t c_key_length = scm_c_bytevector_length (key);
+  const void *c_key = SCM_BYTEVECTOR_CONTENTS (key);
+  gnutls_datum_t datum_key;
+  datum_key.data = (unsigned char *) c_key;
+  datum_key.size = c_key_length;
+  c_algorithm = scm_to_gnutls_cipher (algorithm, 1, FUNC_NAME);
+  c_aead->algorithm = c_algorithm;
+  error =
+    gnutls_aead_cipher_init (&(c_aead->handle), c_algorithm, &datum_key);
+  if (EXPECT_FALSE (error))
+    {
+      scm_gnutls_error (error, FUNC_NAME);
+    }
+  return scm_from_gnutls_aead_cipher (c_aead);
+}
+
+#undef FUNC_NAME
+
+static void
+aead_cipher_and_algorithm_deinit (scm_gnutls_aead_cipher_and_algorithm_t
+				  c_aead)
+{
+  gnutls_aead_cipher_deinit (c_aead->handle);
+}
+
+SCM_DEFINE (scm_gnutls_aead_cipher_encrypt, "aead-cipher-encrypt", 5, 0, 0,
+	    (SCM handle, SCM nonce, SCM auth, SCM tagsize, SCM data),
+	    "Encrypt the @var{data}, with additional @var{auth} data. "
+	    "Use 0 for @var{tagsize} to use the default tag size "
+	    "for the algorithm.")
+#define FUNC_NAME s_scm_gnutls_aead_cipher_encrypt
+{
+  int error;
+  scm_gnutls_aead_cipher_and_algorithm_t c_aead =
+    scm_to_gnutls_aead_cipher (handle, 1, FUNC_NAME);
+  size_t c_nonce_len = scm_c_bytevector_length (nonce);
+  const void *c_nonce = SCM_BYTEVECTOR_CONTENTS (nonce);
+  size_t c_auth_len = scm_c_bytevector_length (auth);
+  const void *c_auth = SCM_BYTEVECTOR_CONTENTS (auth);
+  size_t c_tag_size = scm_to_size_t (tagsize);
+  if (c_tag_size == 0)
+    {
+      c_tag_size = gnutls_cipher_get_tag_size (c_aead->algorithm);
+    }
+  size_t c_data_len = scm_c_bytevector_length (data);
+  const void *c_data = SCM_BYTEVECTOR_CONTENTS (data);
+  size_t output_size = c_data_len + c_tag_size;
+  size_t used_size = output_size;
+  SCM ret = scm_c_make_bytevector (output_size);
+  error =
+    gnutls_aead_cipher_encrypt (c_aead->handle, c_nonce, c_nonce_len,
+				c_auth, c_auth_len, c_tag_size, c_data,
+				c_data_len, SCM_BYTEVECTOR_CONTENTS (ret),
+				&used_size);
+  if (EXPECT_FALSE (error))
+    {
+      scm_gnutls_error (error, FUNC_NAME);
+    }
+  assert (used_size == output_size);
+  return ret;
+}
+
+#undef FUNC_NAME
+
+SCM_DEFINE (scm_gnutls_aead_cipher_decrypt, "aead-cipher-decrypt", 5, 0, 0,
+	    (SCM handle, SCM nonce, SCM auth, SCM tagsize, SCM data),
+	    "Decrypt the @var{data}, checking that the authentication "
+	    "data @var{auth} is correct. Pass 0 as @var{tagsize} "
+	    "to use the default tag size for the underlying algorithm.")
+#define FUNC_NAME s_scm_gnutls_aead_cipher_decrypt
+{
+  int error;
+  scm_gnutls_aead_cipher_and_algorithm_t c_aead =
+    scm_to_gnutls_aead_cipher (handle, 1, FUNC_NAME);
+  size_t c_nonce_len = scm_c_bytevector_length (nonce);
+  const void *c_nonce = SCM_BYTEVECTOR_CONTENTS (nonce);
+  size_t c_auth_len = scm_c_bytevector_length (auth);
+  const void *c_auth = SCM_BYTEVECTOR_CONTENTS (auth);
+  size_t c_tag_size = scm_to_size_t (tagsize);
+  if (c_tag_size == 0)
+    {
+      c_tag_size = gnutls_cipher_get_tag_size (c_aead->algorithm);
+    }
+  size_t c_data_len = scm_c_bytevector_length (data);
+  const void *c_data = SCM_BYTEVECTOR_CONTENTS (data);
+  size_t output_size = c_data_len;
+  size_t used_size = output_size;
+  /* The gnutls manual reads: ptext_len: the length of decrypted data
+     (initially must hold the maximum available size). I interpret it as: it
+     must be large enough to fit all the data, including the tag, because
+     that’s how much memory the function needs to decrypt the data. We need to
+     remove the space for the tag though. */
+  SCM work = scm_c_make_bytevector (output_size);
+  error =
+    gnutls_aead_cipher_decrypt (c_aead->handle, c_nonce, c_nonce_len,
+				c_auth, c_auth_len, c_tag_size, c_data,
+				c_data_len, SCM_BYTEVECTOR_CONTENTS (work),
+				&used_size);
+  if (EXPECT_FALSE (error))
+    {
+      scm_gnutls_error (error, FUNC_NAME);
+    }
+  SCM ret = scm_c_make_bytevector (used_size);
+  scm_bytevector_copy_x (work, scm_from_uint (0), ret, scm_from_uint (0),
+			 scm_from_size_t (used_size));
+  return ret;
+}
+
+#undef FUNC_NAME
+
+SCM_DEFINE (scm_gnutls_aead_cipher_algorithm, "aead-cipher-algorithm", 1, 0,
+	    0, (SCM handle), "Return the underlying AEAD cipher algorithm.")
+#define FUNC_NAME s_scm_gnutls_aead_cipher_algorithm
+{
+  int error;
+  scm_gnutls_aead_cipher_and_algorithm_t c_aead =
+    scm_to_gnutls_aead_cipher (handle, 1, FUNC_NAME);
+  return scm_from_gnutls_cipher (c_aead->algorithm);
 }
 
 #undef FUNC_NAME

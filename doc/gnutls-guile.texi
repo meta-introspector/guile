@@ -554,6 +554,7 @@ The low-level functions in GnuTLS can be accessed for various tasks.
 @menu
 * Hash Message Authentication Code:: Hashing with a secret.
 * Hash Digest Algorithms:: Hashes.
+* Authenticated Encryption:: The AEAD API.
 @end menu
 
 @node Hash Message Authentication Code
@@ -595,6 +596,37 @@ Code}):
 
 @example
 @verbatiminclude @value{abs_top_srcdir}/guile/examples/hash-example.scm
+@end example
+
+@node Authenticated Encryption
+@subsection Authenticated Encryption
+The goal of authenticated encryption is to make sure that the data has
+been encrypted by a party that knows a shared secret. The encryption
+and decryption procedures are very similar. Both parties must know a
+shared secret key and a nonce. The nonce is a value that must only be
+used once to encrypt data. The nonce may be as long as you want, but
+the secret key must be the exact size expected by the cipher
+algorithm.
+
+The API can also use extra authentication data, that can change on a
+packet-by-packet basis, whatever your definition for a packet is.
+
+To use the API, the cipher algorithm must be compatible with
+AEAD. When it is, it defines a default tag size. You can override the
+tag size, or use the 0 value to use the default tag size.
+
+This example encrypts a file:
+
+@example
+@verbatiminclude @value{abs_top_srcdir}/guile/examples/aead-encrypt-example.scm
+@end example
+
+And this example decrypts the same file. Please note that the
+decrypted file is written to disk, which is acceptable for this simple
+example:
+
+@example
+@verbatiminclude @value{abs_top_srcdir}/guile/examples/aead-decrypt-example.scm
 @end example
 
 @c *********************************************************************

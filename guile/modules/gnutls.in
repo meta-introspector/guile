@@ -119,6 +119,11 @@
            hash? make-hash hash! hash-copy hash-direct
            hash-length hash-output hash-algorithm
 
+           ;; AEAD
+           cipher-tag-size cipher-key-size cipher-block-size
+           aead-cipher? make-aead-cipher aead-cipher-encrypt aead-cipher-decrypt
+           aead-cipher-algorithm
+
            ;; record layer
            record-send record-receive!
            session-record-port

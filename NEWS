@@ -2,6 +2,7 @@ Guile-GnuTLS NEWS                                    -*- outline -*-
 
 * Noteworthy changes in release ?.? (????-??-??) [?]
 
+** Bind the AEAD authentication-encryption API.
 
 * Noteworthy changes in release 3.7.12 (2023-05-08) [stable]
 

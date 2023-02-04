@@ -222,6 +222,10 @@
   (make-smob-type "scm_gnutls_hash_and_algorithm_t" 'hash
                   "hash_and_algorithm_deinit"))
 
+(define %aead-cipher-smob
+  (make-smob-type "scm_gnutls_aead_cipher_and_algorithm_t" 'aead-cipher
+                  "aead_cipher_and_algorithm_deinit"))
+
 
 (define %gnutls-smobs
   ;; All SMOB types.
@@ -231,7 +235,7 @@
         %srp-server-credentials-smob %srp-client-credentials-smob
         %psk-server-credentials-smob %psk-client-credentials-smob
         %x509-certificate-smob %x509-private-key-smob %hmac-smob
-        %hash-smob
+        %hash-smob %aead-cipher-smob
 
         %openpgp-certificate-smob %openpgp-private-key-smob
         %openpgp-keyring-smob))
