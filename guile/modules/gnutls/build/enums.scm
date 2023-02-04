@@ -304,8 +304,20 @@
 
 (define %cipher-enum
   (make-enum-type 'cipher "gnutls_cipher_algorithm_t"
-                  '(null arcfour 3des-cbc aes-128-cbc aes-256-cbc
-                    arcfour-40 rc2-40-cbc des-cbc)
+                  '(null arcfour arcfour-128 3des-cbc aes-128-cbc aes-256-cbc
+                    arcfour-40 camellia-128-cbc camellia-256-cbc aes-192-cbc
+                    aes-128-gcm aes-256-gcm camellia-192-cbc salsa20-256
+                    estream-salsa20-256 camellia-128-gcm camellia-256-gcm
+                    rc2-40-cbc des-cbc aes-128-ccm aes-256-ccm aes-128-ccm-8
+                    aes-256-ccm-8 chacha20-poly1305 gost28147-tc26z-cfb
+                    gost28147-cpa-cfb gost28147-cpb-cfb gost28147-cpc-cfb
+                    gost28147-cpd-cfb aes-128-cfb8 aes-192-cfb8 aes-256-cfb8
+                    aes-128-xts aes-256-xts gost28147-tc26z-cnt chacha20-64
+                    chacha20-32 aes-128-siv aes-256-siv aes-192-gcm
+                    magma-ctr-acpkm kuznyechik-ctr-acpkm idea-pgp-cfb
+                    3des-pgp-cfb cast5-pgp-cfb blowfish-pgp-cfb
+                    safer-sk128-pgp-cfb aes128-pgp-cfb aes192-pgp-cfb
+                    aes256-pgp-cfb twofish-pgp-cfb)
                   "gnutls_cipher_get_name"))
 
 (define %kx-enum

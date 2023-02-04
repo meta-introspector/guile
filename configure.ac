@@ -146,6 +146,13 @@ feature_gnutls_mac_shake=no
 feature_gnutls_mac_gost28147_tc26z_imit=no
 feature_gnutls_mac_magma_omac=no
 feature_gnutls_mac_kuznyechik_omac=no
+feature_gnutls_cipher_aes_xts=no
+feature_gnutls_cipher_aes_siv=no
+feature_gnutls_cipher_aes_192_gcm=no
+feature_gnutls_cipher_magma_ctr_acpkm=no
+feature_gnutls_cipher_kuznyechik_ctr_acpkm=no
+feature_gnutls_cipher_gost28147_tc26z_cnt=no
+feature_gnutls_cipher_chacha20=no
 
 AC_MSG_CHECKING([whether gnutls comes with gnutls_hmac_get_key_size])
 AC_LINK_IFELSE([AC_LANG_PROGRAM([
@@ -233,6 +240,96 @@ AC_MSG_RESULT($feature_gnutls_mac_kuznyechik_omac)
 CFLAGS="$save_CFLAGS"
 LIBS="$save_LIBS"
 
+AC_MSG_CHECKING([whether gnutls supports the aes-xts ciphers])
+AC_LINK_IFELSE([AC_LANG_PROGRAM([
+#include <gnutls/gnutls.h>
+#include <gnutls/crypto.h>
+], [GNUTLS_CIPHER_AES_128_XTS])],
+  [feature_gnutls_cipher_aes_xts=yes],
+  [AC_DEFINE([NO_GNUTLS_CIPHER_AES_128_XTS],
+             1, [The aes-xts cipher algorithms are not available])
+   AC_DEFINE([NO_GNUTLS_CIPHER_AES_256_XTS],
+             1, [The aes-xts cipher algorithms are not available])])
+AC_MSG_RESULT($feature_gnutls_cipher_aes_xts)
+CFLAGS="$save_CFLAGS"
+LIBS="$save_LIBS"
+
+AC_MSG_CHECKING([whether gnutls supports the aes-siv ciphers])
+AC_LINK_IFELSE([AC_LANG_PROGRAM([
+#include <gnutls/gnutls.h>
+#include <gnutls/crypto.h>
+], [GNUTLS_CIPHER_AES_128_SIV])],
+  [feature_gnutls_cipher_aes_siv=yes],
+  [AC_DEFINE([NO_GNUTLS_CIPHER_AES_128_SIV],
+             1, [The aes-siv cipher algorithms are not available])
+   AC_DEFINE([NO_GNUTLS_CIPHER_AES_256_SIV],
+             1, [The aes-siv cipher algorithms are not available])])
+AC_MSG_RESULT($feature_gnutls_cipher_aes_siv)
+CFLAGS="$save_CFLAGS"
+LIBS="$save_LIBS"
+
+AC_MSG_CHECKING([whether gnutls supports the aes-192-gcm cipher])
+AC_LINK_IFELSE([AC_LANG_PROGRAM([
+#include <gnutls/gnutls.h>
+#include <gnutls/crypto.h>
+], [GNUTLS_CIPHER_AES_192_GCM])],
+  [feature_gnutls_cipher_aes_192_gcm=yes],
+  [AC_DEFINE([NO_GNUTLS_CIPHER_AES_192_GCM],
+             1, [The aes-192-gcm cipher algorithm is not available])])
+AC_MSG_RESULT($feature_gnutls_cipher_aes_192_gcm)
+CFLAGS="$save_CFLAGS"
+LIBS="$save_LIBS"
+
+AC_MSG_CHECKING([whether gnutls supports the magma-ctr-acpkm cipher])
+AC_LINK_IFELSE([AC_LANG_PROGRAM([
+#include <gnutls/gnutls.h>
+#include <gnutls/crypto.h>
+], [GNUTLS_CIPHER_MAGMA_CTR_ACPKM])],
+  [feature_gnutls_cipher_magma_ctr_acpkm=yes],
+  [AC_DEFINE([NO_GNUTLS_CIPHER_MAGMA_CTR_ACPKM],
+             1, [The aes-192-gcm cipher algorithm is not available])])
+AC_MSG_RESULT($feature_gnutls_cipher_magma_ctr_acpkm)
+CFLAGS="$save_CFLAGS"
+LIBS="$save_LIBS"
+
+AC_MSG_CHECKING([whether gnutls supports the kuznyechik-ctr-acpkm cipher])
+AC_LINK_IFELSE([AC_LANG_PROGRAM([
+#include <gnutls/gnutls.h>
+#include <gnutls/crypto.h>
+], [GNUTLS_CIPHER_KUZNYECHIK_CTR_ACPKM])],
+  [feature_gnutls_cipher_kuznyechik_ctr_acpkm=yes],
+  [AC_DEFINE([NO_GNUTLS_CIPHER_KUZNYECHIK_CTR_ACPKM],
+             1, [The aes-192-gcm cipher algorithm is not available])])
+AC_MSG_RESULT($feature_gnutls_cipher_kuznyechik_ctr_acpkm)
+CFLAGS="$save_CFLAGS"
+LIBS="$save_LIBS"
+
+AC_MSG_CHECKING([whether gnutls supports the gost28147-tc26z-cnt cipher])
+AC_LINK_IFELSE([AC_LANG_PROGRAM([
+#include <gnutls/gnutls.h>
+#include <gnutls/crypto.h>
+], [GNUTLS_CIPHER_GOST28147_TC26Z_CNT])],
+  [feature_gnutls_cipher_gost28147_tc26z_cnt=yes],
+  [AC_DEFINE([NO_GNUTLS_CIPHER_GOST28147_TC26Z_CNT],
+             1, [The gost28147-tc26z-cnt cipher algorithm is not available])])
+AC_MSG_RESULT($feature_gnutls_cipher_gost28147_tc26z_cnt)
+CFLAGS="$save_CFLAGS"
+LIBS="$save_LIBS"
+
+AC_MSG_CHECKING([whether gnutls supports the chacha20-* ciphers])
+AC_LINK_IFELSE([AC_LANG_PROGRAM([
+#include <gnutls/gnutls.h>
+#include <gnutls/crypto.h>
+], [GNUTLS_CIPHER_CHACHA20_32])],
+  [feature_gnutls_cipher_chacha20=yes],
+  [AC_DEFINE([NO_GNUTLS_CIPHER_CHACHA20_32],
+             1, [The chacha20-32 cipher algorithm is not available])
+   AC_DEFINE([NO_GNUTLS_CIPHER_CHACHA20_64],
+             1, [The chacha20-64 cipher algorithm is not available])])
+AC_MSG_RESULT($feature_gnutls_cipher_chacha20)
+CFLAGS="$save_CFLAGS"
+LIBS="$save_LIBS"
+
 # Do we need to hard-code $guileextensiondir in gnutls.scm?
 # This is not necessary when $guileextensiondir is equal to
 # Guile's 'extensiondir' as specified in 'guile-MAJOR.MINOR.pc'.
@@ -296,11 +393,18 @@ AC_MSG_NOTICE([Summary of optional GnuTLS features:
   {hmac,hash}-copy:     $feature_gnutls_hmac_hash_copy
 ])
 
-AC_MSG_NOTICE([Availability of MAC algorithms:
+AC_MSG_NOTICE([Availability of GnuTLS algorithms:
 
-            mac/aes-gmac-*:     $feature_gnutls_mac_aes_gmac
-               mac/shake-*:     $feature_gnutls_mac_shake
-  mac/gost28147-tc26z-imit:     $feature_gnutls_mac_gost28147_tc26z_imit
-            mac/magma-omac:     $feature_gnutls_mac_magma_omac
-       mac/kuznyechik-omac:     $feature_gnutls_mac_kuznyechik_omac
+             mac/aes-gmac-*:     $feature_gnutls_mac_aes_gmac
+                mac/shake-*:     $feature_gnutls_mac_shake
+   mac/gost28147-tc26z-imit:     $feature_gnutls_mac_gost28147_tc26z_imit
+             mac/magma-omac:     $feature_gnutls_mac_magma_omac
+        mac/kuznyechik-omac:     $feature_gnutls_mac_kuznyechik_omac
+           cipher/aes-*-xts:     $feature_gnutls_cipher_aes_xts
+           cipher/aes-*-siv:     $feature_gnutls_cipher_aes_siv
+         cipher/aes-192-gcm:     $feature_gnutls_cipher_aes_192_gcm
+     cipher/magma-ctr-acpkm:     $feature_gnutls_cipher_magma_ctr_acpkm
+cipher/kuznyechik-ctr-acpkm:     $feature_gnutls_cipher_kuznyechik_ctr_acpkm
+ cipher/gost28147-tc26z-cnt:     $feature_gnutls_cipher_gost28147_tc26z_cnt
+          cipher/chacha20-*:     $feature_gnutls_cipher_chacha20
 ])

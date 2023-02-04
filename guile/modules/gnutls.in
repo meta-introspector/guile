@@ -145,13 +145,56 @@
 
            ;; enum values
            cipher/null
-           cipher/arcfour cipher/arcfour-128
+           cipher/arcfour
+           cipher/arcfour-128
            cipher/3des-cbc
-           cipher/aes-128-cbc cipher/rijndael-cbc cipher/rijndael-128-cbc
-           cipher/aes-256-cbc cipher/rijndael-256-cbc
+           cipher/aes-128-cbc
+           cipher/aes-256-cbc
            cipher/arcfour-40
+           cipher/camellia-128-cbc
+           cipher/camellia-256-cbc
+           cipher/aes-192-cbc
+           cipher/aes-128-gcm
+           cipher/aes-256-gcm
+           cipher/camellia-192-cbc
+           cipher/salsa20-256
+           cipher/estream-salsa20-256
+           cipher/camellia-128-gcm
+           cipher/camellia-256-gcm
            cipher/rc2-40-cbc
            cipher/des-cbc
+           cipher/aes-128-ccm
+           cipher/aes-256-ccm
+           cipher/aes-128-ccm-8
+           cipher/aes-256-ccm-8
+           cipher/chacha20-poly1305
+           cipher/gost28147-tc26z-cfb
+           cipher/gost28147-cpa-cfb
+           cipher/gost28147-cpb-cfb
+           cipher/gost28147-cpc-cfb
+           cipher/gost28147-cpd-cfb
+           cipher/aes-128-cfb8
+           cipher/aes-192-cfb8
+           cipher/aes-256-cfb8
+           cipher/aes-128-xts
+           cipher/aes-256-xts
+           cipher/gost28147-tc26z-cnt
+           cipher/chacha20-64
+           cipher/chacha20-32
+           cipher/aes-128-siv
+           cipher/aes-256-siv
+           cipher/aes-192-gcm
+           cipher/magma-ctr-acpkm
+           cipher/kuznyechik-ctr-acpkm
+           cipher/idea-pgp-cfb
+           cipher/3des-pgp-cfb
+           cipher/cast5-pgp-cfb
+           cipher/blowfish-pgp-cfb
+           cipher/safer-sk128-pgp-cfb
+           cipher/aes128-pgp-cfb
+           cipher/aes192-pgp-cfb
+           cipher/aes256-pgp-cfb
+           cipher/twofish-pgp-cfb
            kx/rsa
            kx/dhe-dss
            kx/dhe-rsa
