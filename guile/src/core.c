@@ -56,10 +56,18 @@ struct scm_gnutls_aead_cipher_and_algorithm
   gnutls_cipher_algorithm_t algorithm;
 };
 
+struct scm_gnutls_cipher_and_algorithm
+{
+  gnutls_cipher_hd_t handle;
+  gnutls_cipher_algorithm_t algorithm;
+};
+
 typedef struct scm_gnutls_hmac_and_algorithm *scm_gnutls_hmac_and_algorithm_t;
 typedef struct scm_gnutls_hash_and_algorithm *scm_gnutls_hash_and_algorithm_t;
 typedef struct scm_gnutls_aead_cipher_and_algorithm
   *scm_gnutls_aead_cipher_and_algorithm_t;
+typedef struct scm_gnutls_cipher_and_algorithm
+  *scm_gnutls_cipher_and_algorithm_t;
 
 static void hmac_and_algorithm_deinit (scm_gnutls_hmac_and_algorithm_t
 				       c_hmac);
@@ -68,6 +76,9 @@ static void hash_and_algorithm_deinit (scm_gnutls_hash_and_algorithm_t
 static void
 aead_cipher_and_algorithm_deinit (scm_gnutls_aead_cipher_and_algorithm_t
 				  c_aead);
+
+static void cipher_and_algorithm_deinit (scm_gnutls_cipher_and_algorithm_t
+					 c_hash);
 
 #include "enums.h"
 #include "smobs.h"
@@ -4421,6 +4432,18 @@ SCM_DEFINE (scm_gnutls_cipher_block_size, "cipher-block-size", 1, 0, 0,
 
 #undef FUNC_NAME
 
+SCM_DEFINE (scm_gnutls_cipher_iv_size, "cipher-iv-size", 1, 0, 0,
+	    (SCM algorithm),
+	    "Return the length of the initialization vector for @var{algorithm}.")
+#define FUNC_NAME s_scm_gnutls_cipher_iv_size
+{
+  gnutls_cipher_algorithm_t c_algorithm;
+  c_algorithm = scm_to_gnutls_cipher (algorithm, 1, FUNC_NAME);
+  return scm_from_uint (gnutls_cipher_get_iv_size (c_algorithm));
+}
+
+#undef FUNC_NAME
+
 SCM_DEFINE (scm_gnutls_make_aead_cipher, "make-aead-cipher", 2, 0, 0,
 	    (SCM algorithm, SCM key),
 	    "Return a new AEAD cipher context, using the AEAD @var{algorithm}, "
@@ -4546,10 +4569,156 @@ SCM_DEFINE (scm_gnutls_aead_cipher_algorithm, "aead-cipher-algorithm", 1, 0,
 	    0, (SCM handle), "Return the underlying AEAD cipher algorithm.")
 #define FUNC_NAME s_scm_gnutls_aead_cipher_algorithm
 {
-  int error;
   scm_gnutls_aead_cipher_and_algorithm_t c_aead =
     scm_to_gnutls_aead_cipher (handle, 1, FUNC_NAME);
   return scm_from_gnutls_cipher (c_aead->algorithm);
+}
+
+#undef FUNC_NAME
+
+SCM_DEFINE (scm_gnutls_make_cipher, "make-cipher", 3, 0, 0,
+	    (SCM algorithm, SCM key, SCM iv),
+	    "Return a new cipher context, using the cipher @var{algorithm}.")
+#define FUNC_NAME s_scm_gnutls_make_cipher
+{
+  int error;
+  scm_gnutls_cipher_and_algorithm_t c_cipher =
+    scm_gc_malloc (sizeof (struct scm_gnutls_cipher_and_algorithm),
+		   "cipher-and-algorithm");
+  gnutls_cipher_algorithm_t c_algorithm;
+  size_t c_key_length = scm_c_bytevector_length (key);
+  const void *c_key = SCM_BYTEVECTOR_CONTENTS (key);
+  gnutls_datum_t datum_key;
+  datum_key.data = (unsigned char *) c_key;
+  datum_key.size = c_key_length;
+  gnutls_datum_t c_iv;
+  c_iv.size = scm_c_bytevector_length (iv);
+  c_iv.data = (unsigned char *) SCM_BYTEVECTOR_CONTENTS (iv);
+  c_algorithm = scm_to_gnutls_cipher (algorithm, 1, FUNC_NAME);
+  c_cipher->algorithm = c_algorithm;
+  error =
+    gnutls_cipher_init (&(c_cipher->handle), c_algorithm, &datum_key, &c_iv);
+  if (EXPECT_FALSE (error))
+    {
+      scm_gnutls_error (error, FUNC_NAME);
+    }
+  return scm_from_gnutls_cipher_hd (c_cipher);
+}
+
+#undef FUNC_NAME
+
+static void
+cipher_and_algorithm_deinit (scm_gnutls_cipher_and_algorithm_t c_cipher)
+{
+  gnutls_cipher_deinit (c_cipher->handle);
+}
+
+SCM_DEFINE (scm_gnutls_cipher_encrypt, "cipher-encrypt", 2, 0, 0,
+	    (SCM handle, SCM data), "Encrypt the @var{data}.")
+#define FUNC_NAME s_scm_gnutls_cipher_encrypt
+{
+  int error;
+  scm_gnutls_cipher_and_algorithm_t c_cipher =
+    scm_to_gnutls_cipher_hd (handle, 1, FUNC_NAME);
+  size_t c_data_len = scm_c_bytevector_length (data);
+  const void *c_data = SCM_BYTEVECTOR_CONTENTS (data);
+  SCM ret = scm_c_make_bytevector (c_data_len);
+  error =
+    gnutls_cipher_encrypt2 (c_cipher->handle, c_data, c_data_len,
+			    SCM_BYTEVECTOR_CONTENTS (ret), c_data_len);
+  if (EXPECT_FALSE (error))
+    {
+      scm_gnutls_error (error, FUNC_NAME);
+    }
+  return ret;
+}
+
+#undef FUNC_NAME
+
+SCM_DEFINE (scm_gnutls_cipher_decrypt, "cipher-decrypt", 2, 0, 0,
+	    (SCM handle, SCM data), "Decrypt the @var{data}.")
+#define FUNC_NAME s_scm_gnutls_cipher_decrypt
+{
+  int error;
+  scm_gnutls_cipher_and_algorithm_t c_cipher =
+    scm_to_gnutls_cipher_hd (handle, 1, FUNC_NAME);
+  size_t c_data_len = scm_c_bytevector_length (data);
+  const void *c_data = SCM_BYTEVECTOR_CONTENTS (data);
+  SCM ret = scm_c_make_bytevector (c_data_len);
+  error =
+    gnutls_cipher_decrypt2 (c_cipher->handle, c_data,
+			    c_data_len, SCM_BYTEVECTOR_CONTENTS (ret),
+			    c_data_len);
+  if (EXPECT_FALSE (error))
+    {
+      scm_gnutls_error (error, FUNC_NAME);
+    }
+  return ret;
+}
+
+#undef FUNC_NAME
+
+SCM_DEFINE (scm_gnutls_cipher_set_iv, "cipher-set-iv!", 2, 0, 0,
+	    (SCM handle, SCM data), "Set the IV @var{data}.")
+#define FUNC_NAME s_scm_gnutls_cipher_set_iv
+{
+  scm_gnutls_cipher_and_algorithm_t c_cipher =
+    scm_to_gnutls_cipher_hd (handle, 1, FUNC_NAME);
+  size_t c_data_len = scm_c_bytevector_length (data);
+  void *c_data = SCM_BYTEVECTOR_CONTENTS (data);
+  gnutls_cipher_set_iv (c_cipher->handle, c_data, c_data_len);
+  return SCM_UNSPECIFIED;
+}
+
+#undef FUNC_NAME
+
+SCM_DEFINE (scm_gnutls_cipher_add_auth, "cipher-add-auth!", 2, 0, 0,
+	    (SCM handle, SCM data), "Add authentication @var{data}.")
+#define FUNC_NAME s_scm_gnutls_cipher_add_auth
+{
+  int error;
+  scm_gnutls_cipher_and_algorithm_t c_cipher =
+    scm_to_gnutls_cipher_hd (handle, 1, FUNC_NAME);
+  size_t c_data_len = scm_c_bytevector_length (data);
+  const void *c_data = SCM_BYTEVECTOR_CONTENTS (data);
+  error = gnutls_cipher_add_auth (c_cipher->handle, c_data, c_data_len);
+  if (EXPECT_FALSE (error))
+    {
+      scm_gnutls_error (error, FUNC_NAME);
+    }
+  return SCM_UNSPECIFIED;
+}
+
+#undef FUNC_NAME
+
+SCM_DEFINE (scm_gnutls_cipher_tag, "cipher-tag", 2, 0, 0,
+	    (SCM handle, SCM tagsize), "Read a tag.")
+#define FUNC_NAME s_scm_gnutls_cipher_tag
+{
+  int error;
+  scm_gnutls_cipher_and_algorithm_t c_cipher =
+    scm_to_gnutls_cipher_hd (handle, 1, FUNC_NAME);
+  size_t c_tag_size = scm_to_size_t (tagsize);
+  SCM ret = scm_c_make_bytevector (c_tag_size);
+  error =
+    gnutls_cipher_tag (c_cipher->handle, SCM_BYTEVECTOR_CONTENTS (ret),
+		       c_tag_size);
+  if (EXPECT_FALSE (error))
+    {
+      scm_gnutls_error (error, FUNC_NAME);
+    }
+  return ret;
+}
+
+#undef FUNC_NAME
+
+SCM_DEFINE (scm_gnutls_cipher_algorithm, "cipher-algorithm", 1, 0, 0,
+	    (SCM handle), "Return the underlying cipher algorithm.")
+#define FUNC_NAME s_scm_gnutls_cipher_algorithm
+{
+  scm_gnutls_cipher_and_algorithm_t c_cipher =
+    scm_to_gnutls_cipher_hd (handle, 1, FUNC_NAME);
+  return scm_from_gnutls_cipher (c_cipher->algorithm);
 }
 
 #undef FUNC_NAME

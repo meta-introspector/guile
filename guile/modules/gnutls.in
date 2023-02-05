@@ -119,10 +119,13 @@
            hash? make-hash hash! hash-copy hash-direct
            hash-length hash-output hash-algorithm
 
-           ;; AEAD
-           cipher-tag-size cipher-key-size cipher-block-size
+           ;; AEAD and non-AEAD ciphers
+           cipher-tag-size cipher-key-size cipher-block-size cipher-iv-size
            aead-cipher? make-aead-cipher aead-cipher-encrypt aead-cipher-decrypt
            aead-cipher-algorithm
+           cipher? make-cipher cipher-encrypt cipher-decrypt cipher-set-iv!
+           cipher-add-auth! cipher-tag
+           cipher-algorithm
 
            ;; record layer
            record-send record-receive!

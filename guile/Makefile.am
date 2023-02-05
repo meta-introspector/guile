@@ -114,7 +114,8 @@ TESTS =						\
   tests/priorities.scm				\
   tests/hmac.scm				\
   tests/hash.scm				\
-  tests/aead.scm
+  tests/aead.scm				\
+  tests/cipher.scm
 
 if ENABLE_SRP
 TESTS +=					\
@@ -141,4 +142,5 @@ EXTRA_DIST +=					\
   examples/hmac-example-3.scm                   \
   examples/hash-example.scm                     \
   examples/aead-encrypt-example.scm             \
-  examples/aead-decrypt-example.scm
+  examples/aead-decrypt-example.scm             \
+  examples/low-level-cipher-example.scm

@@ -555,6 +555,7 @@ The low-level functions in GnuTLS can be accessed for various tasks.
 * Hash Message Authentication Code:: Hashing with a secret.
 * Hash Digest Algorithms:: Hashes.
 * Authenticated Encryption:: The AEAD API.
+* Low-lovel encryption API:: Block-by-block encryption of data.
 @end menu
 
 @node Hash Message Authentication Code
@@ -627,6 +628,18 @@ example:
 
 @example
 @verbatiminclude @value{abs_top_srcdir}/guile/examples/aead-decrypt-example.scm
+@end example
+
+@node Low-lovel encryption API
+@subsection Low-lovel encryption API
+
+In some cases, you may want to use a lower-level encryption API. In
+this example, the data to encrypt spans an integer number of
+blocks. You need to specify the initialization vector, to seed the
+encryption, and a private key.
+
+@example
+@verbatiminclude @value{abs_top_srcdir}/guile/examples/low-level-cipher-example.scm
 @end example
 
 @c *********************************************************************
