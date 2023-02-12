@@ -137,6 +137,10 @@
            sign-algorithm-is-secure? sign-algorithm-list
            sign-algorithm->pk-algorithm sign-algorithm-supports?
 
+           ;; ECC curves
+           string->ecc-curve ecc-curve->oid ecc-curve-list
+           oid->ecc-curve ecc-curve->pk-algorithm ecc-curve-size
+
            ;; record layer
            record-send record-receive!
            session-record-port
@@ -159,7 +163,7 @@
            sign-algorithm->string psk-key-format->string key-usage->string
            certificate-verify->string error->string
            cipher-suite->string server-name-type->string
-           privkey->string oid->string
+           privkey->string oid->string ecc-curve->string
 
            ;; enum values
            cipher/null
@@ -473,6 +477,28 @@
            oid/aia
            oid/ad-ocsp
            oid/ad-caissuers
+           ecc-curve/invalid
+           ecc-curve/secp224r1
+           ecc-curve/secp256r1
+           ecc-curve/secp384r1
+           ecc-curve/secp521r1
+           ecc-curve/secp192r1
+           ecc-curve/x25519
+           ecc-curve/ed25519
+           ecc-curve/gost256cpa
+           ecc-curve/gost256cpb
+           ecc-curve/gost256cpc
+           ecc-curve/gost256cpxa
+           ecc-curve/gost256cpxb
+           ecc-curve/gost512a
+           ecc-curve/gost512b
+           ecc-curve/gost512c
+           ecc-curve/gost256a
+           ecc-curve/gost256b
+           ecc-curve/gost256c
+           ecc-curve/gost256d
+           ecc-curve/x448
+           ecc-curve/ed448
 
            ;; FIXME: Automate this:
            ;; grep '^#define GNUTLS_E_' ../../lib/includes/gnutls/gnutls.h.in | \

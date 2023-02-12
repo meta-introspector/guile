@@ -118,7 +118,8 @@ TESTS =						\
   tests/cipher.scm                              \
   tests/hash.scm                                \
   tests/list-sign-algorithms.scm                \
-  tests/list-pk-algorithms.scm
+  tests/list-pk-algorithms.scm                  \
+  tests/list-ecc-curves.scm
 
 if ENABLE_SRP
 TESTS +=					\

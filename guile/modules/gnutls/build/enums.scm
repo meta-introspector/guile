@@ -779,6 +779,18 @@ application-error-min
                   #f
                   "GNUTLS_OID_"))
 
+(define %ecc-curve-enum
+  (make-enum-type 'ecc-curve "gnutls_ecc_curve_t"
+                  '(invalid
+                    secp224r1 secp256r1 secp384r1 secp521r1 secp192r1
+                    x25519 ed25519
+                    gost256cpa gost256cpb gost256cpc gost256cpxa gost256cpxb
+                    gost512a gost512b gost512c
+                    gost256a gost256b gost256c gost256d
+                    x448 ed448)
+                  "gnutls_ecc_curve_get_name"
+                  "GNUTLS_ECC_CURVE_"))
+
 (define %gnutls-enums
   ;; All enums.
   (list %cipher-enum %kx-enum %params-enum %credentials-enum %mac-enum
@@ -790,7 +802,7 @@ application-error-min
         %x509-certificate-format-enum %x509-subject-alternative-name-enum
         %pk-algorithm-enum %sign-algorithm-enum %server-name-type-enum
         %psk-key-format-enum %key-usage-enum %certificate-verify-enum
-        %error-enum %privkey-enum %oid-enum
+        %error-enum %privkey-enum %oid-enum %ecc-curve-enum
 
         %openpgp-certificate-format-enum))
 

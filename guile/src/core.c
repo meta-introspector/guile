@@ -4756,6 +4756,21 @@ SCM_DEFINE (scm_string_to_sign_algorithm, "string->sign-algorithm", 1, 0, 0,
 
 #undef FUNC_NAME
 
+SCM_DEFINE (scm_string_to_ecc_curve, "string->ecc-curve", 1, 0, 0,
+	    (SCM id), "Return ECC curve identified by @var{id}.")
+#define FUNC_NAME s_scm_string_to_ecc_curve
+{
+  scm_dynwind_begin (0);
+  char *c_id = scm_to_latin1_stringn (id, NULL);
+  scm_dynwind_free (c_id);
+  gnutls_ecc_curve_t c_ret = gnutls_ecc_curve_get_id (c_id);
+  scm_dynwind_end ();
+  scm_remember_upto_here_1 (c_ret);
+  return scm_from_gnutls_ecc_curve (c_ret);
+}
+
+#undef FUNC_NAME
+
 SCM_DEFINE (scm_pk_algorithm_to_oid, "pk-algorithm->oid", 1, 0, 0,
 	    (SCM algorithm), "Return the OID associated to @var{algorithm}.")
 #define FUNC_NAME s_scm_pk_algorithm_to_oid
@@ -4779,6 +4794,21 @@ SCM_DEFINE (scm_sign_algorithm_to_oid, "sign-algorithm->oid", 1, 0, 0,
   gnutls_sign_algorithm_t c_algo =
     scm_to_gnutls_sign_algorithm (algo, 1, FUNC_NAME);
   const char *c_oid = gnutls_sign_get_oid (c_algo);
+  if (EXPECT_FALSE (c_oid == NULL))
+    {
+      return SCM_BOOL_F;
+    }
+  return scm_from_latin1_string (c_oid);
+}
+
+#undef FUNC_NAME
+
+SCM_DEFINE (scm_ecc_curve_to_oid, "ecc-curve->oid", 1, 0, 0,
+	    (SCM curve), "Return the OID allocated to @var{curve}.")
+#define FUNC_NAME s_scm_ecc_curve_to_oid
+{
+  gnutls_ecc_curve_t c_curve = scm_to_gnutls_ecc_curve (curve, 1, FUNC_NAME);
+  const char *c_oid = gnutls_ecc_curve_get_oid (c_curve);
   if (EXPECT_FALSE (c_oid == NULL))
     {
       return SCM_BOOL_F;
@@ -4820,6 +4850,25 @@ SCM_DEFINE (scm_sign_algorithm_list, "sign-algorithm-list", 0, 0, 0,
   for (; i-- > 0;)
     {
       ret = scm_cons (scm_from_gnutls_sign_algorithm (c_ret[i]), ret);
+    }
+  return ret;
+}
+
+#undef FUNC_NAME
+
+SCM_DEFINE (scm_ecc_curve_list, "ecc-curve-list", 0, 0, 0,
+	    (), "Return the list of ECC curves. "
+	    "@strong{This function is not thread-safe.}")
+#define FUNC_NAME s_scm_ecc_curve_list
+{
+  const gnutls_ecc_curve_t *c_ret = gnutls_ecc_curve_list ();
+  SCM ret = SCM_EOL;
+  size_t i;
+  for (i = 0; c_ret[i] != 0; i++)
+    ;
+  for (; i-- > 0;)
+    {
+      ret = scm_cons (scm_from_gnutls_ecc_curve (c_ret[i]), ret);
     }
   return ret;
 }
@@ -4889,6 +4938,21 @@ SCM_DEFINE (scm_oid_to_sign_algorithm, "oid->sign-algorithm", 1, 0, 0,
 
 #undef FUNC_NAME
 
+SCM_DEFINE (scm_oid_to_ecc_curve, "oid->ecc-curve", 1, 0, 0,
+	    (SCM oid), "Return the ECC curve identified by @var{oid}.")
+#define FUNC_NAME s_scm_oid_to_ecc_curve
+{
+  scm_dynwind_begin (0);
+  char *c_oid = scm_to_latin1_stringn (oid, NULL);
+  scm_dynwind_free (c_oid);
+  gnutls_ecc_curve_t c_ret = gnutls_oid_to_ecc_curve (c_oid);
+  scm_dynwind_end ();
+  scm_remember_upto_here_1 (c_ret);
+  return scm_from_gnutls_ecc_curve (c_ret);
+}
+
+#undef FUNC_NAME
+
 SCM_DEFINE (scm_sign_algorithm_to_pk_algorithm,
 	    "sign-algorithm->pk-algorithm", 1, 0, 0, (SCM sign),
 	    "Return a public key algorithm that can sign "
@@ -4898,6 +4962,19 @@ SCM_DEFINE (scm_sign_algorithm_to_pk_algorithm,
   gnutls_sign_algorithm_t c_sign =
     scm_to_gnutls_sign_algorithm (sign, 1, FUNC_NAME);
   gnutls_pk_algorithm_t c_pk = gnutls_sign_get_pk_algorithm (c_sign);
+  return scm_from_gnutls_pk_algorithm (c_pk);
+}
+
+#undef FUNC_NAME
+
+SCM_DEFINE (scm_ecc_curve_to_pk_algorithm,
+	    "ecc-curve->pk-algorithm", 1, 0, 0, (SCM curve),
+	    "Return the public key algorithm that can be used "
+	    "with @var{curve}.")
+#define FUNC_NAME s_scm_ecc_curve_to_pk_algorithm
+{
+  gnutls_ecc_curve_t c_curve = scm_to_gnutls_ecc_curve (curve, 1, FUNC_NAME);
+  gnutls_pk_algorithm_t c_pk = gnutls_ecc_curve_get_pk (c_curve);
   return scm_from_gnutls_pk_algorithm (c_pk);
 }
 
@@ -4940,6 +5017,17 @@ SCM_DEFINE (scm_sign_algorithm_is_secure_p, "sign-algorithm-is-secure?", 2, 0,
       return SCM_BOOL_T;
     }
   return SCM_BOOL_F;
+}
+
+#undef FUNC_NAME
+
+SCM_DEFINE (scm_ecc_curve_size, "ecc-curve-size", 1, 0, 0,
+	    (SCM curve),
+	    "Return the size of @var{curve}, in bytes (0 on failure).")
+#define FUNC_NAME s_scm_ecc_curve_size
+{
+  gnutls_ecc_curve_t c_curve = scm_to_gnutls_ecc_curve (curve, 1, FUNC_NAME);
+  return scm_from_int (gnutls_ecc_curve_get_size (c_curve));
 }
 
 #undef FUNC_NAME

@@ -156,6 +156,10 @@ feature_gnutls_cipher_chacha20=no
 feature_gnutls_pk_ecdh_x448=no
 feature_gnutls_pk_eddsa_ed448=no
 feature_gnutls_sign_eddsa_ed448=no
+feature_gnutls_ecc_curve_gost512c=no
+feature_gnutls_ecc_curve_gost256x=no
+feature_gnutls_ecc_curve_x448=no
+feature_gnutls_ecc_curve_ed448=no
 
 AC_MSG_CHECKING([whether gnutls comes with gnutls_hmac_get_key_size])
 AC_LINK_IFELSE([AC_LANG_PROGRAM([
@@ -274,6 +278,69 @@ AC_LINK_IFELSE([AC_LANG_PROGRAM([
   [AC_DEFINE([NO_GNUTLS_SIGN_EDDSA_ED448],
              1, [The eddsa-ed448 signature algorithm is not available])])
 AC_MSG_RESULT($feature_gnutls_sign_eddsa_ed448)
+
+AC_MSG_CHECKING([whether gnutls supports the gost512c curve])
+AC_LINK_IFELSE([AC_LANG_PROGRAM([
+#include <gnutls/gnutls.h>
+#include <gnutls/crypto.h>
+], [GNUTLS_ECC_CURVE_GOST512C])],
+  [feature_gnutls_ecc_curve_gost512c=yes
+   AC_DEFINE([HAVE_GNUTLS_ECC_CURVE_GOST512C], 1,
+     [The gost512c curve is supported])],
+  [AC_DEFINE([NO_GNUTLS_ECC_CURVE_GOST512C],
+             1, [The gost512c curve is not supported])])
+AC_MSG_RESULT($feature_gnutls_ecc_curve_gost512c)
+
+AC_MSG_CHECKING([whether gnutls supports the gost256[ABCD] curve])
+AC_LINK_IFELSE([AC_LANG_PROGRAM([
+#include <gnutls/gnutls.h>
+#include <gnutls/crypto.h>
+], [GNUTLS_ECC_CURVE_GOST256A;
+    GNUTLS_ECC_CURVE_GOST256B;
+    GNUTLS_ECC_CURVE_GOST256C;
+    GNUTLS_ECC_CURVE_GOST256D;])],
+  [feature_gnutls_ecc_curve_gost256x=yes
+   AC_DEFINE([HAVE_GNUTLS_ECC_CURVE_GOST256A], 1,
+     [The gost256a curve is supported])
+   AC_DEFINE([HAVE_GNUTLS_ECC_CURVE_GOST256B], 1,
+     [The gost256b curve is supported])
+   AC_DEFINE([HAVE_GNUTLS_ECC_CURVE_GOST256C], 1,
+     [The gost256c curve is supported])
+   AC_DEFINE([HAVE_GNUTLS_ECC_CURVE_GOST256D], 1,
+     [The gost256d curve is supported])],
+  [AC_DEFINE([NO_GNUTLS_ECC_CURVE_GOST256A],
+             1, [The gost256a curve is not supported])
+   AC_DEFINE([NO_GNUTLS_ECC_CURVE_GOST256B],
+             1, [The gost256b curve is not supported])
+   AC_DEFINE([NO_GNUTLS_ECC_CURVE_GOST256C],
+             1, [The gost256c curve is not supported])
+   AC_DEFINE([NO_GNUTLS_ECC_CURVE_GOST256D],
+             1, [The gost256d curve is not supported])])
+AC_MSG_RESULT($feature_gnutls_ecc_curve_gost256x)
+
+AC_MSG_CHECKING([whether gnutls supports the x448 curve])
+AC_LINK_IFELSE([AC_LANG_PROGRAM([
+#include <gnutls/gnutls.h>
+#include <gnutls/crypto.h>
+], [GNUTLS_ECC_CURVE_X448])],
+  [feature_gnutls_ecc_curve_x448=yes
+   AC_DEFINE([HAVE_GNUTLS_ECC_CURVE_X448], 1,
+     [The x448 curve is supported])],
+  [AC_DEFINE([NO_GNUTLS_ECC_CURVE_X448],
+             1, [The x448 curve is not supported])])
+AC_MSG_RESULT($feature_gnutls_ecc_curve_x448)
+
+AC_MSG_CHECKING([whether gnutls supports the ed448 curve])
+AC_LINK_IFELSE([AC_LANG_PROGRAM([
+#include <gnutls/gnutls.h>
+#include <gnutls/crypto.h>
+], [GNUTLS_ECC_CURVE_ED448])],
+  [feature_gnutls_ecc_curve_ed448=yes
+   AC_DEFINE([HAVE_GNUTLS_ECC_CURVE_ED448], 1,
+     [The ed448 curve is supported])],
+  [AC_DEFINE([NO_GNUTLS_ECC_CURVE_ED448],
+             1, [The ed448 curve is not supported])])
+AC_MSG_RESULT($feature_gnutls_ecc_curve_ed448)
 CFLAGS="$save_CFLAGS"
 LIBS="$save_LIBS"
 
@@ -455,4 +522,12 @@ AC_MSG_NOTICE([Availability of public key algorithms:
 AC_MSG_NOTICE([Availability of signature algorithms:
 
   sign-algorithm/eddsa-ed448:     $feature_gnutls_sign_eddsa_ed448
+])
+
+AC_MSG_NOTICE([Availability of ECC curves:
+
+       ecc-curve/gost512c:     $feature_gnutls_ecc_curve_gost512c
+  ecc-curve/gost256{abcd}:     $feature_gnutls_ecc_curve_gost256x
+           ecc-curve/x448:     $feature_gnutls_ecc_curve_x448
+          ecc-curve/ed448:     $feature_gnutls_ecc_curve_ed448
 ])
