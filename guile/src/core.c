@@ -4724,6 +4724,22 @@ SCM_DEFINE (scm_gnutls_cipher_algorithm, "cipher-algorithm", 1, 0, 0,
 
 #undef FUNC_NAME
 
+SCM_DEFINE (scm_string_to_pk_algorithm, "string->pk-algorithm", 1, 0, 0,
+	    (SCM id),
+	    "Return the public key algorithm identified by @var{id}.")
+#define FUNC_NAME s_scm_string_to_pk_algorithm
+{
+  scm_dynwind_begin (0);
+  char *c_id = scm_to_latin1_stringn (id, NULL);
+  scm_dynwind_free (c_id);
+  gnutls_pk_algorithm_t c_ret = gnutls_pk_get_id (c_id);
+  scm_dynwind_end ();
+  scm_remember_upto_here_1 (c_ret);
+  return scm_from_gnutls_pk_algorithm (c_ret);
+}
+
+#undef FUNC_NAME
+
 SCM_DEFINE (scm_string_to_sign_algorithm, "string->sign-algorithm", 1, 0, 0,
 	    (SCM id),
 	    "Return the signature algorithm identified by @var{id}.")
@@ -4736,6 +4752,57 @@ SCM_DEFINE (scm_string_to_sign_algorithm, "string->sign-algorithm", 1, 0, 0,
   scm_dynwind_end ();
   scm_remember_upto_here_1 (c_ret);
   return scm_from_gnutls_sign_algorithm (c_ret);
+}
+
+#undef FUNC_NAME
+
+SCM_DEFINE (scm_pk_algorithm_to_oid, "pk-algorithm->oid", 1, 0, 0,
+	    (SCM algorithm), "Return the OID associated to @var{algorithm}.")
+#define FUNC_NAME s_scm_pk_algorithm_to_oid
+{
+  gnutls_pk_algorithm_t c_algorithm =
+    scm_to_gnutls_pk_algorithm (algorithm, 1, FUNC_NAME);
+  const char *oid = gnutls_pk_get_oid (c_algorithm);
+  if (EXPECT_FALSE (!oid))
+    {
+      return SCM_BOOL_F;
+    }
+  return scm_from_latin1_string (oid);
+}
+
+#undef FUNC_NAME
+
+SCM_DEFINE (scm_sign_algorithm_to_oid, "sign-algorithm->oid", 1, 0, 0,
+	    (SCM algo), "Return the OID allocated to @var{algo}.")
+#define FUNC_NAME s_scm_sign_algorithm_to_oid
+{
+  gnutls_sign_algorithm_t c_algo =
+    scm_to_gnutls_sign_algorithm (algo, 1, FUNC_NAME);
+  const char *c_oid = gnutls_sign_get_oid (c_algo);
+  if (EXPECT_FALSE (c_oid == NULL))
+    {
+      return SCM_BOOL_F;
+    }
+  return scm_from_latin1_string (c_oid);
+}
+
+#undef FUNC_NAME
+
+SCM_DEFINE (scm_pk_algorithm_list, "pk-algorithm-list", 0, 0, 0,
+	    (), "Return the list of public key algorithms. "
+	    "@strong{This function is not thread-safe.}")
+#define FUNC_NAME s_scm_pk_algorithm_list
+{
+  const gnutls_pk_algorithm_t *c_ret = gnutls_pk_list ();
+  SCM ret = SCM_EOL;
+  size_t i;
+  for (i = 0; c_ret[i] != 0; i++)
+    ;
+  for (; i-- > 0;)
+    {
+      ret = scm_cons (scm_from_gnutls_pk_algorithm (c_ret[i]), ret);
+    }
+  return ret;
 }
 
 #undef FUNC_NAME
@@ -4759,6 +4826,23 @@ SCM_DEFINE (scm_sign_algorithm_list, "sign-algorithm-list", 0, 0, 0,
 
 #undef FUNC_NAME
 
+SCM_DEFINE (scm_pk_algorithm_to_sign_algorithm,
+	    "pk-algorithm->sign-algorithm", 2, 0, 0, (SCM pk, SCM digest),
+	    "Return the signature algorithm compatible with "
+	    "the @var{pk} public-key algorithm and "
+	    "the @var{digest} algorithm.")
+#define FUNC_NAME s_scm_pk_algorithm_to_sign_algorithm
+{
+  gnutls_pk_algorithm_t c_pk = scm_to_gnutls_pk_algorithm (pk, 1, FUNC_NAME);
+  gnutls_digest_algorithm_t c_digest =
+    scm_to_gnutls_digest (digest, 2, FUNC_NAME);
+  gnutls_sign_algorithm_t c_sign = gnutls_pk_to_sign (c_pk, c_digest);
+  SCM ret = scm_from_gnutls_sign_algorithm (c_sign);
+  return ret;
+}
+
+#undef FUNC_NAME
+
 SCM_DEFINE (scm_sign_algorithm_to_digest_algorithm,
 	    "sign-algorithm->digest-algorithm", 1, 0, 0, (SCM sign),
 	    "Return the digest algorithm used "
@@ -4770,6 +4854,22 @@ SCM_DEFINE (scm_sign_algorithm_to_digest_algorithm,
   gnutls_digest_algorithm_t c_dig = gnutls_sign_get_hash_algorithm (c_sign);
   SCM ret = scm_from_gnutls_digest (c_dig);
   return ret;
+}
+
+#undef FUNC_NAME
+
+SCM_DEFINE (scm_oid_to_pk_algorithm, "oid->pk-algorithm", 1, 0, 0,
+	    (SCM oid),
+	    "Return the public key algorithm identified by @var{oid}.")
+#define FUNC_NAME s_scm_oid_to_pk_algorithm
+{
+  scm_dynwind_begin (0);
+  char *c_oid = scm_to_latin1_stringn (oid, NULL);
+  scm_dynwind_free (c_oid);
+  gnutls_pk_algorithm_t c_ret = gnutls_oid_to_pk (c_oid);
+  scm_dynwind_end ();
+  scm_remember_upto_here_1 (c_ret);
+  return scm_from_gnutls_pk_algorithm (c_ret);
 }
 
 #undef FUNC_NAME
@@ -4789,18 +4889,34 @@ SCM_DEFINE (scm_oid_to_sign_algorithm, "oid->sign-algorithm", 1, 0, 0,
 
 #undef FUNC_NAME
 
-SCM_DEFINE (scm_sign_algorithm_to_oid, "sign-algorithm->oid", 1, 0, 0,
-	    (SCM algo), "Return the OID allocated to @var{algo}.")
-#define FUNC_NAME s_scm_sign_algorithm_to_oid
+SCM_DEFINE (scm_sign_algorithm_to_pk_algorithm,
+	    "sign-algorithm->pk-algorithm", 1, 0, 0, (SCM sign),
+	    "Return a public key algorithm that can sign "
+	    "data with the @var{sign} algorithm.")
+#define FUNC_NAME s_scm_sign_algorithm_to_pk_algorithm
 {
-  gnutls_sign_algorithm_t c_algo =
-    scm_to_gnutls_sign_algorithm (algo, 1, FUNC_NAME);
-  const char *c_oid = gnutls_sign_get_oid (c_algo);
-  if (EXPECT_FALSE (c_oid == NULL))
+  gnutls_sign_algorithm_t c_sign =
+    scm_to_gnutls_sign_algorithm (sign, 1, FUNC_NAME);
+  gnutls_pk_algorithm_t c_pk = gnutls_sign_get_pk_algorithm (c_sign);
+  return scm_from_gnutls_pk_algorithm (c_pk);
+}
+
+#undef FUNC_NAME
+
+SCM_DEFINE (scm_sign_algorithm_supports_p, "sign-algorithm-supports?", 2, 0,
+	    0, (SCM sign, SCM pk),
+	    "Check whether the @var{sign} algorithm can be used "
+	    "with the @var{pk} public-key algorithm.")
+#define FUNC_NAME s_scm_sign_algorithm_supports_p
+{
+  gnutls_sign_algorithm_t c_sign =
+    scm_to_gnutls_sign_algorithm (sign, 1, FUNC_NAME);
+  gnutls_pk_algorithm_t c_pk = scm_to_gnutls_pk_algorithm (pk, 2, FUNC_NAME);
+  if (gnutls_sign_supports_pk_algorithm (c_sign, c_pk) != 0)
     {
-      return SCM_BOOL_F;
+      return SCM_BOOL_T;
     }
-  return scm_from_latin1_string (c_oid);
+  return SCM_BOOL_F;
 }
 
 #undef FUNC_NAME

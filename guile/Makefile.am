@@ -117,7 +117,8 @@ TESTS =						\
   tests/aead.scm				\
   tests/cipher.scm                              \
   tests/hash.scm                                \
-  tests/list-sign-algorithms.scm
+  tests/list-sign-algorithms.scm                \
+  tests/list-pk-algorithms.scm
 
 if ENABLE_SRP
 TESTS +=					\

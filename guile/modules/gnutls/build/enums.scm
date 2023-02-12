@@ -478,7 +478,9 @@ unrecognized-name unknown-psk-identity)
 
 (define %pk-algorithm-enum
   (make-enum-type 'pk-algorithm "gnutls_pk_algorithm_t"
-                  '(unknown rsa dsa)
+                  '(unknown rsa dsa dh ecdsa ecc ec ecdh-x25519 ecdhx rsa-pss
+                    eddsa-ed25519 gost-01 gost-12-256 gost-12-512 ecdh-x448
+                    eddsa-ed448)
                   "gnutls_pk_algorithm_get_name"
                   "GNUTLS_PK_"))
 

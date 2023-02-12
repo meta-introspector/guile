@@ -127,6 +127,10 @@
            cipher-add-auth! cipher-tag
            cipher-algorithm
 
+           ;; PK algorithm
+           string->pk-algorithm pk-algorithm->oid pk-algorithm-list
+           pk-algorithm->sign-algorithm oid->pk-algorithm
+
            ;; Sign algorithm
            oid->sign-algorithm sign-algorithm->digest-algorithm
            string->sign-algorithm sign-algorithm->oid
@@ -377,9 +381,22 @@
            x509-subject-alternative-name/rfc822name
            x509-subject-alternative-name/uri
            x509-subject-alternative-name/ipaddress
+           pk-algorithm/unknown
            pk-algorithm/rsa
            pk-algorithm/dsa
-           pk-algorithm/unknown
+           pk-algorithm/dh
+           pk-algorithm/ecdsa
+           pk-algorithm/ecc
+           pk-algorithm/ec
+           pk-algorithm/ecdh-x25519
+           pk-algorithm/ecdhx
+           pk-algorithm/rsa-pss
+           pk-algorithm/eddsa-ed25519
+           pk-algorithm/gost-01
+           pk-algorithm/gost-12-256
+           pk-algorithm/gost-12-512
+           pk-algorithm/ecdh-x448
+           pk-algorithm/eddsa-ed448
            sign-algorithm/unknown
            sign-algorithm/rsa-sha1
            sign-algorithm/dsa-sha1
