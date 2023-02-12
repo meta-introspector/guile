@@ -28,6 +28,7 @@
 #include <gnutls/gnutls.h>
 #include <gnutls/openpgp.h>
 #include <gnutls/crypto.h>
+#include <gnutls/abstract.h>
 #include <libguile.h>
 
 #include <alloca.h>
@@ -4719,6 +4720,110 @@ SCM_DEFINE (scm_gnutls_cipher_algorithm, "cipher-algorithm", 1, 0, 0,
   scm_gnutls_cipher_and_algorithm_t c_cipher =
     scm_to_gnutls_cipher_hd (handle, 1, FUNC_NAME);
   return scm_from_gnutls_cipher (c_cipher->algorithm);
+}
+
+#undef FUNC_NAME
+
+SCM_DEFINE (scm_string_to_sign_algorithm, "string->sign-algorithm", 1, 0, 0,
+	    (SCM id),
+	    "Return the signature algorithm identified by @var{id}.")
+#define FUNC_NAME s_scm_string_to_sign_algorithm
+{
+  scm_dynwind_begin (0);
+  char *c_id = scm_to_latin1_stringn (id, NULL);
+  scm_dynwind_free (c_id);
+  gnutls_sign_algorithm_t c_ret = gnutls_sign_get_id (c_id);
+  scm_dynwind_end ();
+  scm_remember_upto_here_1 (c_ret);
+  return scm_from_gnutls_sign_algorithm (c_ret);
+}
+
+#undef FUNC_NAME
+
+SCM_DEFINE (scm_sign_algorithm_list, "sign-algorithm-list", 0, 0, 0,
+	    (), "Return the list of public key algorithms. "
+	    "@strong{This function is not thread-safe.}")
+#define FUNC_NAME s_scm_sign_algorithm_list
+{
+  const gnutls_sign_algorithm_t *c_ret = gnutls_sign_list ();
+  SCM ret = SCM_EOL;
+  size_t i;
+  for (i = 0; c_ret[i] != 0; i++)
+    ;
+  for (; i-- > 0;)
+    {
+      ret = scm_cons (scm_from_gnutls_sign_algorithm (c_ret[i]), ret);
+    }
+  return ret;
+}
+
+#undef FUNC_NAME
+
+SCM_DEFINE (scm_sign_algorithm_to_digest_algorithm,
+	    "sign-algorithm->digest-algorithm", 1, 0, 0, (SCM sign),
+	    "Return the digest algorithm used "
+	    "for the @var{sign} algorithm.")
+#define FUNC_NAME s_scm_sign_algorithm_to_digest_algorithm
+{
+  gnutls_sign_algorithm_t c_sign =
+    scm_to_gnutls_sign_algorithm (sign, 1, FUNC_NAME);
+  gnutls_digest_algorithm_t c_dig = gnutls_sign_get_hash_algorithm (c_sign);
+  SCM ret = scm_from_gnutls_digest (c_dig);
+  return ret;
+}
+
+#undef FUNC_NAME
+
+SCM_DEFINE (scm_oid_to_sign_algorithm, "oid->sign-algorithm", 1, 0, 0,
+	    (SCM oid), "Return the sign algorithm identified by @var{oid}.")
+#define FUNC_NAME s_scm_oid_to_sign_algorithm
+{
+  scm_dynwind_begin (0);
+  char *c_oid = scm_to_latin1_stringn (oid, NULL);
+  scm_dynwind_free (c_oid);
+  gnutls_sign_algorithm_t c_ret = gnutls_oid_to_sign (c_oid);
+  scm_dynwind_end ();
+  scm_remember_upto_here_1 (c_ret);
+  return scm_from_gnutls_sign_algorithm (c_ret);
+}
+
+#undef FUNC_NAME
+
+SCM_DEFINE (scm_sign_algorithm_to_oid, "sign-algorithm->oid", 1, 0, 0,
+	    (SCM algo), "Return the OID allocated to @var{algo}.")
+#define FUNC_NAME s_scm_sign_algorithm_to_oid
+{
+  gnutls_sign_algorithm_t c_algo =
+    scm_to_gnutls_sign_algorithm (algo, 1, FUNC_NAME);
+  const char *c_oid = gnutls_sign_get_oid (c_algo);
+  if (EXPECT_FALSE (c_oid == NULL))
+    {
+      return SCM_BOOL_F;
+    }
+  return scm_from_latin1_string (c_oid);
+}
+
+#undef FUNC_NAME
+
+SCM_DEFINE (scm_sign_algorithm_is_secure_p, "sign-algorithm-is-secure?", 2, 0,
+	    0, (SCM sign, SCM for_certs),
+	    "Check whether the @var{sign} algorithm is considered safe. "
+	    "@var{for-certs?} is @code{#t} if the security is for signing "
+	    "a certificate, or @code{#f} for other data.")
+#define FUNC_NAME s_scm_sign_algorithm_is_secure_p
+{
+  gnutls_sign_algorithm_t c_sign =
+    scm_to_gnutls_sign_algorithm (sign, 1, FUNC_NAME);
+  unsigned int c_flags = 0;
+  if (scm_is_true (for_certs))
+    {
+      c_flags = GNUTLS_SIGN_FLAG_SECURE_FOR_CERTS;
+    }
+  if (gnutls_sign_is_secure2 (c_sign, c_flags) != 0)
+    {
+      return SCM_BOOL_T;
+    }
+  return SCM_BOOL_F;
 }
 
 #undef FUNC_NAME

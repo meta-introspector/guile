@@ -485,7 +485,18 @@ unrecognized-name unknown-psk-identity)
 (define %sign-algorithm-enum
   (make-enum-type 'sign-algorithm "gnutls_sign_algorithm_t"
                   '(unknown rsa-sha1 dsa-sha1 rsa-md5 rsa-md2
-                    rsa-rmd160)
+                    rsa-rmd160 rsa-sha256 rsa-sha384 rsa-sha512
+                    rsa-sha224 dsa-sha224 dsa-sha256 ecdsa-sha1
+                    ecdsa-sha224 ecdsa-sha256 ecdsa-sha384 ecdsa-sha512
+                    dsa-sha384 dsa-sha512 ecdsa-sha3-224 ecdsa-sha3-256
+                    ecdsa-sha3-384 ecdsa-sha3-512 dsa-sha3-224
+                    dsa-sha3-256 dsa-sha3-384 dsa-sha3-512 rsa-sha3-224
+                    rsa-sha3-256 rsa-sha3-384 rsa-sha3-512 rsa-pss-sha256
+                    rsa-pss-sha384 rsa-pss-sha512 eddsa-ed25519
+                    rsa-raw ecdsa-secp256r1-sha256 ecdsa-secp384r1-sha384
+                    ecdsa-secp521r1-sha512 rsa-pss-rsae-sha256
+                    rsa-pss-rsae-sha384 rsa-pss-rsae-sha512
+                    gost-94 gost-256 gost-512 eddsa-ed448)
                   "gnutls_sign_algorithm_get_name"
                   "GNUTLS_SIGN_"))
 

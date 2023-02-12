@@ -153,6 +153,7 @@ feature_gnutls_cipher_magma_ctr_acpkm=no
 feature_gnutls_cipher_kuznyechik_ctr_acpkm=no
 feature_gnutls_cipher_gost28147_tc26z_cnt=no
 feature_gnutls_cipher_chacha20=no
+feature_gnutls_sign_eddsa_ed448=no
 
 AC_MSG_CHECKING([whether gnutls comes with gnutls_hmac_get_key_size])
 AC_LINK_IFELSE([AC_LANG_PROGRAM([
@@ -223,8 +224,6 @@ AC_LINK_IFELSE([AC_LANG_PROGRAM([
   [AC_DEFINE([NO_GNUTLS_MAC_MAGMA_OMAC],
              1, [The magma-omac algorithm is not available])])
 AC_MSG_RESULT($feature_gnutls_mac_magma_omac)
-CFLAGS="$save_CFLAGS"
-LIBS="$save_LIBS"
 
 AC_MSG_CHECKING([whether gnutls supports the kuznyechik-omac algorithm])
 AC_LINK_IFELSE([AC_LANG_PROGRAM([
@@ -237,6 +236,18 @@ AC_LINK_IFELSE([AC_LANG_PROGRAM([
   [AC_DEFINE([NO_GNUTLS_MAC_KUZNYECHIK_OMAC],
              1, [The kuznyechik-omac algorithm is not available])])
 AC_MSG_RESULT($feature_gnutls_mac_kuznyechik_omac)
+
+AC_MSG_CHECKING([whether gnutls supports the eddsa-ed448 signature algorithm])
+AC_LINK_IFELSE([AC_LANG_PROGRAM([
+#include <gnutls/gnutls.h>
+#include <gnutls/crypto.h>
+], [GNUTLS_SIGN_EDDSA_ED448])],
+  [feature_gnutls_sign_eddsa_ed448=yes
+   AC_DEFINE([HAVE_GNUTLS_SIGN_EDDSA_ED448], 1,
+     [The eddsa_ed448 signature algorithm is defined])],
+  [AC_DEFINE([NO_GNUTLS_SIGN_EDDSA_ED448],
+             1, [The eddsa-ed448 signature algorithm is not available])])
+AC_MSG_RESULT($feature_gnutls_sign_eddsa_ed448)
 CFLAGS="$save_CFLAGS"
 LIBS="$save_LIBS"
 
@@ -407,4 +418,9 @@ AC_MSG_NOTICE([Availability of GnuTLS algorithms:
 cipher/kuznyechik-ctr-acpkm:     $feature_gnutls_cipher_kuznyechik_ctr_acpkm
  cipher/gost28147-tc26z-cnt:     $feature_gnutls_cipher_gost28147_tc26z_cnt
           cipher/chacha20-*:     $feature_gnutls_cipher_chacha20
+])
+
+AC_MSG_NOTICE([Availability of signature algorithms:
+
+  sign-algorithm/eddsa-ed448:     $feature_gnutls_sign_eddsa_ed448
 ])
