@@ -706,6 +706,9 @@
 
            fatal-error?
 
+           ;; base64
+           base64-encode base64-decode
+
            ;; OpenPGP keys (formerly in GnuTLS-extra)
            openpgp-certificate? openpgp-private-key?
            import-openpgp-certificate import-openpgp-private-key

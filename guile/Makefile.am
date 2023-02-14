@@ -119,7 +119,8 @@ TESTS =						\
   tests/hash.scm                                \
   tests/list-sign-algorithms.scm                \
   tests/list-pk-algorithms.scm                  \
-  tests/list-ecc-curves.scm
+  tests/list-ecc-curves.scm                     \
+  tests/base64.scm
 
 if ENABLE_SRP
 TESTS +=					\
