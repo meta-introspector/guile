@@ -120,7 +120,8 @@ TESTS =						\
   tests/list-sign-algorithms.scm                \
   tests/list-pk-algorithms.scm                  \
   tests/list-ecc-curves.scm                     \
-  tests/base64.scm
+  tests/base64.scm                              \
+  tests/asymmetric-crypto.scm
 
 if ENABLE_SRP
 TESTS +=					\
@@ -148,4 +149,6 @@ EXTRA_DIST +=					\
   examples/hash-example.scm                     \
   examples/aead-encrypt-example.scm             \
   examples/aead-decrypt-example.scm             \
-  examples/low-level-cipher-example.scm
+  examples/low-level-cipher-example.scm         \
+  examples/use-private-key.scm                  \
+  examples/generate-private-key.scm

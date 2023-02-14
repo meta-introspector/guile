@@ -103,6 +103,21 @@ scm_gnutls_get_writable_array (SCM array, scm_t_array_handle * c_handle,
 }
 
 # define scm_gnutls_release_array  scm_array_handle_release
+
+static inline void
+do_scm_gnutls_release_array (void *arg)
+{
+  /* Make the function pointer type compatible for unwind_handler */
+  scm_gnutls_release_array (arg);
+}
+
+/* Release an array handle at the end of a dynwind section. */
+static inline void
+scm_dynwind_release_handle (scm_t_array_handle * handle)
+{
+  scm_dynwind_unwind_handler (do_scm_gnutls_release_array, handle,
+			      SCM_F_WIND_EXPLICITLY);
+}
 
 
 

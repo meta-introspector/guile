@@ -110,6 +110,34 @@
            import-x509-private-key export-x509-private-key
            pkcs8-import-x509-private-key
 
+           ;; Abstract public and private keys
+           import-raw-dsa-public-key
+           import-raw-ecc-public-key
+           import-raw-rsa-public-key
+           import-raw-dsa-private-key
+           import-raw-ecc-private-key
+           import-raw-rsa-private-key
+           import-public-key
+           import-private-key
+           public-key-export-raw-dsa
+           public-key-export-raw-ecc
+           public-key-export-raw-rsa
+           private-key-export-raw-dsa
+           private-key-export-raw-ecc
+           private-key-export-raw-rsa
+           private-key->public-key
+           public-key-export
+           public-key-pk-algorithm
+           private-key-pk-algorithm
+           public-key-preferred-hash-algorithm
+           generate-private-key
+           private-key-sign-data
+           private-key-sign-hash
+           private-key-decrypt-data
+           public-key-encrypt-data
+           public-key-verify-data
+           public-key-verify-hash
+
            ;; HMAC and MAC
            mac-nonce-size
            hmac? make-hmac hmac! hmac-copy hmac-direct

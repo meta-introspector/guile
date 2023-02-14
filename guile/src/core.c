@@ -5109,6 +5109,1046 @@ SCM_DEFINE (scm_base64_decode, "base64-decode", 1, 0, 0,
 }
 
 #undef FUNC_NAME
+
+static inline void
+do_gnutls_pubkey_deinit (void *key)
+{
+  /* The function type is compatible with unwind handler. */
+  gnutls_pubkey_deinit (key);
+}
+
+static inline void
+do_gnutls_privkey_deinit (void *key)
+{
+  gnutls_privkey_deinit (key);
+}
+
+SCM_DEFINE (scm_import_raw_dsa_public_key, "import-raw-dsa-public-key", 4, 0,
+	    0, (SCM p, SCM q, SCM g, SCM y), "Create a new DSA public key.")
+#define FUNC_NAME s_scm_import_raw_dsa_public_key
+{
+  scm_dynwind_begin (0);
+  SCM args[4] = { p, q, g, y };
+  gnutls_datum_t c_args_d[4];
+  const char *c_args[4];
+  size_t c_args_length[4];
+  scm_t_array_handle c_args_handle[4];
+  for (size_t i = 0; i < 4; i++)
+    {
+      c_args[i] =
+	scm_gnutls_get_array (args[i], &(c_args_handle[i]),
+			      &(c_args_length[i]), FUNC_NAME);
+      c_args_d[i].data = (unsigned char *) c_args[i];
+      c_args_d[i].size = c_args_length[i];
+      scm_dynwind_release_handle (&(c_args_handle[i]));
+    }
+  gnutls_pubkey_t c_key;
+  int error = gnutls_pubkey_init (&c_key);
+  if (EXPECT_FALSE (error))
+    {
+      scm_gnutls_error (error, FUNC_NAME);
+    }
+  else
+    {
+      scm_dynwind_unwind_handler (do_gnutls_pubkey_deinit, c_key, 0);
+      error =
+	gnutls_pubkey_import_dsa_raw (c_key, &(c_args_d[0]), &(c_args_d[1]),
+				      &(c_args_d[2]), &(c_args_d[3]));
+    }
+  SCM key = SCM_UNSPECIFIED;
+  if (EXPECT_FALSE (error))
+    {
+      scm_gnutls_error (error, FUNC_NAME);
+    }
+  else
+    {
+      key = scm_from_gnutls_public_key (c_key);
+    }
+  scm_dynwind_end ();
+  return key;
+}
+
+#undef FUNC_NAME
+
+SCM_DEFINE (scm_import_raw_ecc_public_key, "import-raw-ecc-public-key", 3, 0,
+	    0, (SCM curve, SCM x, SCM y), "Create a new ECC public key.")
+#define FUNC_NAME s_scm_import_raw_ecc_public_key
+{
+  scm_dynwind_begin (0);
+  gnutls_ecc_curve_t c_curve = scm_to_gnutls_ecc_curve (curve, 1, FUNC_NAME);
+  SCM args[2] = { x, y };
+  gnutls_datum_t c_args_d[2];
+  const char *c_args[2];
+  size_t c_args_length[2];
+  scm_t_array_handle c_args_handle[2];
+  for (size_t i = 0; i < 2; i++)
+    {
+      c_args[i] =
+	scm_gnutls_get_array (args[i], &(c_args_handle[i]),
+			      &(c_args_length[i]), FUNC_NAME);
+      c_args_d[i].data = (unsigned char *) c_args[i];
+      c_args_d[i].size = c_args_length[i];
+      scm_dynwind_release_handle (&(c_args_handle[i]));
+    }
+  gnutls_pubkey_t c_key;
+  int error = gnutls_pubkey_init (&c_key);
+  if (EXPECT_FALSE (error))
+    {
+      scm_gnutls_error (error, FUNC_NAME);
+    }
+  else
+    {
+      scm_dynwind_unwind_handler (do_gnutls_pubkey_deinit, c_key, 0);
+      error =
+	gnutls_pubkey_import_ecc_raw (c_key, c_curve, &(c_args_d[0]),
+				      &(c_args_d[1]));
+    }
+  SCM key = SCM_UNSPECIFIED;
+  if (EXPECT_FALSE (error))
+    {
+      scm_gnutls_error (error, FUNC_NAME);
+    }
+  else
+    {
+      key = scm_from_gnutls_public_key (c_key);
+    }
+  scm_dynwind_end ();
+  return key;
+}
+
+#undef FUNC_NAME
+
+SCM_DEFINE (scm_import_raw_rsa_public_key, "import-raw-rsa-public-key", 2, 0,
+	    0, (SCM m, SCM e), "Create a new RSA public key.")
+#define FUNC_NAME s_scm_import_raw_rsa_public_key
+{
+  scm_dynwind_begin (0);
+  SCM args[2] = { m, e };
+  gnutls_datum_t c_args_d[2];
+  const char *c_args[2];
+  size_t c_args_length[2];
+  scm_t_array_handle c_args_handle[2];
+  for (size_t i = 0; i < 2; i++)
+    {
+      c_args[i] =
+	scm_gnutls_get_array (args[i], &(c_args_handle[i]),
+			      &(c_args_length[i]), FUNC_NAME);
+      c_args_d[i].data = (unsigned char *) c_args[i];
+      c_args_d[i].size = c_args_length[i];
+      scm_dynwind_release_handle (&(c_args_handle[i]));
+    }
+  gnutls_pubkey_t c_key;
+  int error = gnutls_pubkey_init (&c_key);
+  if (EXPECT_FALSE (error))
+    {
+      scm_gnutls_error (error, FUNC_NAME);
+    }
+  else
+    {
+      scm_dynwind_unwind_handler (do_gnutls_pubkey_deinit, c_key, 0);
+      error =
+	gnutls_pubkey_import_rsa_raw (c_key, &(c_args_d[0]), &(c_args_d[1]));
+    }
+  SCM key = SCM_UNSPECIFIED;
+  if (EXPECT_FALSE (error))
+    {
+      scm_gnutls_error (error, FUNC_NAME);
+    }
+  else
+    {
+      key = scm_from_gnutls_public_key (c_key);
+    }
+  scm_dynwind_end ();
+  return key;
+}
+
+#undef FUNC_NAME
+
+SCM_DEFINE (scm_import_raw_dsa_private_key, "import-raw-dsa-private-key", 5,
+	    0, 0, (SCM p, SCM q, SCM g, SCM y, SCM x),
+	    "Create a new DSA private key. "
+	    "Starting at 3.7.0, the @var{y} parameter is optional, "
+	    "pass @code{#f} if unknown.")
+#define FUNC_NAME s_scm_import_raw_dsa_private_key
+{
+  scm_dynwind_begin (0);
+  SCM args[5] = { p, q, g, y, x };
+  gnutls_datum_t c_args_d[5];
+  gnutls_datum_t *c_args_opt[5];
+  const char *c_args[5] = { NULL };
+  size_t c_args_length[5] = { 0 };
+  scm_t_array_handle c_args_handle[5];
+  for (size_t i = 0; i < 5; i++)
+    {
+      if (scm_is_true (args[i]))
+	{
+	  c_args[i] =
+	    scm_gnutls_get_array (args[i], &(c_args_handle[i]),
+				  &(c_args_length[i]), FUNC_NAME);
+	  c_args_d[i].data = (unsigned char *) c_args[i];
+	  c_args_d[i].size = c_args_length[i];
+	  scm_dynwind_release_handle (&(c_args_handle[i]));
+	  c_args_opt[i] = &(c_args_d[i]);
+	}
+      else
+	{
+	  c_args_opt[i] = NULL;
+	}
+    }
+  gnutls_privkey_t c_key;
+  int error = 0;
+  size_t offending_arg = 0;
+  for (size_t i = 0; i < 5; i++)
+    {
+      if (c_args_opt[i] == NULL)
+	{
+	  /* This is only valid for argument 4, if the gnutls version is after
+	     3.6.14. */
+	  if (i != 4 || !(gnutls_check_version_numeric (3, 7, 0)))
+	    {
+	      error = GNUTLS_E_ILLEGAL_PARAMETER;
+	      offending_arg = i;
+	    }
+	}
+    }
+  if (EXPECT_FALSE (error))
+    {
+      scm_wrong_type_arg (FUNC_NAME, offending_arg, args[offending_arg]);
+    }
+  else
+    {
+      error = gnutls_privkey_init (&c_key);
+    }
+  if (EXPECT_FALSE (error))
+    {
+      scm_gnutls_error (error, FUNC_NAME);
+    }
+  else
+    {
+      scm_dynwind_unwind_handler (do_gnutls_privkey_deinit, c_key, 0);
+      error =
+	gnutls_privkey_import_dsa_raw (c_key, c_args_opt[0], c_args_opt[1],
+				       c_args_opt[2], c_args_opt[3],
+				       c_args_opt[4]);
+    }
+  SCM key = SCM_UNSPECIFIED;
+  if (EXPECT_FALSE (error))
+    {
+      scm_gnutls_error (error, FUNC_NAME);
+    }
+  else
+    {
+      key = scm_from_gnutls_private_key (c_key);
+    }
+  scm_dynwind_end ();
+  return key;
+}
+
+#undef FUNC_NAME
+
+SCM_DEFINE (scm_import_raw_ecc_private_key, "import-raw-ecc-private-key", 4,
+	    0, 0, (SCM curve, SCM x, SCM y, SCM k),
+	    "Create a new ECC private key.")
+#define FUNC_NAME s_scm_import_raw_ecc_private_key
+{
+  gnutls_ecc_curve_t c_curve = scm_to_gnutls_ecc_curve (curve, 1, FUNC_NAME);
+  scm_dynwind_begin (0);
+  SCM args[3] = { x, y, k };
+  gnutls_datum_t c_args_d[3];
+  const char *c_args[3];
+  size_t c_args_length[3];
+  scm_t_array_handle c_args_handle[3];
+  for (size_t i = 0; i < 3; i++)
+    {
+      c_args[i] =
+	scm_gnutls_get_array (args[i], &(c_args_handle[i]),
+			      &(c_args_length[i]), FUNC_NAME);
+      c_args_d[i].data = (unsigned char *) c_args[i];
+      c_args_d[i].size = c_args_length[i];
+      scm_dynwind_release_handle (&(c_args_handle[i]));
+    }
+  gnutls_privkey_t c_key;
+  int error = gnutls_privkey_init (&c_key);
+  if (EXPECT_FALSE (error))
+    {
+      scm_gnutls_error (error, FUNC_NAME);
+    }
+  else
+    {
+      scm_dynwind_unwind_handler (do_gnutls_privkey_deinit, c_key, 0);
+      error =
+	gnutls_privkey_import_ecc_raw (c_key, c_curve, &(c_args_d[0]),
+				       &(c_args_d[1]), &(c_args_d[2]));
+    }
+  SCM key = SCM_UNSPECIFIED;
+  if (EXPECT_FALSE (error))
+    {
+      scm_gnutls_error (error, FUNC_NAME);
+    }
+  else
+    {
+      key = scm_from_gnutls_private_key (c_key);
+    }
+  scm_dynwind_end ();
+  return key;
+}
+
+#undef FUNC_NAME
+
+SCM_DEFINE (scm_import_raw_rsa_private_key, "import-raw-rsa-private-key", 8,
+	    0, 0, (SCM m, SCM e, SCM d, SCM p, SCM q, SCM u, SCM e1, SCM e2),
+	    "Create a new RSA private key. "
+	    "@var{d} starting at 3.7.0, and @var{u}, @var{e1} and @var{e2} "
+	    "are optional, pass @code{#f} to not set them.")
+#define FUNC_NAME s_scm_import_raw_rsa_private_key
+{
+  scm_dynwind_begin (0);
+  SCM args[8] = { m, e, d, p, q, u, e1, e2 };
+  gnutls_datum_t c_args_d[8];
+  gnutls_datum_t *c_args_opt[8];
+  const char *c_args[8] = { NULL };
+  size_t c_args_length[8] = { 0 };
+  scm_t_array_handle c_args_handle[8];
+  for (size_t i = 0; i < 8; i++)
+    {
+      if (scm_is_true (args[i]))
+	{
+	  c_args[i] =
+	    scm_gnutls_get_array (args[i], &(c_args_handle[i]),
+				  &(c_args_length[i]), FUNC_NAME);
+	  c_args_d[i].data = (unsigned char *) c_args[i];
+	  c_args_d[i].size = c_args_length[i];
+	  scm_dynwind_release_handle (&(c_args_handle[i]));
+	  c_args_opt[i] = &(c_args_d[i]);
+	}
+      else
+	{
+	  c_args_opt[i] = NULL;
+	}
+    }
+  gnutls_privkey_t c_key;
+  int error = 0;
+  size_t offending_arg = 0;
+  for (size_t i = 0; i < 8; i++)
+    {
+      if (c_args_opt[i] == NULL)
+	{
+	  /* This is only valid for argument 2, if the gnutls version is after
+	     3.6.14, or for arguments 5-7. */
+	  int valid = 0;
+	  if (i == 2 && gnutls_check_version_numeric (3, 7, 0))
+	    {
+	      valid = 1;
+	    }
+	  if (i >= 5)
+	    {
+	      valid = 1;
+	    }
+	  if (!valid)
+	    {
+	      error = GNUTLS_E_ILLEGAL_PARAMETER;
+	      offending_arg = i;
+	    }
+	}
+    }
+  if (EXPECT_FALSE (error))
+    {
+      scm_wrong_type_arg (FUNC_NAME, offending_arg, args[offending_arg]);
+    }
+  else
+    {
+      error = gnutls_privkey_init (&c_key);
+    }
+  if (EXPECT_FALSE (error))
+    {
+      scm_gnutls_error (error, FUNC_NAME);
+    }
+  else
+    {
+      scm_dynwind_unwind_handler (do_gnutls_privkey_deinit, c_key, 0);
+      error =
+	gnutls_privkey_import_rsa_raw (c_key, c_args_opt[0], c_args_opt[1],
+				       c_args_opt[2], c_args_opt[3],
+				       c_args_opt[4], c_args_opt[5],
+				       c_args_opt[6], c_args_opt[7]);
+    }
+  SCM key = SCM_UNSPECIFIED;
+  if (EXPECT_FALSE (error))
+    {
+      scm_gnutls_error (error, FUNC_NAME);
+    }
+  else
+    {
+      key = scm_from_gnutls_private_key (c_key);
+    }
+  scm_dynwind_end ();
+  return key;
+}
+
+#undef FUNC_NAME
+
+SCM_DEFINE (scm_public_key_export_raw_dsa, "public-key-export-raw-dsa", 1, 0,
+	    0, (SCM key),
+	    "Export a DSA public key, and return 4 parameters: "
+	    "P, Q, G and Y.")
+#define FUNC_NAME s_scm_public_key_export_raw_dsa
+{
+  gnutls_pubkey_t c_key = scm_to_gnutls_public_key (key, 1, FUNC_NAME);
+  gnutls_datum_t c_parameters[4];
+  scm_dynwind_begin (0);
+  int error = gnutls_pubkey_export_dsa_raw2 (c_key, &(c_parameters[0]),
+					     &(c_parameters[1]),
+					     &(c_parameters[2]),
+					     &(c_parameters[3]), 0);
+  SCM ret = SCM_UNSPECIFIED;
+  if (EXPECT_FALSE (error))
+    {
+      scm_gnutls_error (error, FUNC_NAME);
+    }
+  else
+    {
+      for (size_t i = 0; i < 4; i++)
+	{
+	  scm_dynwind_unwind_handler (gnutls_free, c_parameters[i].data,
+				      SCM_F_WIND_EXPLICITLY);
+	}
+      SCM parameters[4];
+      for (size_t i = 0; i < 4; i++)
+	{
+	  parameters[i] = scm_c_make_bytevector (c_parameters[i].size);
+	  memcpy (SCM_BYTEVECTOR_CONTENTS (parameters[i]),
+		  c_parameters[i].data, c_parameters[i].size);
+	}
+      ret = scm_c_values (parameters, 4);
+    }
+  scm_dynwind_end ();
+  return ret;
+}
+
+#undef FUNC_NAME
+
+SCM_DEFINE (scm_public_key_export_raw_ecc, "public-key-export-raw-ecc", 1, 0,
+	    0, (SCM key),
+	    "Export a ECC public key, and return 3 parameters: "
+	    "the curve, X and Y.")
+#define FUNC_NAME s_scm_public_key_export_raw_ecc
+{
+  gnutls_pubkey_t c_key = scm_to_gnutls_public_key (key, 1, FUNC_NAME);
+  gnutls_ecc_curve_t c_curve;
+  gnutls_datum_t c_parameters[2];
+  scm_dynwind_begin (0);
+  int error =
+    gnutls_pubkey_export_ecc_raw2 (c_key, &c_curve, &(c_parameters[0]),
+				   &(c_parameters[1]), 0);
+  SCM ret = SCM_UNSPECIFIED;
+  if (EXPECT_FALSE (error))
+    {
+      scm_gnutls_error (error, FUNC_NAME);
+    }
+  else
+    {
+      for (size_t i = 0; i < 2; i++)
+	{
+	  scm_dynwind_unwind_handler (gnutls_free, c_parameters[i].data,
+				      SCM_F_WIND_EXPLICITLY);
+	}
+      SCM parameters[3];
+      parameters[0] = scm_from_gnutls_ecc_curve (c_curve);
+      for (size_t i = 0; i < 2; i++)
+	{
+	  parameters[i + 1] = scm_c_make_bytevector (c_parameters[i].size);
+	  memcpy (SCM_BYTEVECTOR_CONTENTS (parameters[i + 1]),
+		  c_parameters[i].data, c_parameters[i].size);
+	}
+      ret = scm_c_values (parameters, 3);
+    }
+  scm_dynwind_end ();
+  return ret;
+}
+
+#undef FUNC_NAME
+
+SCM_DEFINE (scm_public_key_export_raw_rsa, "public-key-export-raw-rsa", 1, 0,
+	    0, (SCM key),
+	    "Export a RSA public key, and return 2 parameters: " "M and E.")
+#define FUNC_NAME s_scm_public_key_export_raw_rsa
+{
+  gnutls_pubkey_t c_key = scm_to_gnutls_public_key (key, 1, FUNC_NAME);
+  gnutls_datum_t c_parameters[2];
+  scm_dynwind_begin (0);
+  int error = gnutls_pubkey_export_rsa_raw2 (c_key, &(c_parameters[0]),
+					     &(c_parameters[1]), 0);
+  SCM ret = SCM_UNSPECIFIED;
+  if (EXPECT_FALSE (error))
+    {
+      scm_gnutls_error (error, FUNC_NAME);
+    }
+  else
+    {
+      for (size_t i = 0; i < 2; i++)
+	{
+	  scm_dynwind_unwind_handler (gnutls_free, c_parameters[i].data,
+				      SCM_F_WIND_EXPLICITLY);
+	}
+      SCM parameters[2];
+      for (size_t i = 0; i < 2; i++)
+	{
+	  parameters[i] = scm_c_make_bytevector (c_parameters[i].size);
+	  memcpy (SCM_BYTEVECTOR_CONTENTS (parameters[i]),
+		  c_parameters[i].data, c_parameters[i].size);
+	}
+      ret = scm_c_values (parameters, 2);
+    }
+  scm_dynwind_end ();
+  return ret;
+}
+
+#undef FUNC_NAME
+
+SCM_DEFINE (scm_private_key_export_raw_dsa, "private-key-export-raw-dsa", 1,
+	    0, 0, (SCM key),
+	    "Export a DSA private key, and return 5 parameters: "
+	    "P, Q, G, Y and X.")
+#define FUNC_NAME s_scm_private_key_export_raw_dsa
+{
+  gnutls_privkey_t c_key = scm_to_gnutls_private_key (key, 1, FUNC_NAME);
+  gnutls_datum_t c_parameters[5];
+  scm_dynwind_begin (0);
+  int error = gnutls_privkey_export_dsa_raw2 (c_key, &(c_parameters[0]),
+					      &(c_parameters[1]),
+					      &(c_parameters[2]),
+					      &(c_parameters[3]),
+					      &(c_parameters[4]),
+					      0);
+  SCM ret = SCM_UNSPECIFIED;
+  if (EXPECT_FALSE (error))
+    {
+      scm_gnutls_error (error, FUNC_NAME);
+    }
+  else
+    {
+      for (size_t i = 0; i < 5; i++)
+	{
+	  scm_dynwind_unwind_handler (gnutls_free, c_parameters[i].data,
+				      SCM_F_WIND_EXPLICITLY);
+	}
+      SCM parameters[5];
+      for (size_t i = 0; i < 5; i++)
+	{
+	  parameters[i] = scm_c_make_bytevector (c_parameters[i].size);
+	  memcpy (SCM_BYTEVECTOR_CONTENTS (parameters[i]),
+		  c_parameters[i].data, c_parameters[i].size);
+	}
+      ret = scm_c_values (parameters, 5);
+    }
+  scm_dynwind_end ();
+  return ret;
+}
+
+#undef FUNC_NAME
+
+SCM_DEFINE (scm_private_key_export_raw_ecc, "private-key-export-raw-ecc", 1,
+	    0, 0, (SCM key),
+	    "Export a ECC private key, and return 4 parameters: "
+	    "the curve, X, Y and K.")
+#define FUNC_NAME s_scm_private_key_export_raw_ecc
+{
+  gnutls_privkey_t c_key = scm_to_gnutls_private_key (key, 1, FUNC_NAME);
+  gnutls_ecc_curve_t c_curve;
+  gnutls_datum_t c_parameters[3];
+  scm_dynwind_begin (0);
+  int error =
+    gnutls_privkey_export_ecc_raw2 (c_key, &c_curve, &(c_parameters[0]),
+				    &(c_parameters[1]), &(c_parameters[2]),
+				    0);
+  SCM ret = SCM_UNSPECIFIED;
+  if (EXPECT_FALSE (error))
+    {
+      scm_gnutls_error (error, FUNC_NAME);
+    }
+  else
+    {
+      for (size_t i = 0; i < 3; i++)
+	{
+	  scm_dynwind_unwind_handler (gnutls_free, c_parameters[i].data,
+				      SCM_F_WIND_EXPLICITLY);
+	}
+      SCM parameters[4];
+      parameters[0] = scm_from_gnutls_ecc_curve (c_curve);
+      for (size_t i = 0; i < 3; i++)
+	{
+	  parameters[i + 1] = scm_c_make_bytevector (c_parameters[i].size);
+	  memcpy (SCM_BYTEVECTOR_CONTENTS (parameters[i + 1]),
+		  c_parameters[i].data, c_parameters[i].size);
+	}
+      ret = scm_c_values (parameters, 4);
+    }
+  scm_dynwind_end ();
+  return ret;
+}
+
+#undef FUNC_NAME
+
+SCM_DEFINE (scm_private_key_export_raw_rsa, "private-key-export-raw-rsa", 1,
+	    0, 0, (SCM key),
+	    "Export a RSA private key, and return 8 parameters: "
+	    "M, E, D, P, Q, U, E1, E2.")
+#define FUNC_NAME s_scm_private_key_export_raw_rsa
+{
+  gnutls_privkey_t c_key = scm_to_gnutls_private_key (key, 1, FUNC_NAME);
+  gnutls_datum_t c_parameters[8];
+  scm_dynwind_begin (0);
+  int error = gnutls_privkey_export_rsa_raw2 (c_key, &(c_parameters[0]),
+					      &(c_parameters[1]),
+					      &(c_parameters[2]),
+					      &(c_parameters[3]),
+					      &(c_parameters[4]),
+					      &(c_parameters[5]),
+					      &(c_parameters[6]),
+					      &(c_parameters[7]), 0);
+  SCM ret = SCM_UNSPECIFIED;
+  if (EXPECT_FALSE (error))
+    {
+      scm_gnutls_error (error, FUNC_NAME);
+    }
+  else
+    {
+      for (size_t i = 0; i < 8; i++)
+	{
+	  scm_dynwind_unwind_handler (gnutls_free, c_parameters[i].data,
+				      SCM_F_WIND_EXPLICITLY);
+	}
+      SCM parameters[8];
+      for (size_t i = 0; i < 8; i++)
+	{
+	  parameters[i] = scm_c_make_bytevector (c_parameters[i].size);
+	  memcpy (SCM_BYTEVECTOR_CONTENTS (parameters[i]),
+		  c_parameters[i].data, c_parameters[i].size);
+	}
+      ret = scm_c_values (parameters, 8);
+    }
+  scm_dynwind_end ();
+  return ret;
+}
+
+#undef FUNC_NAME
+
+SCM_DEFINE (scm_private_key_to_public_key, "private-key->public-key", 2, 0, 0,
+	    (SCM key, SCM usage),
+	    "Return the public part of @var{key}. @var{usage} is a list of "
+	    "key usage flags, such as @code{key-usage/digital-signature}.")
+#define FUNC_NAME s_scm_private_key_to_public_key
+{
+  unsigned int c_usage = 0;
+  for (c_usage = 0; !scm_is_null (usage); usage = SCM_CDR (usage))
+    {
+      c_usage |=
+	((unsigned int)
+	 scm_to_gnutls_key_usage (SCM_CAR (usage), 2, FUNC_NAME));
+    }
+  gnutls_privkey_t c_key = scm_to_gnutls_private_key (key, 1, FUNC_NAME);
+  gnutls_pubkey_t c_pub;
+  scm_dynwind_begin (0);
+  int error = gnutls_pubkey_init (&c_pub);
+  SCM pub = SCM_UNSPECIFIED;
+  if (EXPECT_FALSE (error))
+    {
+      scm_gnutls_error (error, FUNC_NAME);
+    }
+  else
+    {
+      scm_dynwind_unwind_handler (do_gnutls_pubkey_deinit, c_pub, 0);
+      error = gnutls_pubkey_import_privkey (c_pub, c_key, c_usage, 0);
+    }
+  if (EXPECT_FALSE (error))
+    {
+      scm_gnutls_error (error, FUNC_NAME);
+    }
+  else
+    {
+      pub = scm_from_gnutls_public_key (c_pub);
+    }
+  scm_dynwind_end ();
+  return pub;
+}
+
+#undef FUNC_NAME
+
+SCM_DEFINE (scm_public_key_export, "public-key-export", 2, 0, 0,
+	    (SCM key, SCM format), "Export a public key to PEM or DER.")
+#define FUNC_NAME s_scm_public_key_export
+{
+  gnutls_pubkey_t c_key = scm_to_gnutls_public_key (key, 1, FUNC_NAME);
+  gnutls_x509_crt_fmt_t c_format =
+    scm_to_gnutls_x509_certificate_format (format, 2, FUNC_NAME);
+  scm_dynwind_begin (0);
+  gnutls_datum_t c_out;
+  int error = gnutls_pubkey_export2 (c_key, c_format, &c_out);
+  scm_dynwind_unwind_handler (gnutls_free, c_out.data, SCM_F_WIND_EXPLICITLY);
+  SCM out = SCM_UNSPECIFIED;
+  if (EXPECT_FALSE (error))
+    {
+      scm_gnutls_error (error, FUNC_NAME);
+    }
+  else
+    {
+      out = scm_c_make_bytevector (c_out.size);
+      memcpy (SCM_BYTEVECTOR_CONTENTS (out), c_out.data, c_out.size);
+    }
+  scm_dynwind_end ();
+  return out;
+}
+
+#undef FUNC_NAME
+
+SCM_DEFINE (scm_public_key_pk_algorithm, "public-key-pk-algorithm", 1, 0, 0,
+	    (SCM key),
+	    "Return the public key algorithm used by @var{key} "
+	    "and the number of bits.")
+#define FUNC_NAME s_scm_public_key_pk_algorithm
+{
+  gnutls_pubkey_t c_key = scm_to_gnutls_public_key (key, 1, FUNC_NAME);
+  unsigned int c_bits = 0;
+  int error = gnutls_pubkey_get_pk_algorithm (c_key, &c_bits);
+  if (EXPECT_FALSE (error < 0))
+    {
+      scm_gnutls_error (error, FUNC_NAME);
+    }
+  SCM output[2];
+  output[0] = scm_from_gnutls_pk_algorithm (error);
+  output[1] = scm_from_uint (c_bits);
+  return scm_c_values (output, 2);
+}
+
+#undef FUNC_NAME
+
+SCM_DEFINE (scm_private_key_pk_algorithm, "private-key-pk-algorithm", 1, 0, 0,
+	    (SCM key),
+	    "Return the private key algorithm used by @var{key} "
+	    "and the number of bits.")
+#define FUNC_NAME s_scm_private_key_pk_algorithm
+{
+  gnutls_privkey_t c_key = scm_to_gnutls_private_key (key, 1, FUNC_NAME);
+  unsigned int c_bits = 0;
+  int error = gnutls_privkey_get_pk_algorithm (c_key, &c_bits);
+  if (EXPECT_FALSE (error < 0))
+    {
+      scm_gnutls_error (error, FUNC_NAME);
+    }
+  SCM output[2];
+  output[0] = scm_from_gnutls_pk_algorithm (error);
+  output[1] = scm_from_uint (c_bits);
+  return scm_c_values (output, 2);
+}
+
+#undef FUNC_NAME
+
+SCM_DEFINE (scm_public_key_preferred_hash_algorithm,
+	    "public-key-preferred-hash-algorithm", 1, 0, 0, (SCM key),
+	    "Return the preferred hash algorithm for @var{key}, "
+	    "and a boolean indicating whether this algorithm is "
+	    "mandatory.")
+#define FUNC_NAME s_scm_public_key_preferred_hash_algorithm
+{
+  gnutls_pubkey_t c_key = scm_to_gnutls_public_key (key, 1, FUNC_NAME);
+  gnutls_digest_algorithm_t c_algo;
+  unsigned int c_mandatory = 0;
+  int error =
+    gnutls_pubkey_get_preferred_hash_algorithm (c_key, &c_algo, &c_mandatory);
+  if (EXPECT_FALSE (error))
+    {
+      scm_gnutls_error (error, FUNC_NAME);
+    }
+  SCM output[2];
+  output[0] = scm_from_gnutls_digest (c_algo);
+  output[1] = scm_from_bool (c_mandatory);
+  return scm_c_values (output, 2);
+}
+
+#undef FUNC_NAME
+
+SCM_DEFINE (scm_generate_private_key, "generate-private-key", 2, 0, 0,
+	    (SCM algo, SCM bits_or_curve), "Return a new private key.")
+#define FUNC_NAME s_scm_generate_private_key
+{
+  gnutls_pk_algorithm_t c_algo =
+    scm_to_gnutls_pk_algorithm (algo, 1, FUNC_NAME);
+  unsigned int c_bits;
+  if (scm_is_integer (bits_or_curve))
+    {
+      c_bits = scm_to_uint (bits_or_curve);
+    }
+  else
+    {
+      c_bits =
+	GNUTLS_CURVE_TO_BITS (scm_to_gnutls_ecc_curve
+			      (bits_or_curve, 2, FUNC_NAME));
+    }
+  gnutls_privkey_t c_key;
+  SCM key = SCM_UNSPECIFIED;
+  scm_dynwind_begin (0);
+  int error = gnutls_privkey_init (&c_key);
+  if (EXPECT_FALSE (error))
+    {
+      scm_gnutls_error (error, FUNC_NAME);
+    }
+  else
+    {
+      scm_dynwind_unwind_handler (do_gnutls_privkey_deinit, c_key, 0);
+      error = gnutls_privkey_generate2 (c_key, c_algo, c_bits, 0, NULL, 0);
+    }
+  if (EXPECT_FALSE (error))
+    {
+      scm_gnutls_error (error, FUNC_NAME);
+    }
+  else
+    {
+      key = scm_from_gnutls_private_key (c_key);
+    }
+  scm_dynwind_end ();
+  return key;
+}
+
+#undef FUNC_NAME
+
+SCM_DEFINE (scm_private_key_sign_data, "private-key-sign-data", 4, 0, 0,
+	    (SCM key, SCM algo, SCM data, SCM flags),
+	    "Sign the @var{data} and return the signature. "
+	    "@var{flags} is a list of privkey flags."
+	    "Available flags are: @code{privkey/sign-flag-tls1-rsa} "
+	    "@code{privkey/sign-flag-rsa-pss} @code{privkey/flag-reproducible}.")
+#define FUNC_NAME s_scm_private_key_sign_data
+{
+  gnutls_privkey_t c_key = scm_to_gnutls_private_key (key, 1, FUNC_NAME);
+  gnutls_sign_algorithm_t c_algo =
+    scm_to_gnutls_sign_algorithm (algo, 2, FUNC_NAME);
+  gnutls_datum_t c_data_d;
+  const char *c_data;
+  size_t c_data_length;
+  scm_t_array_handle c_data_handle;
+  unsigned int c_flags = 0;
+  gnutls_datum_t c_signature;
+  for (c_flags = 0; !scm_is_null (flags); flags = SCM_CDR (flags))
+    {
+      c_flags |=
+	((unsigned int)
+	 scm_to_gnutls_privkey (SCM_CAR (flags), 4, FUNC_NAME));
+    }
+  scm_dynwind_begin (0);
+  c_data =
+    scm_gnutls_get_array (data, &c_data_handle, &c_data_length, FUNC_NAME);
+  scm_dynwind_release_handle (&c_data_handle);
+  c_data_d.data = (unsigned char *) c_data;
+  c_data_d.size = c_data_length;
+  int error = gnutls_privkey_sign_data2 (c_key, c_algo, c_flags, &c_data_d,
+					 &c_signature);
+  SCM signature = SCM_UNSPECIFIED;
+  if (EXPECT_FALSE (error))
+    {
+      scm_gnutls_error (error, FUNC_NAME);
+    }
+  else
+    {
+      scm_dynwind_unwind_handler (gnutls_free, c_signature.data,
+				  SCM_F_WIND_EXPLICITLY);
+      signature = scm_c_make_bytevector (c_signature.size);
+      memcpy (SCM_BYTEVECTOR_CONTENTS (signature), c_signature.data,
+	      c_signature.size);
+    }
+  scm_dynwind_end ();
+  return signature;
+}
+
+#undef FUNC_NAME
+
+SCM_DEFINE (scm_private_key_sign_hash, "private-key-sign-hash", 4, 0, 0,
+	    (SCM key, SCM algo, SCM hash_data, SCM flags),
+	    "Sign the @var{hash_data} and return the signature. "
+	    "@var{flags} is a list of privkey flags. "
+	    "Available flags are: @code{privkey/sign-flag-tls1-rsa} "
+	    "@code{privkey/sign-flag-rsa-pss} @code{flag-reproducible}.")
+#define FUNC_NAME s_scm_private_key_sign_hash
+{
+  gnutls_privkey_t c_key = scm_to_gnutls_private_key (key, 1, FUNC_NAME);
+  gnutls_sign_algorithm_t c_algo =
+    scm_to_gnutls_sign_algorithm (algo, 2, FUNC_NAME);
+  gnutls_datum_t c_data_d;
+  const char *c_data;
+  size_t c_data_length;
+  scm_t_array_handle c_data_handle;
+  unsigned int c_flags = 0;
+  gnutls_datum_t c_signature;
+  for (c_flags = 0; !scm_is_null (flags); flags = SCM_CDR (flags))
+    {
+      c_flags |=
+	((unsigned int)
+	 scm_to_gnutls_privkey (SCM_CAR (flags), 4, FUNC_NAME));
+    }
+  scm_dynwind_begin (0);
+  c_data =
+    scm_gnutls_get_array (hash_data, &c_data_handle, &c_data_length,
+			  FUNC_NAME);
+  scm_dynwind_release_handle (&c_data_handle);
+  c_data_d.data = (unsigned char *) c_data;
+  c_data_d.size = c_data_length;
+  int error = gnutls_privkey_sign_hash2 (c_key, c_algo, c_flags, &c_data_d,
+					 &c_signature);
+  SCM signature = SCM_UNSPECIFIED;
+  if (EXPECT_FALSE (error))
+    {
+      scm_gnutls_error (error, FUNC_NAME);
+    }
+  else
+    {
+      scm_dynwind_unwind_handler (gnutls_free, c_signature.data,
+				  SCM_F_WIND_EXPLICITLY);
+      signature = scm_c_make_bytevector (c_signature.size);
+      memcpy (SCM_BYTEVECTOR_CONTENTS (signature), c_signature.data,
+	      c_signature.size);
+    }
+  scm_dynwind_end ();
+  return signature;
+}
+
+#undef FUNC_NAME
+
+SCM_DEFINE (scm_private_key_decrypt_data, "private-key-decrypt-data", 2, 0, 0,
+	    (SCM key, SCM data), "Decrypt the @var{data}.")
+#define FUNC_NAME s_scm_private_key_decrypt_data
+{
+  gnutls_privkey_t c_key = scm_to_gnutls_private_key (key, 1, FUNC_NAME);
+  gnutls_datum_t c_data_d;
+  const char *c_data;
+  size_t c_data_length;
+  scm_t_array_handle c_data_handle;
+  scm_dynwind_begin (0);
+  c_data =
+    scm_gnutls_get_array (data, &c_data_handle, &c_data_length, FUNC_NAME);
+  scm_dynwind_release_handle (&c_data_handle);
+  c_data_d.data = (unsigned char *) c_data;
+  c_data_d.size = c_data_length;
+  SCM output = scm_c_make_bytevector (c_data_length);
+  unsigned char *c_output =
+    (unsigned char *) SCM_BYTEVECTOR_CONTENTS (output);
+  int error = gnutls_privkey_decrypt_data2 (c_key, 0, &c_data_d, c_output,
+					    c_data_length);
+  if (EXPECT_FALSE (error))
+    {
+      scm_gnutls_error (error, FUNC_NAME);
+    }
+  scm_dynwind_end ();
+  return output;
+}
+
+#undef FUNC_NAME
+
+SCM_DEFINE (scm_public_key_encrypt_data, "public-key-encrypt-data", 2, 0, 0,
+	    (SCM key, SCM data), "Encrypt the @var{data}.")
+#define FUNC_NAME s_scm_public_key_encrypt_data
+{
+  gnutls_pubkey_t c_key = scm_to_gnutls_public_key (key, 1, FUNC_NAME);
+  gnutls_datum_t c_data_d;
+  const char *c_data;
+  size_t c_data_length;
+  scm_t_array_handle c_data_handle;
+  scm_dynwind_begin (0);
+  c_data =
+    scm_gnutls_get_array (data, &c_data_handle, &c_data_length, FUNC_NAME);
+  scm_dynwind_release_handle (&c_data_handle);
+  c_data_d.data = (unsigned char *) c_data;
+  c_data_d.size = c_data_length;
+  gnutls_datum_t c_output;
+  SCM output = SCM_UNSPECIFIED;
+  int error = gnutls_pubkey_encrypt_data (c_key, 0, &c_data_d, &c_output);
+  if (EXPECT_FALSE (error))
+    {
+      scm_gnutls_error (error, FUNC_NAME);
+    }
+  else
+    {
+      scm_dynwind_unwind_handler (gnutls_free, c_output.data,
+				  SCM_F_WIND_EXPLICITLY);
+      output = scm_c_make_bytevector (c_output.size);
+      memcpy (SCM_BYTEVECTOR_CONTENTS (output), c_output.data, c_output.size);
+    }
+  scm_dynwind_end ();
+  return output;
+}
+
+#undef FUNC_NAME
+
+SCM_DEFINE (scm_public_key_verify_data, "public-key-verify-data", 4, 0, 0,
+	    (SCM key, SCM algo, SCM data, SCM signature),
+	    "Verify the data @var{signature}.")
+#define FUNC_NAME s_scm_public_key_verify_data
+{
+  gnutls_sign_algorithm_t c_algo =
+    scm_to_gnutls_sign_algorithm (algo, 2, FUNC_NAME);
+  gnutls_pubkey_t c_key = scm_to_gnutls_public_key (key, 1, FUNC_NAME);
+  gnutls_datum_t c_data_d, c_signature_d;
+  const char *c_data, *c_signature;
+  size_t c_data_length, c_signature_length;
+  scm_t_array_handle c_data_handle, c_signature_handle;
+  scm_dynwind_begin (0);
+  c_data =
+    scm_gnutls_get_array (data, &c_data_handle, &c_data_length, FUNC_NAME);
+  scm_dynwind_release_handle (&c_data_handle);
+  c_data_d.data = (unsigned char *) c_data;
+  c_data_d.size = c_data_length;
+  c_signature =
+    scm_gnutls_get_array (signature, &c_signature_handle, &c_signature_length,
+			  FUNC_NAME);
+  scm_dynwind_release_handle (&c_signature_handle);
+  c_signature_d.data = (unsigned char *) c_signature;
+  c_signature_d.size = c_signature_length;
+  int error =
+    gnutls_pubkey_verify_data2 (c_key, c_algo, 0, &c_data_d, &c_signature_d);
+  if (EXPECT_FALSE (error))
+    {
+      scm_gnutls_error (error, FUNC_NAME);
+    }
+  scm_dynwind_end ();
+  return SCM_UNSPECIFIED;
+}
+
+#undef FUNC_NAME
+
+SCM_DEFINE (scm_public_key_verify_hash, "public-key-verify-hash", 4, 0, 0,
+	    (SCM key, SCM algo, SCM hash_data, SCM signature),
+	    "Verify the hash data @var{signature}.")
+#define FUNC_NAME s_scm_public_key_verify_hash
+{
+  gnutls_sign_algorithm_t c_algo =
+    scm_to_gnutls_sign_algorithm (algo, 2, FUNC_NAME);
+  gnutls_pubkey_t c_key = scm_to_gnutls_public_key (key, 1, FUNC_NAME);
+  gnutls_datum_t c_data_d, c_signature_d;
+  const char *c_data, *c_signature;
+  size_t c_data_length, c_signature_length;
+  scm_t_array_handle c_data_handle, c_signature_handle;
+  scm_dynwind_begin (0);
+  c_data =
+    scm_gnutls_get_array (hash_data, &c_data_handle, &c_data_length,
+			  FUNC_NAME);
+  scm_dynwind_release_handle (&c_data_handle);
+  c_data_d.data = (unsigned char *) c_data;
+  c_data_d.size = c_data_length;
+  c_signature =
+    scm_gnutls_get_array (signature, &c_signature_handle, &c_signature_length,
+			  FUNC_NAME);
+  scm_dynwind_release_handle (&c_signature_handle);
+  c_signature_d.data = (unsigned char *) c_signature;
+  c_signature_d.size = c_signature_length;
+  int error =
+    gnutls_pubkey_verify_hash2 (c_key, c_algo, 0, &c_data_d, &c_signature_d);
+  if (EXPECT_FALSE (error))
+    {
+      scm_gnutls_error (error, FUNC_NAME);
+    }
+  scm_dynwind_end ();
+  return SCM_UNSPECIFIED;
+}
+
+#undef FUNC_NAME
 
 
 

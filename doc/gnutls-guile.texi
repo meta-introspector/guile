@@ -556,6 +556,7 @@ The low-level functions in GnuTLS can be accessed for various tasks.
 * Hash Digest Algorithms:: Hashes.
 * Authenticated Encryption:: The AEAD API.
 * Low-lovel encryption API:: Block-by-block encryption of data.
+* Public key cryptography:: Using private and public keys.
 @end menu
 
 @node Hash Message Authentication Code
@@ -640,6 +641,21 @@ encryption, and a private key.
 
 @example
 @verbatiminclude @value{abs_top_srcdir}/guile/examples/low-level-cipher-example.scm
+@end example
+
+@node Public key cryptography
+@subsection Public key cryptography
+The following example shows how to use elliptic curve cryptography
+with a private key.
+
+@example
+@verbatiminclude @value{abs_top_srcdir}/guile/examples/use-private-key.scm
+@end example
+
+The next example shows how to generate a private key.
+
+@example
+@verbatiminclude @value{abs_top_srcdir}/guile/examples/generate-private-key.scm
 @end example
 
 @c *********************************************************************

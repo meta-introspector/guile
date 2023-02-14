@@ -209,6 +209,14 @@
   (make-smob-type "gnutls_openpgp_keyring_t" 'openpgp-keyring
                   "gnutls_openpgp_keyring_deinit"))
 
+(define %public-key-smob
+  (make-smob-type "gnutls_pubkey_t" 'public-key
+                  "gnutls_pubkey_deinit"))
+
+(define %private-key-smob
+  (make-smob-type "gnutls_privkey_t" 'private-key
+                  "gnutls_privkey_deinit"))
+
 (define %hmac-smob
   ;; The hmac object in gnutls does not contain enough information to be used
   ;; safely. The output length of the hmac algorithm cannot be found from an
@@ -240,6 +248,7 @@
         %psk-server-credentials-smob %psk-client-credentials-smob
         %x509-certificate-smob %x509-private-key-smob %hmac-smob
         %hash-smob %aead-cipher-smob %cipher-smob
+        %public-key-smob %private-key-smob
 
         %openpgp-certificate-smob %openpgp-private-key-smob
         %openpgp-keyring-smob))
