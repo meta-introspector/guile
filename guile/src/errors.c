@@ -23,6 +23,7 @@
 
 #include <libguile.h>
 #include <gnutls/gnutls.h>
+#include <gnutls/crypto.h>
 
 #include "errors.h"
 #include "enums.h"

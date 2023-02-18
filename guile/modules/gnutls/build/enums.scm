@@ -515,6 +515,12 @@ unrecognized-name unknown-psk-identity)
                   #f
                   "GNUTLS_PSK_KEY_"))
 
+(define %random-level-enum
+  (make-enum-type 'random-level "gnutls_rnd_level_t"
+                  '(nonce random key)
+                  #f
+                  "GNUTLS_RND_"))
+
 (define %key-usage-enum
   ;; Not actually an enum on the C side.
   (make-enum-type 'key-usage "int"
@@ -803,6 +809,7 @@ application-error-min
         %pk-algorithm-enum %sign-algorithm-enum %server-name-type-enum
         %psk-key-format-enum %key-usage-enum %certificate-verify-enum
         %error-enum %privkey-enum %oid-enum %ecc-curve-enum
+        %random-level-enum
 
         %openpgp-certificate-format-enum))
 

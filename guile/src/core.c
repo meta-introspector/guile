@@ -6225,6 +6225,25 @@ SCM_DEFINE (scm_x509_private_key_to_private_key,
 }
 
 #undef FUNC_NAME
+
+SCM_DEFINE (scm_gnutls_random, "gnutls-random", 2, 0, 0,
+	    (SCM level, SCM length),
+	    "Return a random vector of @var{length} bytes.")
+#define FUNC_NAME s_scm_gnutls_random
+{
+  gnutls_rnd_level_t c_level =
+    scm_to_gnutls_random_level (level, 1, FUNC_NAME);
+  unsigned c_length = scm_to_uint (length);
+  SCM data = scm_c_make_bytevector (c_length);
+  int error = gnutls_rnd (c_level, SCM_BYTEVECTOR_CONTENTS (data), c_length);
+  if (EXPECT_FALSE (error))
+    {
+      scm_gnutls_error (error, FUNC_NAME);
+    }
+  return data;
+}
+
+#undef FUNC_NAME
 
 
 

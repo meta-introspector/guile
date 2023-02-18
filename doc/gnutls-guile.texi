@@ -557,6 +557,7 @@ The low-level functions in GnuTLS can be accessed for various tasks.
 * Authenticated Encryption:: The AEAD API.
 * Low-lovel encryption API:: Block-by-block encryption of data.
 * Public key cryptography:: Using private and public keys.
+* Generating random numbers:: Pseudo-random number generation.
 @end menu
 
 @node Hash Message Authentication Code
@@ -661,6 +662,17 @@ The next example shows how to generate a private key.
 In addition, abstract public or private keys can be obtained from X509
 certificate and private key, with @code{x509-certificate->public-key}
 and @code{x509-private-key->private-key}.
+
+@node Generating random numbers
+@subsection Generating random numbers
+
+Gnutls lets you generate different kinds of pseudo-random numbers,
+depending on the implications if it is guessed. Here is how you
+generate a random number with the lowest security requirements:
+
+@example
+@verbatiminclude @value{abs_top_srcdir}/guile/examples/random-example.scm
+@end example
 
 @c *********************************************************************
 @node Guile Reference

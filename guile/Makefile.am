@@ -122,7 +122,8 @@ TESTS =						\
   tests/list-ecc-curves.scm                     \
   tests/base64.scm                              \
   tests/asymmetric-crypto.scm                   \
-  tests/x509-to-abstract.scm
+  tests/x509-to-abstract.scm                    \
+  tests/random.scm
 
 if ENABLE_SRP
 TESTS +=					\
@@ -152,4 +153,5 @@ EXTRA_DIST +=					\
   examples/aead-decrypt-example.scm             \
   examples/low-level-cipher-example.scm         \
   examples/use-private-key.scm                  \
-  examples/generate-private-key.scm
+  examples/generate-private-key.scm             \
+  examples/random-example.scm

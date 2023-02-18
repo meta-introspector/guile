@@ -4,6 +4,7 @@ Guile-GnuTLS NEWS                                    -*- outline -*-
 
 ** Bind the AEAD authentication-encryption API and the low-level cipher API.
 ** Bind a substantial part of the (abstract) public key cryptography API from GnuTLS.
+** Bind the pseudo-random number generator.
 
 * Noteworthy changes in release 3.7.12 (2023-05-08) [stable]
 

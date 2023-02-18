@@ -171,6 +171,9 @@
            string->ecc-curve ecc-curve->oid ecc-curve-list
            oid->ecc-curve ecc-curve->pk-algorithm ecc-curve-size
 
+           ;; Random
+           gnutls-random
+
            ;; record layer
            record-send record-receive!
            session-record-port
@@ -194,6 +197,7 @@
            certificate-verify->string error->string
            cipher-suite->string server-name-type->string
            privkey->string oid->string ecc-curve->string
+           random-level->string
 
            ;; enum values
            cipher/null
@@ -529,6 +533,9 @@
            ecc-curve/gost256d
            ecc-curve/x448
            ecc-curve/ed448
+           random-level/nonce
+           random-level/random
+           random-level/key
 
            ;; FIXME: Automate this:
            ;; grep '^#define GNUTLS_E_' ../../lib/includes/gnutls/gnutls.h.in | \

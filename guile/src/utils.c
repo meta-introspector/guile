@@ -24,6 +24,7 @@
 #include "utils.h"
 
 #include <gnutls/gnutls.h>
+#include <gnutls/crypto.h>
 #include <libguile.h>
 
 #include "enums.h"
