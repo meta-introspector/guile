@@ -1258,6 +1258,8 @@ scm_init_gnutls_session_record_port_type (void)
 #if !USING_GUILE_BEFORE_2_2
   scm_set_port_read_wait_fd (session_record_port_type,
 			     session_record_port_fd);
+  scm_set_port_write_wait_fd (session_record_port_type,
+			      session_record_port_fd);
 #endif
 }
 
