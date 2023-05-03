@@ -1094,7 +1094,7 @@ read_from_session_record_port (SCM port, SCM dst, size_t start, size_t count)
 # undef FUNC_NAME
 
 /* Return the file descriptor that backs PORT.  This function is called upon a
-   blocking read--i.e., 'read_from_session_record_port' or
+   blocking read or write--i.e., 'read_from_session_record_port' or
    'write_to_session_record_port' returned -1.  */
 static int
 session_record_port_fd (SCM port)
@@ -1131,7 +1131,7 @@ write_to_session_record_port (SCM port, SCM src, size_t start, size_t count)
 
   if (result == GNUTLS_E_AGAIN
       && SCM_GNUTLS_SESSION_TRANSPORT_IS_FD (c_session))
-    /* Tell Guile that reading would block.  */
+    /* Tell Guile that writing would block.  */
     return (size_t) -1;
 
   if (EXPECT_FALSE (result < 0))
