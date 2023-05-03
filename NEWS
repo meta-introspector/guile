@@ -12,6 +12,8 @@ can check whether a function is available with `(defined? 'hmac-copy)`
 
 ** Bind the HMAC and hash functions from GnuTLS.
 
+** Correctly handle blocking writes to session record ports
+
 * Noteworthy changes in release 3.7.11 (2022-12-07) [stable]
 
 ** Build fixes related to git-version-gen.  Fixes: #9.
