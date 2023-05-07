@@ -34,7 +34,7 @@ upload_dest_dir_ = gnutls
 local-checks-to-skip = sc_GPL_version sc_error_message_uppercase	\
 	sc_prohibit_have_config_h
 
-submodule-checks ?= no-submodule-changes
+gl_public_submodule_commit =
 
 exclude_file_name_regexp--sc_prohibit_test_minus_ao = ^m4/guile.m4$$
 
