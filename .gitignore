@@ -1,4 +1,5 @@
 *~
+/.deps
 /.version
 /INSTALL
 /Makefile
@@ -23,6 +24,7 @@
 /configure
 /doc/Makefile
 /doc/Makefile.in
+/doc/abs-top-srcdir.texi
 /doc/core.c.texi
 /doc/gnutls-guile.info
 /doc/stamp-vti
