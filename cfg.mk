@@ -34,6 +34,8 @@ upload_dest_dir_ = gnutls
 local-checks-to-skip = sc_GPL_version sc_error_message_uppercase	\
 	sc_prohibit_have_config_h
 
+submodule-checks ?= no-submodule-changes
+
 exclude_file_name_regexp--sc_prohibit_test_minus_ao = ^m4/guile.m4$$
 
 VC_LIST_ALWAYS_EXCLUDE_REGEX = ^maint.mk|m4/lib-link.m4|m4/lib-prefix.m4|gl/top/|build-aux/gnupload$$
