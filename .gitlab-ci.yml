@@ -72,7 +72,7 @@ Fedora36-git:
   stage: build
   before_script:
   - yum -y update
-  - yum -y install git autoconf automake libtool make guile-devel gnutls-devel texinfo indent patch diffutils
+  - yum -y install git autoconf automake libtool make guile-devel gnutls-devel texinfo patch diffutils
   script:
   - ./bootstrap
   - ./configure
