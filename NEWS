@@ -1,5 +1,8 @@
 Guile-GnuTLS NEWS                                    -*- outline -*-
 
+* Noteworthy changes in release ?.? (????-??-??) [?]
+
+
 * Noteworthy changes in release 3.7.12 (2023-05-08) [stable]
 
 ** The gnutls-guile library can now use newer gnutls features.
