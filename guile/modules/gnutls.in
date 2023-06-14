@@ -127,7 +127,7 @@
            sign-algorithm->string psk-key-format->string key-usage->string
            certificate-verify->string error->string
            cipher-suite->string server-name-type->string
-           privkey->string
+           privkey->string oid->string
 
            ;; enum values
            cipher/null
@@ -345,6 +345,32 @@
            privkey/flag-reproducible
            privkey/flag-ca
            privkey/flag-rsa-pss-fixed-salt-length
+           oid/x520-country-name
+           oid/x520-organization-name
+           oid/x520-organizational-unit-name
+           oid/x520-common-name
+           oid/x520-locality-name
+           oid/x520-state-or-province-name
+           oid/x520-initials
+           oid/x520-generation-qualifier
+           oid/x520-surname
+           oid/x520-given-name
+           oid/x520-title
+           oid/x520-dn-qualifier
+           oid/x520-pseudonym
+           oid/x520-postalcode
+           oid/x520-name
+           oid/ldap-dc
+           oid/ldap-uid
+           oid/pkcs9-email
+           oid/pkix-date-of-birth
+           oid/pkix-place-of-birth
+           oid/pkix-gender
+           oid/pkix-country-of-citizenship
+           oid/pkix-country-of-residence
+           oid/aia
+           oid/ad-ocsp
+           oid/ad-caissuers
 
            ;; FIXME: Automate this:
            ;; grep '^#define GNUTLS_E_' ../../lib/includes/gnutls/gnutls.h.in | \

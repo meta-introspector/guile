@@ -731,6 +731,22 @@ application-error-min
                   #f
                   "GNUTLS_PRIVKEY_"))
 
+(define %oid-enum
+  ;; Not actually an enum on the C side.
+  (make-enum-type 'oid "const char *"
+                  '(x520-country-name x520-organization-name
+                    x520-organizational-unit-name x520-common-name
+                    x520-locality-name x520-state-or-province-name
+                    x520-initials x520-generation-qualifier
+                    x520-surname x520-given-name x520-title
+                    x520-dn-qualifier x520-pseudonym x520-postalcode
+                    x520-name ldap-dc ldap-uid pkcs9-email
+                    pkix-date-of-birth pkix-place-of-birth pkix-gender
+                    pkix-country-of-citizenship pkix-country-of-residence
+                    aia ad-ocsp ad-caissuers)
+                  #f
+                  "GNUTLS_OID_"))
+
 (define %gnutls-enums
   ;; All enums.
   (list %cipher-enum %kx-enum %params-enum %credentials-enum %mac-enum
@@ -742,7 +758,7 @@ application-error-min
         %x509-certificate-format-enum %x509-subject-alternative-name-enum
         %pk-algorithm-enum %sign-algorithm-enum %server-name-type-enum
         %psk-key-format-enum %key-usage-enum %certificate-verify-enum
-        %error-enum %privkey-enum
+        %error-enum %privkey-enum %oid-enum
 
         %openpgp-certificate-format-enum))
 
