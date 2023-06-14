@@ -81,6 +81,7 @@
 
            ;; X.509
            x509-certificate? x509-private-key?
+           generate-x509-private-key
            import-x509-certificate  x509-certificate-matches-hostname?
            x509-certificate-dn x509-certificate-dn-oid
            x509-certificate-issuer-dn x509-certificate-issuer-dn-oid

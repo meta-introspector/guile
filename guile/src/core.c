@@ -2442,6 +2442,41 @@ SCM_DEFINE (scm_gnutls_import_x509_certificate, "import-x509-certificate",
 
 #undef FUNC_NAME
 
+SCM_DEFINE (scm_gnutls_generate_x509_private_key, "generate-x509-private-key",
+	    3, 0, 0,
+	    (SCM algorithm, SCM bits, SCM flags),
+	    "Return a new X.509 private key object of size @var{bits} "
+	    "generated using @var{algorithm}, a pk-algorithm enum value, and"
+	    "@var{flags}, a list of privkey enum values.")
+#define FUNC_NAME s_scm_gnutls_generate_x509_private_key
+{
+  int err;
+  gnutls_x509_privkey_t c_key;
+  gnutls_pk_algorithm_t c_algo;
+  unsigned int c_bits, c_flags;
+
+  c_algo = scm_to_gnutls_pk_algorithm (algorithm, 1, FUNC_NAME);
+  c_bits = scm_to_uint (bits);
+
+  for (c_flags = 0; !scm_is_null (flags); flags = SCM_CDR (flags))
+    {
+      c_flags |= (unsigned int)
+	scm_to_gnutls_privkey (SCM_CAR (flags), 3, FUNC_NAME);
+    }
+
+  err = gnutls_x509_privkey_init (&c_key);
+  if (EXPECT_FALSE (err))
+    scm_gnutls_error (err, FUNC_NAME);
+
+  err = gnutls_x509_privkey_generate (c_key, c_algo, c_bits, c_flags);
+  if (EXPECT_FALSE (err))
+    scm_gnutls_error (err, FUNC_NAME);
+
+  return (scm_from_gnutls_x509_private_key (c_key));
+}
+
+#undef FUNC_NAME
+
 SCM_DEFINE (scm_gnutls_import_x509_private_key, "import-x509-private-key",
 	    2, 0, 0,
 	    (SCM data, SCM format),
