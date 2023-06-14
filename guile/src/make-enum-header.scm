@@ -40,6 +40,7 @@
     (format port "#include <gnutls/gnutls.h>~%")
     (format port "#include <gnutls/x509.h>~%")
     (format port "#include <gnutls/openpgp.h>~%")
+    (format port "#include <gnutls/abstract.h>~%")
 
     (for-each (lambda (enum)
                 (output-enum-declarations enum port)

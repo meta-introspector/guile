@@ -723,6 +723,14 @@ application-error-min
                   #f
                   "GNUTLS_NAME_"))
 
+(define %privkey-enum
+  (make-enum-type 'privkey "gnutls_privkey_flags_t"
+                  '(import-auto-release import-copy disable-callbacks
+                    sign-flag-tls1-rsa flag-provable flag-export-compat
+                    sign-flag-rsa-pss flag-reproducible flag-ca)
+                  #f
+                  "GNUTLS_PRIVKEY_"))
+
 (define %gnutls-enums
   ;; All enums.
   (list %cipher-enum %kx-enum %params-enum %credentials-enum %mac-enum
@@ -734,7 +742,7 @@ application-error-min
         %x509-certificate-format-enum %x509-subject-alternative-name-enum
         %pk-algorithm-enum %sign-algorithm-enum %server-name-type-enum
         %psk-key-format-enum %key-usage-enum %certificate-verify-enum
-        %error-enum
+        %error-enum %privkey-enum
 
         %openpgp-certificate-format-enum))
 

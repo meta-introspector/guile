@@ -123,6 +123,7 @@
            sign-algorithm->string psk-key-format->string key-usage->string
            certificate-verify->string error->string
            cipher-suite->string server-name-type->string
+           privkey->string
 
            ;; enum values
            cipher/null
@@ -330,6 +331,16 @@
            certificate-verify/allow-sign-rsa-md2
            certificate-verify/allow-sign-rsa-md5
            server-name-type/dns
+           privkey/import-auto-release
+           privkey/import-copy
+           privkey/disable-callbacks
+           privkey/sign-flag-tls1-rsa
+           privkey/flag-provable
+           privkey/flag-export-compat
+           privkey/sign-flag-rsa-pss
+           privkey/flag-reproducible
+           privkey/flag-ca
+           privkey/flag-rsa-pss-fixed-salt-length
 
            ;; FIXME: Automate this:
            ;; grep '^#define GNUTLS_E_' ../../lib/includes/gnutls/gnutls.h.in | \
