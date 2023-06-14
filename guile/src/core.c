@@ -3194,6 +3194,22 @@ SCM_DEFINE (scm_gnutls_set_x509_certificate_key,
 
 #undef FUNC_NAME
 
+SCM_DEFINE (scm_gnutls_x509_certificate_activation_time,
+	    "x509-certificate-activation-time",
+	    1, 0, 0, (SCM cert), "Return the activation time of @var{cert}.")
+#define FUNC_NAME s_scm_gnutls_x509_certificate_activation_time
+{
+  gnutls_x509_crt_t c_cert;
+  time_t c_time;
+
+  c_cert = scm_to_gnutls_x509_certificate (cert, 1, FUNC_NAME);
+  c_time = gnutls_x509_crt_get_activation_time (c_cert);
+
+  return scm_from_int (c_time);
+}
+
+#undef FUNC_NAME
+
 
 
 
