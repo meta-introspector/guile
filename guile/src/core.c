@@ -2439,6 +2439,22 @@ x509_export (x509_export_function_t export, void *cert_or_key,
 
 #undef FUNC_NAME
 
+SCM_DEFINE (scm_gnutls_make_x509_certificate, "make-x509-certificate",
+	    0, 0, 0, (), "Return a new, empty X.509 certificate object.")
+#define FUNC_NAME s_scm_gnutls_make_x509_certificate
+{
+  int err;
+  gnutls_x509_crt_t c_cert;
+
+  err = gnutls_x509_crt_init (&c_cert);
+  if (EXPECT_FALSE (err))
+    scm_gnutls_error (err, FUNC_NAME);
+
+  return (scm_from_gnutls_x509_certificate (c_cert));
+}
+
+#undef FUNC_NAME
+
 SCM_DEFINE (scm_gnutls_import_x509_certificate, "import-x509-certificate",
 	    2, 0, 0,
 	    (SCM data, SCM format),
