@@ -3188,6 +3188,30 @@ SCM_DEFINE (scm_gnutls_x509_certificate_fingerprint,
 
 #undef FUNC_NAME
 
+SCM_DEFINE (scm_gnutls_sign_x509_certificate, "sign-x509-certificate!",
+	    3, 0, 0,
+	    (SCM cert, SCM issuer, SCM key),
+	    "Sign @var{cert} using @var{cert}, also a certificate, and "
+	    "@var{key}, the issuer's private key.")
+#define FUNC_NAME s_scm_gnutls_sign_x509_certificate
+{
+  int err;
+  gnutls_x509_crt_t c_cert, c_issuer;
+  gnutls_x509_privkey_t c_key;
+
+  c_cert = scm_to_gnutls_x509_certificate (cert, 1, FUNC_NAME);
+  c_issuer = scm_to_gnutls_x509_certificate (issuer, 2, FUNC_NAME);
+  c_key = scm_to_gnutls_x509_private_key (key, 3, FUNC_NAME);
+
+  err = gnutls_x509_crt_sign (c_cert, c_issuer, c_key);
+  if (EXPECT_FALSE (err))
+    scm_gnutls_error (err, FUNC_NAME);
+
+  return SCM_UNSPECIFIED;
+}
+
+#undef FUNC_NAME
+
 SCM_DEFINE (scm_gnutls_set_x509_certificate_dn_by_oid,
 	    "set-x509-certificate-dn-by-oid!",
 	    3, 0, 0,
