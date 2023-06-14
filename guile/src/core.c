@@ -3170,6 +3170,31 @@ SCM_DEFINE (scm_gnutls_set_x509_certificate_dn_by_oid,
 
 #undef FUNC_NAME
 
+SCM_DEFINE (scm_gnutls_set_x509_certificate_key,
+	    "set-x509-certificate-key!",
+	    2, 0, 0,
+	    (SCM cert, SCM key),
+	    "Set the public parameters of @var{cert} using the private "
+	    "key @var{key}.")
+#define FUNC_NAME s_scm_gnutls_set_x509_certificate_key
+{
+  int err;
+  gnutls_x509_crt_t c_cert;
+  gnutls_x509_privkey_t c_key;
+
+  c_cert = scm_to_gnutls_x509_certificate (cert, 1, FUNC_NAME);
+  c_key = scm_to_gnutls_x509_private_key (key, 2, FUNC_NAME);
+
+  err = gnutls_x509_crt_set_key (c_cert, c_key);
+  if (EXPECT_FALSE (err))
+    scm_gnutls_error (err, FUNC_NAME);
+
+  return SCM_UNSPECIFIED;
+}
+
+#undef FUNC_NAME
+
+
 
 
 /* OpenPGP keys.  */

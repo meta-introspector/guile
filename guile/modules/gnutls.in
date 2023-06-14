@@ -94,6 +94,7 @@
            x509-certificate-public-key-algorithm x509-certificate-key-usage
            x509-certificate-fingerprint
            set-x509-certificate-dn-by-oid!
+           set-x509-certificate-key!
            import-x509-private-key export-x509-private-key
            pkcs8-import-x509-private-key
 
