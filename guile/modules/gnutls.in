@@ -95,6 +95,7 @@
            x509-certificate-fingerprint
            x509-certificate-activation-time
            x509-certificate-expiration-time
+           x509-certificate-ca-status
            set-x509-certificate-dn-by-oid!
            set-x509-certificate-key!
            set-x509-certificate-activation-time!

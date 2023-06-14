@@ -3272,6 +3272,28 @@ SCM_DEFINE (scm_gnutls_set_x509_certificate_expiration_time,
 
 #undef FUNC_NAME
 
+SCM_DEFINE (scm_gnutls_x509_certificate_ca_status,
+	    "x509-certificate-ca-status",
+	    1, 0, 0, (SCM cert), "Return the CA status of @var{cert}.")
+#define FUNC_NAME s_scm_gnutls_x509_certificate_ca_status
+{
+  gnutls_x509_crt_t c_cert;
+  int c_status;
+  unsigned int c_critical;	// unused currently
+
+  c_cert = scm_to_gnutls_x509_certificate (cert, 1, FUNC_NAME);
+  c_status = gnutls_x509_crt_get_ca_status (c_cert, &c_critical);
+
+  if (c_status < 0)
+    {
+      scm_gnutls_error (c_status, FUNC_NAME);
+    }
+
+  return scm_from_bool (c_status);
+}
+
+#undef FUNC_NAME
+
 
 
 /* OpenPGP keys.  */
