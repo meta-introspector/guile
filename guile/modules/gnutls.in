@@ -100,6 +100,7 @@
            set-x509-certificate-key!
            set-x509-certificate-activation-time!
            set-x509-certificate-expiration-time!
+           set-x509-certificate-ca-status!
            import-x509-private-key export-x509-private-key
            pkcs8-import-x509-private-key
 

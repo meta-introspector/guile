@@ -3294,6 +3294,30 @@ SCM_DEFINE (scm_gnutls_x509_certificate_ca_status,
 
 #undef FUNC_NAME
 
+SCM_DEFINE (scm_gnutls_set_x509_certificate_ca_status,
+	    "set-x509-certificate-ca-status!",
+	    2, 0, 0,
+	    (SCM cert, SCM status),
+	    "Set the CA status flag of @var{cert} to @var{status}, "
+	    "either @code{#t} or @code{#f}.")
+#define FUNC_NAME s_scm_gnutls_set_x509_certificate_ca_status
+{
+  int err;
+  gnutls_x509_crt_t c_cert;
+  int c_status;
+
+  c_cert = scm_to_gnutls_x509_certificate (cert, 1, FUNC_NAME);
+  c_status = scm_to_bool (status);
+
+  err = gnutls_x509_crt_set_ca_status (c_cert, c_status);
+  if (EXPECT_FALSE (err))
+    scm_gnutls_error (err, FUNC_NAME);
+
+  return SCM_UNSPECIFIED;
+}
+
+#undef FUNC_NAME
+
 
 
 /* OpenPGP keys.  */
