@@ -2397,6 +2397,48 @@ SCM_DEFINE (scm_gnutls_server_session_psk_username,
 
 /* X.509 certificates.  */
 
+typedef int (*x509_export_function_t) (void *, gnutls_x509_crt_fmt_t,
+				       uint8_t *, size_t *);
+
+static inline SCM
+x509_export (x509_export_function_t export, void *cert_or_key,
+	     gnutls_x509_crt_fmt_t format, const char *func_name)
+#define FUNC_NAME func_name
+{
+  int err;
+  uint8_t *output;
+  size_t output_len, output_total_len = 4096;
+
+  output = (uint8_t *) scm_gc_malloc (output_total_len, func_name);
+  do
+    {
+      output_len = output_total_len;
+      err = export (cert_or_key, format, output, &output_len);
+
+      if (err == GNUTLS_E_SHORT_MEMORY_BUFFER)
+	{
+	  output = scm_gc_realloc (output, output_total_len,
+				   output_total_len * 2, func_name);
+	  output_total_len *= 2;
+	}
+    }
+  while (err == GNUTLS_E_SHORT_MEMORY_BUFFER);
+
+  if (EXPECT_FALSE (err))
+    {
+      scm_gc_free (output, output_total_len, func_name);
+      scm_gnutls_error (err, FUNC_NAME);
+    }
+
+  if (output_len != output_total_len)
+    /* Shrink the output buffer.  */
+    output = scm_gc_realloc (output, output_total_len, output_len, func_name);
+
+  return (scm_take_u8vector (output, output_len));
+}
+
+#undef FUNC_NAME
+
 SCM_DEFINE (scm_gnutls_import_x509_certificate, "import-x509-certificate",
 	    2, 0, 0,
 	    (SCM data, SCM format),
@@ -2518,6 +2560,27 @@ SCM_DEFINE (scm_gnutls_import_x509_private_key, "import-x509-private-key",
     }
 
   return (scm_from_gnutls_x509_private_key (c_key));
+}
+
+#undef FUNC_NAME
+
+SCM_DEFINE (scm_gnutls_export_x509_private_key, "export-x509-private-key",
+	    2, 0, 0,
+	    (SCM key, SCM format),
+	    "Return a bytevector resulting from the export of @var{key} "
+	    "(an X.509 private key) according to @var{format}.")
+#define FUNC_NAME s_scm_gnutls_export_x509_private_key
+{
+  SCM result;
+  gnutls_x509_privkey_t c_key;
+  gnutls_x509_crt_fmt_t c_format;
+
+  c_key = scm_to_gnutls_x509_private_key (key, 1, FUNC_NAME);
+  c_format = scm_to_gnutls_x509_certificate_format (format, 2, FUNC_NAME);
+  result = x509_export ((x509_export_function_t) gnutls_x509_privkey_export,
+			c_key, c_format, FUNC_NAME);
+
+  return result;
 }
 
 #undef FUNC_NAME

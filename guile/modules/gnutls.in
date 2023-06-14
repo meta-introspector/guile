@@ -90,7 +90,8 @@
            x509-certificate-subject-key-id
            x509-certificate-subject-alternative-name
            x509-certificate-public-key-algorithm x509-certificate-key-usage
-           x509-certificate-fingerprint import-x509-private-key
+           x509-certificate-fingerprint
+           import-x509-private-key export-x509-private-key
            pkcs8-import-x509-private-key
 
            ;; HMAC and MAC
