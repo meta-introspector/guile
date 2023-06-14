@@ -2950,6 +2950,27 @@ SCM_DEFINE (scm_gnutls_x509_certificate_version, "x509-certificate-version",
 
 #undef FUNC_NAME
 
+SCM_DEFINE (scm_gnutls_set_x509_certificate_version,
+	    "set-x509-certificate-version!", 2, 0, 0, (SCM cert, SCM version),
+	    "Set the version of @var{cert} to @var{version}.")
+#define FUNC_NAME s_scm_gnutls_set_x509_certificate_version
+{
+  int err;
+  gnutls_x509_crt_t c_cert;
+  int c_version;
+
+  c_cert = scm_to_gnutls_x509_certificate (cert, 1, FUNC_NAME);
+  c_version = scm_to_uint (version);
+
+  err = gnutls_x509_crt_set_version (c_cert, c_version);
+  if (EXPECT_FALSE (err))
+    scm_gnutls_error (err, FUNC_NAME);
+
+  return SCM_UNSPECIFIED;
+}
+
+#undef FUNC_NAME
+
 SCM_DEFINE (scm_gnutls_x509_certificate_key_id, "x509-certificate-key-id",
 	    1, 0, 0,
 	    (SCM cert),
