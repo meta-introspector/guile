@@ -3249,6 +3249,28 @@ SCM_DEFINE (scm_gnutls_x509_certificate_expiration_time,
 
 #undef FUNC_NAME
 
+SCM_DEFINE (scm_gnutls_set_x509_certificate_expiration_time,
+	    "set-x509-certificate-expiration-time!",
+	    2, 0, 0,
+	    (SCM cert, SCM time),
+	    "Set the expiration time of @var{cert} to @var{time}.")
+#define FUNC_NAME s_scm_gnutls_set_x509_certificate_expiration_time
+{
+  int err;
+  gnutls_x509_crt_t c_cert;
+  time_t c_time;
+
+  c_cert = scm_to_gnutls_x509_certificate (cert, 1, FUNC_NAME);
+  c_time = scm_to_int (time);
+
+  err = gnutls_x509_crt_set_expiration_time (c_cert, c_time);
+  if (EXPECT_FALSE (err))
+    scm_gnutls_error (err, FUNC_NAME);
+
+  return SCM_UNSPECIFIED;
+}
+
+#undef FUNC_NAME
 
 
 
