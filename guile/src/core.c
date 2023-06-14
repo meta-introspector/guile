@@ -3139,6 +3139,37 @@ SCM_DEFINE (scm_gnutls_x509_certificate_fingerprint,
 }
 
 #undef FUNC_NAME
+
+SCM_DEFINE (scm_gnutls_set_x509_certificate_dn_by_oid,
+	    "set-x509-certificate-dn-by-oid!",
+	    3, 0, 0,
+	    (SCM cert, SCM oid, SCM name),
+	    "Set the part of the name of the certificate request "
+	    "subject for @var{cert} corresponding to @var{oid} to "
+	    "the string @var{name}.")
+#define FUNC_NAME s_scm_gnutls_set_x509_certificate_dn_by_oid
+{
+  int err;
+  gnutls_x509_crt_t c_cert;
+  char *c_oid;
+  char *c_name;
+  size_t c_name_len;
+
+  c_cert = scm_to_gnutls_x509_certificate (cert, 1, FUNC_NAME);
+  c_oid = scm_to_gnutls_oid (oid, 2, FUNC_NAME);
+  c_name = scm_to_locale_string (name);
+  c_name_len = strlen (c_name);
+
+  err = gnutls_x509_crt_set_dn_by_oid (c_cert, c_oid, 0, c_name, c_name_len);
+  free (c_name);
+  if (EXPECT_FALSE (err))
+    scm_gnutls_error (err, FUNC_NAME);
+
+  return SCM_UNSPECIFIED;
+}
+
+#undef FUNC_NAME
+
 
 
 /* OpenPGP keys.  */
