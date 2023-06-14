@@ -2500,6 +2500,27 @@ SCM_DEFINE (scm_gnutls_import_x509_certificate, "import-x509-certificate",
 
 #undef FUNC_NAME
 
+SCM_DEFINE (scm_gnutls_export_x509_certificate, "export-x509-certificate",
+	    2, 0, 0,
+	    (SCM cert, SCM format),
+	    "Return a bytevector resulting from the export of @var{cert} "
+	    "(an X.509 certificate) according to @var{format}.")
+#define FUNC_NAME s_scm_gnutls_export_x509_certificate
+{
+  SCM result;
+  gnutls_x509_crt_t c_cert;
+  gnutls_x509_crt_fmt_t c_format;
+
+  c_cert = scm_to_gnutls_x509_certificate (cert, 1, FUNC_NAME);
+  c_format = scm_to_gnutls_x509_certificate_format (format, 2, FUNC_NAME);
+  result = x509_export ((x509_export_function_t) gnutls_x509_crt_export,
+			c_cert, c_format, FUNC_NAME);
+
+  return result;
+}
+
+#undef FUNC_NAME
+
 SCM_DEFINE (scm_gnutls_generate_x509_private_key, "generate-x509-private-key",
 	    3, 0, 0,
 	    (SCM algorithm, SCM bits, SCM flags),
