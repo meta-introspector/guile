@@ -2932,6 +2932,33 @@ SCM_DEFINE (scm_gnutls_x509_certificate_key_usage,
 
 #undef FUNC_NAME
 
+SCM_DEFINE (scm_gnutls_set_x509_certificate_key_usage,
+	    "set-x509-certificate-key-usage!", 2, 0, 0, (SCM cert, SCM flags),
+	    "Set the key_usage of @var{cert} to @var{flags}, a list of "
+	    "usage flags.")
+#define FUNC_NAME s_scm_gnutls_set_x509_certificate_key_usage
+{
+  int err;
+  gnutls_x509_crt_t c_cert;
+  int c_flags;
+
+  c_cert = scm_to_gnutls_x509_certificate (cert, 1, FUNC_NAME);
+
+  for (c_flags = 0; !scm_is_null (flags); flags = SCM_CDR (flags))
+    {
+      c_flags |= (unsigned int)
+	scm_to_gnutls_key_usage (SCM_CAR (flags), 3, FUNC_NAME);
+    }
+
+  err = gnutls_x509_crt_set_key_usage (c_cert, c_flags);
+  if (EXPECT_FALSE (err))
+    scm_gnutls_error (err, FUNC_NAME);
+
+  return SCM_UNSPECIFIED;
+}
+
+#undef FUNC_NAME
+
 SCM_DEFINE (scm_gnutls_x509_certificate_version, "x509-certificate-version",
 	    1, 0, 0, (SCM cert), "Return the version of @var{cert}.")
 #define FUNC_NAME s_scm_gnutls_x509_certificate_version
