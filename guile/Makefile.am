@@ -106,6 +106,7 @@ TESTS =						\
   tests/session-record-port.scm			\
   tests/pkcs-import-export.scm			\
   tests/errors.scm				\
+  tests/x509-certificate-generation.scm		\
   tests/x509-certificates.scm			\
   tests/x509-auth.scm				\
   tests/reauth.scm				\
