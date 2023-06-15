@@ -103,6 +103,7 @@
            set-x509-certificate-ca-status!
            set-x509-certificate-version!
            set-x509-certificate-key-usage!
+           set-x509-certificate-subject-key-id!
            sign-x509-certificate!
            import-x509-private-key export-x509-private-key
            pkcs8-import-x509-private-key

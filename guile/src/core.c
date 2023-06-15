@@ -3093,6 +3093,32 @@ SCM_DEFINE (scm_gnutls_x509_certificate_subject_key_id,
 
 #undef FUNC_NAME
 
+SCM_DEFINE (scm_gnutls_set_x509_certificate_subject_key_id,
+	    "set-x509-certificate-subject-key-id!",
+	    2, 0, 0,
+	    (SCM cert, SCM id),
+	    "Set the subject key ID for @var{cert} to the bytevector "
+	    "@var{id}.")
+#define FUNC_NAME s_scm_gnutls_set_x509_certificate_subject_key_id
+{
+  int err;
+  gnutls_x509_crt_t c_cert;
+  void *c_id;
+  size_t c_id_len;
+
+  c_cert = scm_to_gnutls_x509_certificate (cert, 1, FUNC_NAME);
+  c_id = SCM_BYTEVECTOR_CONTENTS (id);
+  c_id_len = SCM_BYTEVECTOR_LENGTH (id);
+
+  err = gnutls_x509_crt_set_subject_key_id (c_cert, c_id, c_id_len);
+  if (EXPECT_FALSE (err))
+    scm_gnutls_error (err, FUNC_NAME);
+
+  return SCM_UNSPECIFIED;
+}
+
+#undef FUNC_NAME
+
 SCM_DEFINE (scm_gnutls_x509_certificate_subject_alternative_name,
 	    "x509-certificate-subject-alternative-name",
 	    2, 0, 0,
