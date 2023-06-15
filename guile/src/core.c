@@ -3416,6 +3416,32 @@ SCM_DEFINE (scm_gnutls_set_x509_certificate_ca_status,
 
 #undef FUNC_NAME
 
+SCM_DEFINE (scm_gnutls_x509_certificate_serial,
+	    "x509-certificate-serial",
+	    1, 0, 0, (SCM cert), "Return the serial number of @var{cert}.")
+#define FUNC_NAME s_scm_gnutls_x509_certificate_serial
+{
+  int err;
+  SCM result;
+  gnutls_x509_crt_t c_cert;
+  uint8_t c_serial[32];
+  size_t c_serial_len;
+
+  c_cert = scm_to_gnutls_x509_certificate (cert, 1, FUNC_NAME);
+  c_serial_len = sizeof (c_serial);
+
+  err = gnutls_x509_crt_get_serial (c_cert, c_serial, &c_serial_len);
+  if (EXPECT_FALSE (err))
+    scm_gnutls_error (err, FUNC_NAME);
+
+  result = scm_c_make_bytevector (c_serial_len);
+  memcpy (SCM_BYTEVECTOR_CONTENTS (result), c_serial, c_serial_len);
+
+  return result;
+}
+
+#undef FUNC_NAME
+
 
 
 /* OpenPGP keys.  */
