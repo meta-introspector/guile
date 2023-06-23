@@ -137,6 +137,8 @@
            public-key-encrypt-data
            public-key-verify-data
            public-key-verify-hash
+           x509-certificate->public-key
+           x509-private-key->private-key
 
            ;; HMAC and MAC
            mac-nonce-size

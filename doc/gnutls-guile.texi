@@ -658,6 +658,10 @@ The next example shows how to generate a private key.
 @verbatiminclude @value{abs_top_srcdir}/guile/examples/generate-private-key.scm
 @end example
 
+In addition, abstract public or private keys can be obtained from X509
+certificate and private key, with @code{x509-certificate->public-key}
+and @code{x509-private-key->private-key}.
+
 @c *********************************************************************
 @node Guile Reference
 @chapter Guile Reference

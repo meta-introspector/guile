@@ -6149,6 +6149,82 @@ SCM_DEFINE (scm_public_key_verify_hash, "public-key-verify-hash", 4, 0, 0,
 }
 
 #undef FUNC_NAME
+
+SCM_DEFINE (scm_x509_certificate_to_public_key,
+	    "x509-certificate->public-key", 1, 0, 0, (SCM crt),
+	    "Convert the X509 certificate, @var{crt}, to an abstract public key.")
+#define FUNC_NAME s_scm_x509_certificate_to_public_key
+{
+  gnutls_x509_crt_t c_crt =
+    scm_to_gnutls_x509_certificate (crt, 1, FUNC_NAME);
+  gnutls_pubkey_t c_pub;
+  scm_dynwind_begin (0);
+  int error = gnutls_pubkey_init (&c_pub);
+  SCM pub = SCM_UNSPECIFIED;
+  if (EXPECT_FALSE (error))
+    {
+      scm_gnutls_error (error, FUNC_NAME);
+    }
+  else
+    {
+      scm_dynwind_unwind_handler (do_gnutls_pubkey_deinit, c_pub, 0);
+      error = gnutls_pubkey_import_x509 (c_pub, c_crt, 0);
+    }
+  if (EXPECT_FALSE (error))
+    {
+      scm_gnutls_error (error, FUNC_NAME);
+    }
+  else
+    {
+      pub = scm_from_gnutls_public_key (c_pub);
+    }
+  scm_dynwind_end ();
+  return pub;
+}
+
+#undef FUNC_NAME
+
+SCM_DEFINE (scm_x509_private_key_to_private_key,
+	    "x509-private-key->private-key", 2, 0, 0,
+	    (SCM privkey, SCM flags),
+	    "Convert the X509 private key, @var{privkey}, to an abstract private key.")
+#define FUNC_NAME s_scm_x509_private_key_to_private_key
+{
+  unsigned int c_flags = 0;
+  for (c_flags = 0; !scm_is_null (flags); flags = SCM_CDR (flags))
+    {
+      c_flags |=
+	((unsigned int)
+	 scm_to_gnutls_privkey (SCM_CAR (flags), 4, FUNC_NAME));
+    }
+  gnutls_x509_privkey_t c_privkey =
+    scm_to_gnutls_x509_private_key (privkey, 1, FUNC_NAME);
+  gnutls_privkey_t c_key;
+  scm_dynwind_begin (0);
+  int error = gnutls_privkey_init (&c_key);
+  SCM key = SCM_UNSPECIFIED;
+  if (EXPECT_FALSE (error))
+    {
+      scm_gnutls_error (error, FUNC_NAME);
+    }
+  else
+    {
+      scm_dynwind_unwind_handler (do_gnutls_privkey_deinit, c_key, 0);
+      error = gnutls_privkey_import_x509 (c_key, c_privkey, c_flags);
+    }
+  if (EXPECT_FALSE (error))
+    {
+      scm_gnutls_error (error, FUNC_NAME);
+    }
+  else
+    {
+      key = scm_from_gnutls_private_key (c_key);
+    }
+  scm_dynwind_end ();
+  return key;
+}
+
+#undef FUNC_NAME
 
 
 

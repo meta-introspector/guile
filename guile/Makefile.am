@@ -121,7 +121,8 @@ TESTS =						\
   tests/list-pk-algorithms.scm                  \
   tests/list-ecc-curves.scm                     \
   tests/base64.scm                              \
-  tests/asymmetric-crypto.scm
+  tests/asymmetric-crypto.scm                   \
+  tests/x509-to-abstract.scm
 
 if ENABLE_SRP
 TESTS +=					\
