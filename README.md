@@ -9,6 +9,21 @@ available in different formats, including [one-page HTML Guile-GnuTLS
 manual](https://gnutls.gitlab.io/guile/manual/gnutls-guile.html).  See
 `doc/`for source code.
 
+## License
+
+Guile-GnuTLS is released under the GNU Lesser General Public License
+(LGPL) version 2.1 or later, see COPYING.LESSERv2.
+
+Build infrastructure, self-tests and some other files are licensed
+under the GNU General Public License (GPL) version 3 or later, see
+COPYING.
+
+The documentation (see doc/) is under the GNU Free Documentation
+License version 1.3 or later, see doc/fdl-1.3.texi.
+
+For any copyright year range specified as YYYY-ZZZZ in this package
+note that the range specifies every single year in that closed interval.
+
 ## Build dependencies
 
 To build from tarball you need the following tools:

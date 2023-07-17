@@ -37,5 +37,7 @@ local-checks-to-skip = sc_GPL_version sc_error_message_uppercase	\
 gl_public_submodule_commit =
 
 exclude_file_name_regexp--sc_prohibit_test_minus_ao = ^m4/guile.m4$$
+exclude_file_name_regexp--sc_readme_link_copying = ^guile/modules/system/documentation/README$$
+exclude_file_name_regexp--sc_readme_link_install = $(exclude_file_name_regexp--sc_readme_link_copying)
 
 VC_LIST_ALWAYS_EXCLUDE_REGEX = ^maint.mk|m4/lib-link.m4|m4/lib-prefix.m4|gl/top/|build-aux/gnupload$$
