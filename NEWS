@@ -3,8 +3,16 @@ Guile-GnuTLS NEWS                                    -*- outline -*-
 * Noteworthy changes in release ?.? (????-??-??) [?]
 
 ** Bind the AEAD authentication-encryption API and the low-level cipher API.
-** Bind a substantial part of the (abstract) public key cryptography API from GnuTLS.
+
+** Bind a substantial part of the (abstract) public key cryptography API.
+
 ** Bind the pseudo-random number generator.
+
+** Bind a bunch of X.509 functions.
+
+** Fix cross-building.
+
+** Add guix.scm for Guix building.
 
 * Noteworthy changes in release 3.7.12 (2023-05-08) [stable]
 
