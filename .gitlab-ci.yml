@@ -13,12 +13,39 @@ default:
     - ./config.h
     - ./**/*.log
 
+Guix-git:
+  image: debian:12-slim
+  stage: build
+  before_script:
+  - apt-get update -q
+  - apt-get install -qqy guix daemonize git
+  - service guix-daemon start
+  script:
+  - git fetch origin
+  - git checkout $CI_COMMIT_REF_NAME
+  - guix build -f guix.scm
+  - git diff --exit-code # nothing should change version controlled files
+
 Trisquel10-git:
   image: kpengboy/trisquel:10.0
   stage: build
   before_script:
   - apt-get update -q
   - apt-get install -qqy git make gcc guile-3.0-dev libgnutls28-dev texinfo
+  script:
+  - ./bootstrap
+  - ./configure
+  - make syntax-check
+  - make -j$(nproc) check V=1 VERBOSE=t
+  - make dist
+  - git diff --exit-code # nothing should change version controlled files
+
+Ubuntu20.04-git:
+  image: ubuntu:20.04
+  stage: build
+  before_script:
+  - apt-get update -q
+  - env DEBIAN_FRONTEND=noninteractive apt-get install -qqy git make gcc guile-3.0-dev libgnutls28-dev texinfo
   script:
   - ./bootstrap
   - ./configure
@@ -43,6 +70,20 @@ PureOS10-git:
 
 Debian11-git:
   image: debian:11
+  stage: build
+  before_script:
+  - apt-get update -q
+  - apt-get install -qqy git make gcc guile-3.0-dev libgnutls28-dev texinfo texlive
+  script:
+  - git submodule deinit --all # make sure we can bootstrap without gnulib submodule
+  - ./bootstrap
+  - ./configure
+  - make syntax-check
+  - make -j$(nproc) distcheck V=1 VERBOSE=t
+  - git diff --exit-code # nothing should change version controlled files
+
+Debian12-git:
+  image: debian:12
   stage: build
   before_script:
   - apt-get update -q
@@ -111,6 +152,19 @@ Ubuntu22.04-release:
   - cat -n ~/announce-guile-gnutls-17.42.23
   - git diff --exit-code # nothing should change version controlled files
 
+Ubuntu20.04-tarball:
+  image: ubuntu:20.04
+  stage: test
+  needs: [Trisquel10-git]
+  before_script:
+  - apt-get update -q
+  - env DEBIAN_FRONTEND=noninteractive apt-get install -qqy make gcc guile-3.0-dev libgnutls28-dev
+  script:
+  - tar xfa guile-gnutls-*.tar.gz
+  - cd `ls -d guile-gnutls-* | grep -v tar.gz`
+  - ./configure
+  - make check V=1 VERBOSE=t
+
 Trisquel10-tarball:
   image: kpengboy/trisquel:10.0
   stage: test
@@ -122,6 +176,34 @@ Trisquel10-tarball:
   - tar xfa guile-gnutls-*.tar.gz
   - cd `ls -d guile-gnutls-* | grep -v tar.gz`
   - ./configure
+  - make check V=1 VERBOSE=t
+
+Debian11-tarball:
+  image: debian:11-slim
+  stage: test
+  needs: [Trisquel10-git]
+  before_script:
+  - apt-get update -q
+  - apt-get install -qqy make gcc guile-2.2-dev libgnutls28-dev
+  script:
+  - tar xfa guile-gnutls-*.tar.gz
+  - cd `ls -d guile-gnutls-* | grep -v tar.gz`
+  - ./configure
+  - grep "^VERSION='UNKNOWN'" config.log && exit 1
+  - make check V=1 VERBOSE=t
+
+Debian12-tarball:
+  image: debian:12-slim
+  stage: test
+  needs: [Trisquel10-git]
+  before_script:
+  - apt-get update -q
+  - apt-get install -qqy make gcc guile-2.2-dev libgnutls28-dev
+  script:
+  - tar xfa guile-gnutls-*.tar.gz
+  - cd `ls -d guile-gnutls-* | grep -v tar.gz`
+  - ./configure
+  - grep "^VERSION='UNKNOWN'" config.log && exit 1
   - make check V=1 VERBOSE=t
 
 Debian10-tarball-autoreconf:
