@@ -166,21 +166,21 @@ Ubuntu22.04-release:
   - cat -n ~/announce-guile-gnutls-17.42.23
   - git diff --exit-code # nothing should change version controlled files
 
-Ubuntu20.04-tarball:
+Ubuntu20.04Guile2.2Clang-tarball:
   image: ubuntu:20.04
   stage: test
   needs: [Trisquel10-git]
   before_script:
   - apt-get update -q
-  - env DEBIAN_FRONTEND=noninteractive apt-get install -qqy make gcc guile-3.0-dev libgnutls28-dev
+  - env DEBIAN_FRONTEND=noninteractive apt-get install -qqy make clang guile-2.2-dev libgnutls28-dev
   script:
   - tar xfa guile-gnutls-*.tar.gz
   - cd `ls -d guile-gnutls-* | grep -v tar.gz`
-  - ./configure
+  - ./configure CC=clang
   - make check V=1 VERBOSE=t
 
-Trisquel10-tarball:
-  image: kpengboy/trisquel:10.0
+Trisquel11-tarball:
+  image: kpengboy/trisquel:11.0
   stage: test
   needs: [Trisquel10-git]
   before_script:
@@ -192,7 +192,7 @@ Trisquel10-tarball:
   - ./configure
   - make check V=1 VERBOSE=t
 
-Trisquel11-cross:
+Trisquel11Cross-tarball:
   image: kpengboy/trisquel:11.0
   stage: test
   needs: [Trisquel10-git]
@@ -205,7 +205,7 @@ Trisquel11-cross:
   - ./configure --build=x86_64-unknown-linux-gnu --host=i586-pc-gnu
   - make check V=1 VERBOSE=t
 
-Debian11-tarball:
+Debian11Guile2.2-tarball:
   image: debian:11-slim
   stage: test
   needs: [Trisquel10-git]
@@ -219,7 +219,7 @@ Debian11-tarball:
   - grep "^VERSION='UNKNOWN'" config.log && exit 1
   - make check V=1 VERBOSE=t
 
-Debian12-tarball:
+Debian12Guile2.2-tarball:
   image: debian:12-slim
   stage: test
   needs: [Trisquel10-git]
@@ -233,7 +233,7 @@ Debian12-tarball:
   - grep "^VERSION='UNKNOWN'" config.log && exit 1
   - make check V=1 VERBOSE=t
 
-Debian10-tarball-autoreconf:
+Debian10Guile2.2Autoreconf-tarball:
   image: debian:10
   stage: test
   needs: [Trisquel10-git]
@@ -288,8 +288,8 @@ ArchLinux-tarball:
   - ./configure --disable-srp-authentication
   - make check V=1 VERBOSE=t
 
-Fedora36-tarball:
-  image: fedora:36
+Fedora38Clang-tarball:
+  image: fedora:38
   stage: test
   needs: [Trisquel10-git]
   before_script:
@@ -298,20 +298,20 @@ Fedora36-tarball:
   script:
   - tar xfa guile-gnutls-*.tar.gz
   - cd `ls -d guile-gnutls-* | grep -v tar.gz`
-  - ./configure
+  - ./configure CC=clang --disable-srp-authentication
   - make check V=1 VERBOSE=t
 
-Ubuntu22.04-tarball:
+Ubuntu22.04Guile2.2Clang-tarball:
   image: ubuntu:22.04
   stage: test
   needs: [Trisquel10-git]
   before_script:
   - apt-get update -q
-  - apt-get install -qqy make gcc guile-3.0-dev libgnutls28-dev
+  - apt-get install -qqy make clang guile-2.2-dev libgnutls28-dev
   script:
   - tar xfa guile-gnutls-*.tar.gz
   - cd `ls -d guile-gnutls-* | grep -v tar.gz`
-  - ./configure
+  - ./configure CC=clang
   - make check V=1 VERBOSE=t
 
 web-manual:
