@@ -44,7 +44,10 @@
                     (let ((encrypted
                            (aead-cipher-encrypt
                             cipher
-                            (string->utf8 "Never encrypt more data with this nonce")
+                            ;; Do not re-use the same nonce twice. The nonce
+                            ;; size is constrained; for aes256/GCM, this is 12
+                            ;; bytes.
+                            (string->utf8 "12 randbytes")
                             (string->utf8 "Additional secret data")
                             0
                             next)))

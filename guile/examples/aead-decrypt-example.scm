@@ -44,7 +44,8 @@
                     (let ((decrypted
                            (aead-cipher-decrypt
                             cipher
-                            (string->utf8 "Never decrypt more data with this nonce")
+                            ;; The same value as used at encryption time:
+                            (string->utf8 "12 randbytes")
                             (string->utf8 "Additional secret data")
                             0
                             next)))
