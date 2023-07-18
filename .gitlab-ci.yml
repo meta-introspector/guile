@@ -1,6 +1,10 @@
 variables:
   GIT_DEPTH: 100
   GIT_SUBMODULE_STRATEGY: normal
+  HOMEBREW_NO_AUTO_UPDATE: 1
+  HOMEBREW_NO_INSTALL_UPGRADE: 1
+  HOMEBREW_NO_INSTALL_CLEANUP: 1
+  HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK: 1
 
 default:
   interruptible: true
@@ -24,6 +28,20 @@ Guix-git:
   - git fetch origin
   - git checkout $CI_COMMIT_BRANCH
   - guix build -f guix.scm
+  - git diff --exit-code # nothing should change version controlled files
+
+Mac: # https://docs.gitlab.com/ee/ci/runners/saas/macos_saas_runner.html
+  image: macos-12-xcode-14
+  stage: build
+  tags:
+    - saas-macos-medium-m1
+  before_script:
+  - brew install guile gnutls autoconf automake libtool
+  script:
+  - ./bootstrap
+  - ./configure --disable-srp-authentication
+  - make syntax-check
+  - make -j$(nproc) check V=1 VERBOSE=t
   - git diff --exit-code # nothing should change version controlled files
 
 Trisquel10-git:
