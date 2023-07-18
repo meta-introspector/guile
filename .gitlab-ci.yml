@@ -1,10 +1,6 @@
 variables:
   GIT_DEPTH: 100
   GIT_SUBMODULE_STRATEGY: normal
-  HOMEBREW_NO_AUTO_UPDATE: 1
-  HOMEBREW_NO_INSTALL_UPGRADE: 1
-  HOMEBREW_NO_INSTALL_CLEANUP: 1
-  HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK: 1
 
 default:
   interruptible: true
@@ -30,13 +26,13 @@ Guix-git:
   - guix build -f guix.scm
   - git diff --exit-code # nothing should change version controlled files
 
-Mac: # https://docs.gitlab.com/ee/ci/runners/saas/macos_saas_runner.html
+MacOS12Xcode14-git:
   image: macos-12-xcode-14
   stage: build
   tags:
     - saas-macos-medium-m1
   before_script:
-  - brew install guile gnutls autoconf automake libtool
+  - env HOMEBREW_NO_AUTO_UPDATE=1 HOMEBREW_NO_INSTALL_UPGRADE=1 HOMEBREW_NO_INSTALL_CLEANUP=1 HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK=1 brew install guile gnutls autoconf automake libtool
   script:
   - ./bootstrap
   - ./configure --disable-srp-authentication
@@ -251,6 +247,20 @@ Debian10-tarball-autoreconf:
   - autoreconf -fvi
   - ./configure
   - grep "^VERSION='UNKNOWN'" config.log && exit 1
+  - make check V=1 VERBOSE=t
+
+MacOS12Xcode13-tarball:
+  image: macos-12-xcode-13
+  stage: test
+  needs: [Trisquel10-git]
+  tags:
+    - saas-macos-medium-m1
+  before_script:
+  - env HOMEBREW_NO_AUTO_UPDATE=1 HOMEBREW_NO_INSTALL_UPGRADE=1 HOMEBREW_NO_INSTALL_CLEANUP=1 HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK=1 brew install guile gnutls autoconf automake libtool
+  script:
+  - tar xfz guile-gnutls-*.tar.gz
+  - cd `ls -d guile-gnutls-* | grep -v tar.gz`
+  - ./configure --disable-srp-authentication
   - make check V=1 VERBOSE=t
 
 Alpine-tarball:
