@@ -27,7 +27,7 @@ gendocs_options_ = -s gnutls-guile.texi
 
 old_NEWS_hash = f190bd09f669f6d021b8c7f70500687a
 
-bootstrap-tools = autoconf,automake,makeinfo
+bootstrap-tools = autoconf,automake,makeinfo,libtoolize
 
 upload_dest_dir_ = gnutls
 
