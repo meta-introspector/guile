@@ -382,51 +382,23 @@
            pk-algorithm/unknown
            sign-algorithm/unknown
            sign-algorithm/rsa-sha1
-           sign-algorithm/rsa-sha
            sign-algorithm/dsa-sha1
-           sign-algorithm/dsa-sha
            sign-algorithm/rsa-md5
            sign-algorithm/rsa-md2
            sign-algorithm/rsa-rmd160
 	   sign-algorithm/rsa-sha256
 	   sign-algorithm/rsa-sha384
 	   sign-algorithm/rsa-sha512
-	   sign-algorithm/rsa-sha224
-	   sign-algorithm/dsa-sha224
-	   sign-algorithm/dsa-sha256
-	   sign-algorithm/ecdsa-sha1
-	   sign-algorithm/ecdsa-sha224
-	   sign-algorithm/ecdsa-sha256
-	   sign-algorithm/ecdsa-sha384
-	   sign-algorithm/ecdsa-sha512
-	   sign-algorithm/dsa-sha384
-	   sign-algorithm/dsa-sha512
-	   sign-algorithm/ecdsa-sha3-224
-	   sign-algorithm/ecdsa-sha3-256
-	   sign-algorithm/ecdsa-sha3-384
-	   sign-algorithm/ecdsa-sha3-512
-	   sign-algorithm/dsa-sha3-224
-	   sign-algorithm/dsa-sha3-256
-	   sign-algorithm/dsa-sha3-384
-	   sign-algorithm/dsa-sha3-512
-	   sign-algorithm/rsa-sha3-224
-	   sign-algorithm/rsa-sha3-256
-	   sign-algorithm/rsa-sha3-384
-	   sign-algorithm/rsa-sha3-512
 	   sign-algorithm/rsa-pss-sha256
 	   sign-algorithm/rsa-pss-sha384
 	   sign-algorithm/rsa-pss-sha512
 	   sign-algorithm/eddsa-ed25519
-	   sign-algorithm/rsa-raw
 	   sign-algorithm/ecdsa-secp256r1-sha256
 	   sign-algorithm/ecdsa-secp384r1-sha384
 	   sign-algorithm/ecdsa-secp521r1-sha512
 	   sign-algorithm/rsa-pss-rsae-sha256
 	   sign-algorithm/rsa-pss-rsae-sha384
 	   sign-algorithm/rsa-pss-rsae-sha512
-	   sign-algorithm/gost-94
-	   sign-algorithm/gost-256
-	   sign-algorithm/gost-512
 	   sign-algorithm/eddsa-ed448
            psk-key-format/raw
            psk-key-format/hex
