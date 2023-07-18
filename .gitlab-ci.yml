@@ -22,7 +22,7 @@ Guix-git:
   - service guix-daemon start
   script:
   - git fetch origin
-  - git checkout $CI_COMMIT_REF_NAME
+  - git checkout $CI_COMMIT_BRANCH
   - guix build -f guix.scm
   - git diff --exit-code # nothing should change version controlled files
 
