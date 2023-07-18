@@ -178,6 +178,19 @@ Trisquel10-tarball:
   - ./configure
   - make check V=1 VERBOSE=t
 
+Trisquel11-cross:
+  image: kpengboy/trisquel:11.0
+  stage: test
+  needs: [Trisquel10-git]
+  before_script:
+  - apt-get update -q
+  - apt-get install -qqy make gcc guile-3.0-dev libgnutls28-dev
+  script:
+  - tar xfa guile-gnutls-*.tar.gz
+  - cd `ls -d guile-gnutls-* | grep -v tar.gz`
+  - ./configure --build=x86_64-unknown-linux-gnu --host=i586-pc-gnu
+  - make check V=1 VERBOSE=t
+
 Debian11-tarball:
   image: debian:11-slim
   stage: test
