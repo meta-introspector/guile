@@ -176,6 +176,7 @@
 
            ;; record layer
            record-send record-receive!
+           record-get-direction
            session-record-port
            set-session-record-port-close!
 
