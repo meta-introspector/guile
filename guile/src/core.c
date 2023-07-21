@@ -878,10 +878,10 @@ SCM_DEFINE (scm_gnutls_record_receive_x, "record-receive!", 2, 0, 0,
 SCM_DEFINE (scm_gnutls_record_get_direction, "record-get-direction", 1, 0, 0,
 	    (SCM session),
 	    "Determine whether GnuTLS was interrupted when sending or "
-            "receiving from @var{session}.  This information can be used "
-            "when deciding if to wait to be able to read or write from a "
-            "socket before retrying.  Returns 0 if interrupted when "
-            "reading and 1 if interrupted when writing.")
+	    "receiving from @var{session}.  This information can be used "
+	    "when deciding if to wait to be able to read or write from a "
+	    "socket before retrying.  Returns 0 if interrupted when "
+	    "reading and 1 if interrupted when writing.")
 #define FUNC_NAME s_scm_gnutls_record_get_direction
 {
   SCM result;
@@ -892,7 +892,7 @@ SCM_DEFINE (scm_gnutls_record_get_direction, "record-get-direction", 1, 0, 0,
 
   c_result = gnutls_record_get_direction (c_session);
 
-  result = scm_from_signed_integer(c_result);
+  result = scm_from_signed_integer (c_result);
 
   return (result);
 }
