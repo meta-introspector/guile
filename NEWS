@@ -4,6 +4,8 @@ Guile-GnuTLS NEWS                                    -*- outline -*-
 
 ** Fix AEAD self-test failure on macOS.
 
+** Bind gnutls_record_get_direction.
+
 * Noteworthy changes in release 3.7.13 (2023-07-18) [beta]
 
 ** Bind the AEAD authentication-encryption API and the low-level cipher API.
