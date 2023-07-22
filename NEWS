@@ -1,6 +1,6 @@
 Guile-GnuTLS NEWS                                    -*- outline -*-
 
-* Noteworthy changes in release ?.? (????-??-??) [?]
+* Noteworthy changes in release 3.7.14 (2023-07-22) [beta]
 
 ** Fix AEAD self-test failure on macOS.
 
