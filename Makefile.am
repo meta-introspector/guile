@@ -26,8 +26,10 @@ AM_DISTCHECK_CONFIGURE_FLAGS = \
 
 SUBDIRS = guile doc
 
+EXTRA_DIST = cfg.mk CONTRIBUTING.md
+
 # git-version-gen
-EXTRA_DIST = $(top_srcdir)/.version
+EXTRA_DIST += $(top_srcdir)/.version
 BUILT_SOURCES = $(top_srcdir)/.version
 $(top_srcdir)/.version:
 	echo '$(VERSION)' > $@-t

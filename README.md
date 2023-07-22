@@ -12,14 +12,14 @@ manual](https://gnutls.gitlab.io/guile/manual/gnutls-guile.html).  See
 ## License
 
 Guile-GnuTLS is released under the GNU Lesser General Public License
-(LGPL) version 2.1 or later, see COPYING.LESSERv2.
+(LGPL) version 2.1 or later, see [COPYING.LESSERv2](COPYING.LESSERv2).
 
 Build infrastructure, self-tests and some other files are licensed
 under the GNU General Public License (GPL) version 3 or later, see
-COPYING.
+[COPYING](COPYING).
 
-The documentation (see doc/) is under the GNU Free Documentation
-License version 1.3 or later, see doc/fdl-1.3.texi.
+The manual (see doc/) is under the GNU Free Documentation License
+version 1.3 or later, see [doc/fdl-1.3.texi](doc/fdl-1.3.texi).
 
 For any copyright year range specified as YYYY-ZZZZ in this package
 note that the range specifies every single year in that closed interval.
@@ -41,86 +41,31 @@ some hints:
 
 dpkg-based distributions:
 ```
-apt-get install -y dash make guile-3.0-dev libgnutls28-dev
+apt-get install -y make guile-3.0-dev libgnutls28-dev
 ```
 
 rpm-based distributions:
 ```
-yum install -y dash make guile22-devel gnutls-devel
+yum install -y make guile22-devel gnutls-devel
 ```
 
-Mac OS with Xcode and Homebrew:
+On macOS with Xcode and Homebrew:
 ```
 brew install guile gnutls
 ```
 
-## Build dependencies -- git builds
+## Build instructions
 
-To build from git you need the following additional tools:
+See the [INSTALL](INSTALL) file for generic instructions, but briefly
+the following will be sufficient to build and install Guile-GnuTLS:
 
-* [Git](https://git-scm.com/)
-* [Automake](https://www.gnu.org/software/automake/) (use 1.11.3 or later)
-* [Autoconf](https://www.gnu.org/software/autoconf/)
-* [Libtool](https://www.gnu.org/software/libtool/)
-
-dpkg-based distributions:
 ```
-apt-get install -y git automake autoconf libtool
-```
-
-rpm-based distributions:
-```
-yum install -y git automake autoconf libtool
+tar xfz guile-gnutls-*.tar.gz
+cd guile-gnutls-*
+./configure
+make check
+sudo make install
 ```
 
-Mac OS with Xcode and Homebrew:
-```
-brew install git autoconf automake libtool
-```
-
-## Build dependencies -- git tarball builds
-
-To build the tarball from git you need the following additional tools:
-
-* [Tar](https://www.gnu.org/software/tar/)
-* [Gzip](https://www.gnu.org/software/gzip/)
-* [Texinfo](https://www.gnu.org/software/texinfo/)
-* [TeX Live](https://www.tug.org/texlive/)
-
-dpkg-based distributions:
-```
-apt-get install -y tar gzip texinfo texlive
-```
-
-rpm-based distributions:
-```
-yum install -y tar gzip texinfo texlive
-```
-
-Mac OS with Xcode and Homebrew:
-```
-brew install texinfo texlive
-```
-
-## Contributing
-
-Parts of the Guile bindings, such as types (aka. "SMOBs"), enum
-values, constants, are automatically generated.  This is handled by
-the modules under `guile/modules/gnutls/build/'; these modules are
-only used at build-time and are not installed.
-
-The Scheme variables they generate (e.g., constants, type predicates,
-etc.) are exported to user programs through `gnutls.scm' and
-`gnutls/extra.scm', both of which are installed.
-
-For instance, when adding/removing/renaming enumerates or constants,
-two things must be done:
-
- 1. Update the enum list in `build/enums.scm' (currently dependencies
-    are not tracked, so you have to run "make clean all" in `guile/'
-    after).
-
- 2. Update the export list of `gnutls.scm' (or `extra.scm').
-
-Note that, for constants and enums, "schemefied" names are used, as
-noted under the "Guile API Conventions" node of the manual.
+If you wish to build from git or modify source code, please see the
+file [CONTRIBUTING.md](CONTRIBUTING.md) for more information.
