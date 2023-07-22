@@ -25,7 +25,7 @@ update-copyright-env = UPDATE_COPYRIGHT_USE_INTERVALS=2
 
 gendocs_options_ = -s gnutls-guile.texi
 
-old_NEWS_hash = f190bd09f669f6d021b8c7f70500687a
+old_NEWS_hash = c9126a3b8c344c487f0b2754ad8d6d69
 
 bootstrap-tools = autoconf,automake,makeinfo,libtoolize
 
