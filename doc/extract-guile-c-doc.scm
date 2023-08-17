@@ -17,7 +17,7 @@
 ;;; along with this program; if not, write to the Free Software
 ;;; Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
 
-;;; Written by Ludovic Courtès <ludo@chbouib.org>.
+;;; Written by Ludovic CourtÃ¨s <ludo@chbouib.org>.
 
 (use-modules (system documentation c-snarf)
              (system documentation output)
@@ -65,5 +65,5 @@
 
 ;;; Local Variables:
 ;;; mode: scheme
-;;; coding: latin-1
+;;; coding: utf-8
 ;;; End:

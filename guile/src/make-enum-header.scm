@@ -17,7 +17,7 @@
 ;;; License along with GnuTLS; if not, write to the Free Software
 ;;; Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
-;;; Written by Ludovic Courtès <ludo@gnu.org>.
+;;; Written by Ludovic CourtÃ¨s <ludo@gnu.org>.
 
 
 (use-modules (gnutls build enums))
@@ -53,7 +53,7 @@
 
 ;;; Local Variables:
 ;;; mode: scheme
-;;; coding: latin-1
+;;; coding: utf-8
 ;;; End:
 
 ;;; arch-tag: 07d834ca-e823-4663-9143-6d22704fbb5b

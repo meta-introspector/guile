@@ -28,7 +28,7 @@
            output-procedure-texi-documentation-from-c-file
            *document-c-functions?*))
 
-;;; Author:  Ludovic Courtès
+;;; Author:  Ludovic CourtÃ¨s
 ;;;
 ;;; Commentary:
 ;;;
@@ -170,7 +170,7 @@ function."
 
 ;;; Local Variables:
 ;;; mode: scheme
-;;; coding: latin-1
+;;; coding: utf-8
 ;;; End:
 
 ;;; arch-tag: 20ca493a-6f1a-4d7f-9d24-ccce0d32df49

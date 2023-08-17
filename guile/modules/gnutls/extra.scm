@@ -16,7 +16,7 @@
 ;;; Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 ;;; USA.
 
-;;; Written by Ludovic Courtès <ludo@gnu.org>
+;;; Written by Ludovic CourtÃ¨s <ludo@gnu.org>
 
 (define-module (gnutls extra)
 
@@ -79,5 +79,5 @@
 
 ;;; Local Variables:
 ;;; mode: scheme
-;;; coding: latin-1
+;;; coding: utf-8
 ;;; End:

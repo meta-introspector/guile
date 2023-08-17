@@ -15,7 +15,7 @@
 ;;; License along with GnuTLS; if not, write to the Free Software
 ;;; Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
-;;; Written by Ludovic Courtès <ludo@chbouib.org>.
+;;; Written by Ludovic CourtÃ¨s <ludo@chbouib.org>.
 
 
 ;;;

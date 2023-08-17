@@ -17,7 +17,7 @@
 ;;; License along with GnuTLS; if not, write to the Free Software
 ;;; Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
-;;; Written by Ludovic Courtès <ludo@chbouib.org>
+;;; Written by Ludovic CourtÃ¨s <ludo@chbouib.org>
 
 (define-module (gnutls build smobs)
   :use-module (srfi srfi-9)
@@ -256,7 +256,7 @@
 
 ;;; Local Variables:
 ;;; mode: scheme
-;;; coding: latin-1
+;;; coding: utf-8
 ;;; End:
 
 ;;; arch-tag: 26bf79ef-6dee-45f2-9e9d-2d209c518278

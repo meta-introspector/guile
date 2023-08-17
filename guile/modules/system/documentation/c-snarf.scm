@@ -29,7 +29,7 @@
            parse-snarfing
            parse-snarfed-line))
 
-;;; Author:  Ludovic Courtès
+;;; Author:  Ludovic CourtÃ¨s
 ;;;
 ;;; Commentary:
 ;;;
@@ -204,7 +204,7 @@ preprocessor output."
 
 ;;; Local Variables:
 ;;; mode: scheme
-;;; coding: latin-1
+;;; coding: utf-8
 ;;; End:
 
 ;;; arch-tag: dcba2446-ee43-46d8-a47e-e6e12f121988
