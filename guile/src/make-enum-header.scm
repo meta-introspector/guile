@@ -41,6 +41,9 @@
     (format port "#include <gnutls/x509.h>~%")
     (format port "#include <gnutls/openpgp.h>~%")
     (format port "#include <gnutls/abstract.h>~%")
+    (format port "#ifndef GNUTLS_NO_EXTENSIONS~%")
+    (format port "#define GNUTLS_NO_EXTENSIONS GNUTLS_NO_DEFAULT_EXTENSIONS~%")
+    (format port "#endif~%~%")
 
     (for-each (lambda (enum)
                 (output-enum-declarations enum port)
