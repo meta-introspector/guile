@@ -34,10 +34,10 @@
          (digit-pairs
           (let get ((digits digits-as-numbers))
             (match digits
-              (() '())
-              ((big little other-digits ...)
-               `(,(+ (* big 16) little)
-                 ,@(get other-digits)))))))
+                   (() '())
+                   ((big little other-digits ...)
+                    `(,(+ (* big 16) little)
+                      ,@(get other-digits)))))))
     (u8-list->bytevector digit-pairs)))
 
 (run-test
@@ -81,29 +81,29 @@
          (manual-example-1-environment
           (lambda (f)
             (let* ((input (call-with-output-string
-                            (lambda (port)
-                              ;; What is the secret?
-                              (format port "secret!\n")
-                              ;; What message do you want to hash?
-                              (format port "Example data to hash.\n"))))
+                           (lambda (port)
+                             ;; What is the secret?
+                             (format port "secret!\n")
+                             ;; What message do you want to hash?
+                             (format port "Example data to hash.\n"))))
                    (expected-output
                     (call-with-output-string
-                      (lambda (port)
-                        (format port "What is the secret?\n")
-                        ;; secret is input
-                        (format port "What message do you want to hash?\n")
-                        ;; message is input
-                        (format port "The digest is: ~s\n"
-                                (hex->bytevector
-                                 "9d40ad76c2b12c5057e9f31bb35a7a382ade69d870e94510eb93dc35b14d262e")))))
+                     (lambda (port)
+                       (format port "What is the secret?\n")
+                       ;; secret is input
+                       (format port "What message do you want to hash?\n")
+                       ;; message is input
+                       (format port "The digest is: ~s\n"
+                               (hex->bytevector
+                                "9d40ad76c2b12c5057e9f31bb35a7a382ade69d870e94510eb93dc35b14d262e")))))
                    (true-output
                     (call-with-output-string
-                      (lambda (output-port)
-                        (with-input-from-port
-                            (open-input-string input)
-                          (lambda ()
-                            (with-output-to-port output-port
-                              f)))))))
+                     (lambda (output-port)
+                       (with-input-from-port
+                           (open-input-string input)
+                         (lambda ()
+                           (with-output-to-port output-port
+                             f)))))))
               (unless (equal? expected-output true-output)
                 (error "Manual example 1 failed.")))))
          (manual-example-2-environment
@@ -113,29 +113,29 @@
                 (format port "Example data to hash."))
               #:encoding "UTF-8")
             (let* ((input (call-with-output-string
-                            (lambda (port)
-                              ;; What is the secret?
-                              (format port "secret!\n")
-                              ;; Which file do you want to hash?
-                              (format port "./manual-example-2-data\n"))))
+                           (lambda (port)
+                             ;; What is the secret?
+                             (format port "secret!\n")
+                             ;; Which file do you want to hash?
+                             (format port "./manual-example-2-data\n"))))
                    (expected-output
                     (call-with-output-string
-                      (lambda (port)
-                        (format port "What is the secret?\n")
-                        ;; secret is input
-                        (format port "Which file do you want to hash?\n")
-                        ;; message is input
-                        (format port "The digest is: ~s\n"
-                                (hex->bytevector
-                                 "9d40ad76c2b12c5057e9f31bb35a7a382ade69d870e94510eb93dc35b14d262e")))))
+                     (lambda (port)
+                       (format port "What is the secret?\n")
+                       ;; secret is input
+                       (format port "Which file do you want to hash?\n")
+                       ;; message is input
+                       (format port "The digest is: ~s\n"
+                               (hex->bytevector
+                                "9d40ad76c2b12c5057e9f31bb35a7a382ade69d870e94510eb93dc35b14d262e")))))
                    (true-output
                     (call-with-output-string
-                      (lambda (output-port)
-                        (with-input-from-port
-                            (open-input-string input)
-                          (lambda ()
-                            (with-output-to-port output-port
-                              f)))))))
+                     (lambda (output-port)
+                       (with-input-from-port
+                           (open-input-string input)
+                         (lambda ()
+                           (with-output-to-port output-port
+                             f)))))))
               (delete-file "manual-example-2-data")
               (unless (equal? expected-output true-output)
                 (error "Manual example 2 failed."))))))

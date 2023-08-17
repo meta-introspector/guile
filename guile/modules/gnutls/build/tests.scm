@@ -27,21 +27,21 @@ display a backtrace.  Otherwise, return THUNK's return value."
   (exit
    (catch
     #t
-     thunk
-     (lambda (key . args)
-       ;; Never reached.
-       (exit 1))
-     (lambda (key . args)
-       (dynamic-wind ;; to be on the safe side
-         (lambda () #t)
-         (lambda ()
-           (format (current-error-port)
-                   "~%throw to `~a' with args ~s [PID ~a]~%"
-                   key args (getpid))
-           (display-backtrace (make-stack #t) (current-output-port)))
-         (lambda ()
-           (exit 1)))
-       (exit 1)))))
+    thunk
+    (lambda (key . args)
+      ;; Never reached.
+      (exit 1))
+    (lambda (key . args)
+      (dynamic-wind ;; to be on the safe side
+          (lambda () #t)
+          (lambda ()
+            (format (current-error-port)
+                    "~%throw to `~a' with args ~s [PID ~a]~%"
+                    key args (getpid))
+            (display-backtrace (make-stack #t) (current-output-port)))
+          (lambda ()
+            (exit 1)))
+      (exit 1)))))
 
 (define (call-with-child-process child parent)
   "Run thunk CHILD in a child process and invoke PARENT from the parent
@@ -50,11 +50,11 @@ process exits upon failure."
   (let ((pid (primitive-fork)))
     (if (zero? pid)
         (dynamic-wind
-          (const #t)
-          (lambda ()
-            (primitive-exit (if (child) 0 1)))
-          (lambda ()
-            (primitive-exit 2)))
+            (const #t)
+            (lambda ()
+              (primitive-exit (if (child) 0 1)))
+            (lambda ()
+              (primitive-exit 2)))
         (parent pid))))
 
 (use-modules (rnrs io ports)
@@ -76,8 +76,8 @@ process exits upon failure."
 (define-replacement (uniform-vector-read! buf port)
   (match (get-bytevector-n! port buf
                             0 (bytevector-length buf))
-    ((? eof-object?) 0)
-    ((? integer? n)  n)))
+         ((? eof-object?) 0)
+         ((? integer? n)  n)))
 
 (define-replacement (uniform-vector-write buf port)
   (put-bytevector port buf))

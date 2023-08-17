@@ -38,15 +38,15 @@
                     x509-certificate-format/pem))
 
 (run-test
-    (lambda ()
-      (let* ((dh-params (import-dh-params "dh-parameters.pem"))
-             (export
-              (pkcs3-export-dh-parameters dh-params
-                                          x509-certificate-format/pem)))
-        (and (u8vector? export)
-             (let ((import
-                    (pkcs3-import-dh-parameters export
-                                                x509-certificate-format/pem)))
-               (dh-parameters? import))))))
+ (lambda ()
+   (let* ((dh-params (import-dh-params "dh-parameters.pem"))
+          (export
+           (pkcs3-export-dh-parameters dh-params
+                                       x509-certificate-format/pem)))
+     (and (u8vector? export)
+          (let ((import
+                 (pkcs3-import-dh-parameters export
+                                             x509-certificate-format/pem)))
+            (dh-parameters? import))))))
 
 ;;; arch-tag: adff0f07-479e-421e-b47f-8956e06b9902

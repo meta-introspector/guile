@@ -128,32 +128,32 @@ function."
          (file-name     (car location))
          (line          (cadr location))
          (documentation (assq-ref proc-doc 'documentation)))
-  (string-append (string #\newline)
-		 (format #f "@c snarfed from ~a:~a~%"
-			 file-name line)
+    (string-append (string #\newline)
+                   (format #f "@c snarfed from ~a:~a~%"
+                           file-name line)
 
-                 ;; document the Scheme procedure
-                 (scheme-procedure-texi-line proc-name
-                                             (map schemify-name args)
-                                             required-args optional-args
-                                             rest-arg?)
-                 (string #\newline)
+                   ;; document the Scheme procedure
+                   (scheme-procedure-texi-line proc-name
+                                               (map schemify-name args)
+                                               required-args optional-args
+                                               rest-arg?)
+                   (string #\newline)
 
-                 (if (*document-c-functions?*)
-                     (string-append
-                      ;; document the C function
-                      "@deffnx {C Function} " c-name " ("
-                      (if (null? args)
-                          "void"
-                          (string-join (map (lambda (arg)
-                                              (string-append "SCM " arg))
-                                            args)
-                                       ", "))
-                      ")" (string #\newline))
-                     "")
+                   (if (*document-c-functions?*)
+                       (string-append
+                        ;; document the C function
+                        "@deffnx {C Function} " c-name " ("
+                        (if (null? args)
+                            "void"
+                            (string-join (map (lambda (arg)
+                                                (string-append "SCM " arg))
+                                              args)
+                                         ", "))
+                        ")" (string #\newline))
+                       "")
 
-		 documentation (string #\newline)
-                 "@end deffn" (string #\newline))))
+                   documentation (string #\newline)
+                   "@end deffn" (string #\newline))))
 
 
 ;;;

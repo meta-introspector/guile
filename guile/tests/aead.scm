@@ -43,51 +43,51 @@
        #:encoding "UTF-8")
      (let ((encrypt-input
             (call-with-output-string
-              (lambda (port)
-                ;; What is the secret?
-                (format port "the secret key is 32 bytes long.\n")
-                ;; Which file do you want to encrypt?
-                (format port "./aead-manual-example-data"))))
+             (lambda (port)
+               ;; What is the secret?
+               (format port "the secret key is 32 bytes long.\n")
+               ;; Which file do you want to encrypt?
+               (format port "./aead-manual-example-data"))))
            (expected-encrypt-output
             (call-with-output-string
-              (lambda (port)
-                (format port "What is the secret?\n")
-                ;; the secret key is 32 bytes long.
-                (format port "Which file do you want to encrypt?\n")
-                ;; ./aead-manual-example-data
-                ))))
+             (lambda (port)
+               (format port "What is the secret?\n")
+               ;; the secret key is 32 bytes long.
+               (format port "Which file do you want to encrypt?\n")
+               ;; ./aead-manual-example-data
+               ))))
        (let ((true-encrypt-output
               (call-with-output-string
-                (lambda (output-port)
-                  (with-input-from-port (open-input-string encrypt-input)
-                    (lambda ()
-                      (with-output-to-port output-port
-                        encrypt-example)))))))
+               (lambda (output-port)
+                 (with-input-from-port (open-input-string encrypt-input)
+                   (lambda ()
+                     (with-output-to-port output-port
+                       encrypt-example)))))))
          (unless (equal? expected-encrypt-output true-encrypt-output)
            (error "Encryption failed."))))
      (delete-file "./aead-manual-example-data")
      (let ((decrypt-input
             (call-with-output-string
-              (lambda (port)
-                ;; What is the secret?
-                (format port "the secret key is 32 bytes long.\n")
-                ;; Which file do you want to decrypt?
-                (format port "./aead-manual-example-data.encrypted"))))
+             (lambda (port)
+               ;; What is the secret?
+               (format port "the secret key is 32 bytes long.\n")
+               ;; Which file do you want to decrypt?
+               (format port "./aead-manual-example-data.encrypted"))))
            (expected-decrypt-output
             (call-with-output-string
-              (lambda (port)
-                (format port "What is the secret?\n")
-                ;; the secret key is 32 bytes long.
-                (format port "Which file do you want to decrypt?\n")
-                ;; ./aead-manual-example-data.encrypted
-                ))))
+             (lambda (port)
+               (format port "What is the secret?\n")
+               ;; the secret key is 32 bytes long.
+               (format port "Which file do you want to decrypt?\n")
+               ;; ./aead-manual-example-data.encrypted
+               ))))
        (let ((true-decrypt-output
               (call-with-output-string
-                (lambda (output-port)
-                  (with-input-from-port (open-input-string decrypt-input)
-                    (lambda ()
-                      (with-output-to-port output-port
-                        decrypt-example)))))))
+               (lambda (output-port)
+                 (with-input-from-port (open-input-string decrypt-input)
+                   (lambda ()
+                     (with-output-to-port output-port
+                       decrypt-example)))))))
          (unless (equal? expected-decrypt-output true-decrypt-output)
            (error "Decryption failed."))))
      (delete-file "./aead-manual-example-data.encrypted")

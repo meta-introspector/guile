@@ -26,17 +26,17 @@
  (lambda ()
    (let ((output
           (call-with-output-string
-            (lambda (port)
-              (with-output-to-port port
-                (lambda ()
-                  (load-from-path "random-example.scm")))))))
+           (lambda (port)
+             (with-output-to-port port
+               (lambda ()
+                 (load-from-path "random-example.scm")))))))
      (match output
-       ((or "You roll a 1.\n"
-            "You roll a 2.\n"
-            "You roll a 3.\n"
-            "You roll a 4.\n"
-            "You roll a 5.\n"
-            "You roll a 6.\n")
-        #t)
-       (otherwise
-        (error "Invalid roll."))))))
+            ((or "You roll a 1.\n"
+                 "You roll a 2.\n"
+                 "You roll a 3.\n"
+                 "You roll a 4.\n"
+                 "You roll a 5.\n"
+                 "You roll a 6.\n")
+             #t)
+            (otherwise
+             (error "Invalid roll."))))))

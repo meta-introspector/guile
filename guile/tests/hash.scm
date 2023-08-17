@@ -60,27 +60,27 @@
                 (format port "Example data to hash."))
               #:encoding "UTF-8")
             (let* ((input (call-with-output-string
-                            (lambda (port)
-                              ;; Which file do you want to hash?
-                              (format port "./hash-manual-example-data\n"))))
+                           (lambda (port)
+                             ;; Which file do you want to hash?
+                             (format port "./hash-manual-example-data\n"))))
                    (expected-output
                     (call-with-output-string
-                      (lambda (port)
-                        (format port "Which file do you want to hash?\n")
-                        ;; we tell it the file
-                        (format port "The digest is: ~s\n"
-                                #vu8(87 122 203 105 209 216 209 172 80 105
-                                        249 68 57 176 185 62 230 184 16 225
-                                        123 155 151 181 137 113 249 49 37
-                                        135 34 234)))))
+                     (lambda (port)
+                       (format port "Which file do you want to hash?\n")
+                       ;; we tell it the file
+                       (format port "The digest is: ~s\n"
+                               #vu8(87 122 203 105 209 216 209 172 80 105
+                                       249 68 57 176 185 62 230 184 16 225
+                                       123 155 151 181 137 113 249 49 37
+                                       135 34 234)))))
                    (true-output
                     (call-with-output-string
-                      (lambda (output-port)
-                        (with-input-from-port
-                            (open-input-string input)
-                          (lambda ()
-                            (with-output-to-port output-port
-                              f)))))))
+                     (lambda (output-port)
+                       (with-input-from-port
+                           (open-input-string input)
+                         (lambda ()
+                           (with-output-to-port output-port
+                             f)))))))
               (delete-file "hash-manual-example-data")
               (unless (equal? expected-output true-output)
                 (error "Manual example for hash failed."))))))

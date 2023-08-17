@@ -28,18 +28,18 @@
 
 (define (version>? a b)
   (match `(,a ,b)
-    ((() ()) #f)
-    ((_ ()) #t)
-    ((() _) #f)
-    (((leading-a a ...)
-      (leading-b b ...))
-     (cond
-      ((> leading-a leading-b)
-       #t)
-      ((< leading-a leading-b)
-       #f)
-      (else
-       (version>? a b))))))
+         ((() ()) #f)
+         ((_ ()) #t)
+         ((() _) #f)
+         (((leading-a a ...)
+           (leading-b b ...))
+          (cond
+           ((> leading-a leading-b)
+            #t)
+           ((< leading-a leading-b)
+            #f)
+           (else
+            (version>? a b))))))
 
 (define (version<? a b)
   (version>? b a))
@@ -53,7 +53,7 @@
       (let ((version-digits
              (let ((canonical
                     (match (string-split (gnutls-version) #\-)
-                      ((before-dash . _) before-dash))))
+                           ((before-dash . _) before-dash))))
                (map string->number (string-split canonical #\.)))))
         (values
          (version>=? version-digits '(3 7 0))
@@ -120,30 +120,30 @@
    (receive (curve x y k)
        (let ((raw-output
               (call-with-output-string
-                (lambda (port)
-                  (with-input-from-port
-                      (open-input-string "")
-                    (lambda ()
-                      (with-output-to-port port
-                        (lambda ()
-                          (load-from-path "generate-private-key.scm")))))))))
+               (lambda (port)
+                 (with-input-from-port
+                     (open-input-string "")
+                   (lambda ()
+                     (with-output-to-port port
+                       (lambda ()
+                         (load-from-path "generate-private-key.scm")))))))))
          (match (read (open-input-string raw-output))
-           (`((curve . ,curve)
-              (x . ,x)
-              (y . ,y)
-              (k . ,k))
-            (values curve x y k))))
+                (`((curve . ,curve)
+                   (x . ,x)
+                   (y . ,y)
+                   (k . ,k))
+                 (values curve x y k))))
      (let ((input
             (call-with-output-string
-              (lambda (port)
-                ;; curve:
-                (format port "~a\n" curve)
-                ;; x:
-                (format port "~a\n" x)
-                ;; y:
-                (format port "~a\n" y)
-                ;; k:
-                (format port "~a\n" k))))
+             (lambda (port)
+               ;; curve:
+               (format port "~a\n" curve)
+               ;; x:
+               (format port "~a\n" x)
+               ;; y:
+               (format port "~a\n" y)
+               ;; k:
+               (format port "~a\n" k))))
            (expected-output
             (call-with-output-string
              (lambda (port)
@@ -154,12 +154,12 @@
                (format port "I could sign a message with that key.\n")))))
        (let ((true-output
               (call-with-output-string
-                (lambda (output-port)
-                  (with-input-from-port
-                      (open-input-string input)
-                    (lambda ()
-                      (with-output-to-port output-port
-                        (lambda ()
-                          (load-from-path "use-private-key.scm")))))))))
+               (lambda (output-port)
+                 (with-input-from-port
+                     (open-input-string input)
+                   (lambda ()
+                     (with-output-to-port output-port
+                       (lambda ()
+                         (load-from-path "use-private-key.scm")))))))))
          (unless (equal? expected-output true-output)
            (error "The manual example failed.")))))))

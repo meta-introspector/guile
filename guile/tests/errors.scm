@@ -32,13 +32,13 @@
 
         (let ((s (make-session connection-end/server)))
           (catch 'gnutls-error
-            (lambda ()
-              (handshake s))
-            (lambda (key err function . currently-unused)
-              (and (eq? key 'gnutls-error)
-                   err
-                   (fatal-error? err)
-                   (string? (error->string err))
-                   (eq? function 'handshake))))))))
+                 (lambda ()
+                   (handshake s))
+                 (lambda (key err function . currently-unused)
+                   (and (eq? key 'gnutls-error)
+                        err
+                        (fatal-error? err)
+                        (string? (error->string err))
+                        (eq? function 'handshake))))))))
 
 ;;; arch-tag: 73ed6229-378d-4a12-a5c6-4c2586c6e3a2

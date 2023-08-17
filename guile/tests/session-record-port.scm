@@ -69,10 +69,10 @@
      (gc)(gc)(gc)
      (for-each (lambda (p)
                  (catch 'gnutls-error
-                   (lambda ()
-                     (read p))
-                   (lambda (key . args)
-                     #t)))
+                        (lambda ()
+                          (read p))
+                        (lambda (key . args)
+                          #t)))
                ports))
 
    ;; Try using the record port for I/O.
