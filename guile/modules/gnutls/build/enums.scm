@@ -22,19 +22,29 @@
   :use-module (srfi srfi-9)
   :use-module (gnutls build utils)
 
-  :export (make-enum-type enum-type-subsystem enum-type-value-alist
-           enum-type-c-type enum-type-get-name-function
+  :export (make-enum-type
+           enum-type-subsystem
+           enum-type-value-alist
+           enum-type-c-type
+           enum-type-get-name-function
            enum-type-automatic-get-name-function
            enum-type-smob-name
-           enum-type-to-c-function enum-type-from-c-function
+           enum-type-to-c-function
+           enum-type-from-c-function
 
-           output-enum-smob-definitions output-enum-definitions
+           output-enum-smob-definitions
+           output-enum-definitions
            output-enum-declarations
-           output-enum-definition-function output-c->enum-converter
+           output-enum-definition-function
+           output-c->enum-converter
            output-enum->c-converter
 
-           %cipher-enum %mac-enum %compression-method-enum %kx-enum
-           %protocol-enum %certificate-type-enum
+           %cipher-enum
+           %mac-enum
+           %compression-method-enum
+           %kx-enum
+           %protocol-enum
+           %certificate-type-enum
 
            %gnutls-enums))
 
@@ -304,56 +314,143 @@
 
 (define %cipher-enum
   (make-enum-type 'cipher "gnutls_cipher_algorithm_t"
-                  '(null arcfour arcfour-128 3des-cbc aes-128-cbc aes-256-cbc
-                    arcfour-40 camellia-128-cbc camellia-256-cbc aes-192-cbc
-                    aes-128-gcm aes-256-gcm camellia-192-cbc salsa20-256
-                    estream-salsa20-256 camellia-128-gcm camellia-256-gcm
-                    rc2-40-cbc des-cbc aes-128-ccm aes-256-ccm aes-128-ccm-8
-                    aes-256-ccm-8 chacha20-poly1305 gost28147-tc26z-cfb
-                    gost28147-cpa-cfb gost28147-cpb-cfb gost28147-cpc-cfb
-                    gost28147-cpd-cfb aes-128-cfb8 aes-192-cfb8 aes-256-cfb8
-                    aes-128-xts aes-256-xts gost28147-tc26z-cnt chacha20-64
-                    chacha20-32 aes-128-siv aes-256-siv aes-192-gcm
-                    magma-ctr-acpkm kuznyechik-ctr-acpkm idea-pgp-cfb
-                    3des-pgp-cfb cast5-pgp-cfb blowfish-pgp-cfb
-                    safer-sk128-pgp-cfb aes128-pgp-cfb aes192-pgp-cfb
-                    aes256-pgp-cfb twofish-pgp-cfb)
+                  '(null
+                    arcfour
+                    arcfour-128
+                    3des-cbc
+                    aes-128-cbc
+                    aes-256-cbc
+                    arcfour-40
+                    camellia-128-cbc
+                    camellia-256-cbc
+                    aes-192-cbc
+                    aes-128-gcm
+                    aes-256-gcm
+                    camellia-192-cbc
+                    salsa20-256
+                    estream-salsa20-256
+                    camellia-128-gcm
+                    camellia-256-gcm
+                    rc2-40-cbc
+                    des-cbc
+                    aes-128-ccm
+                    aes-256-ccm
+                    aes-128-ccm-8
+                    aes-256-ccm-8
+                    chacha20-poly1305
+                    gost28147-tc26z-cfb
+                    gost28147-cpa-cfb
+                    gost28147-cpb-cfb
+                    gost28147-cpc-cfb
+                    gost28147-cpd-cfb
+                    aes-128-cfb8
+                    aes-192-cfb8
+                    aes-256-cfb8
+                    aes-128-xts
+                    aes-256-xts
+                    gost28147-tc26z-cnt
+                    chacha20-64
+                    chacha20-32
+                    aes-128-siv
+                    aes-256-siv
+                    aes-192-gcm
+                    magma-ctr-acpkm
+                    kuznyechik-ctr-acpkm
+                    idea-pgp-cfb
+                    3des-pgp-cfb
+                    cast5-pgp-cfb
+                    blowfish-pgp-cfb
+                    safer-sk128-pgp-cfb
+                    aes128-pgp-cfb
+                    aes192-pgp-cfb
+                    aes256-pgp-cfb
+                    twofish-pgp-cfb)
                   "gnutls_cipher_get_name"))
 
 (define %kx-enum
   (make-enum-type 'kx "gnutls_kx_algorithm_t"
-                  '(rsa dhe-dss dhe-rsa anon-dh srp rsa-export
-                    srp-rsa srp-dss psk dhe-dss)
+                  '(rsa
+                    dhe-dss
+                    dhe-rsa
+                    anon-dh
+                    srp
+                    rsa-export
+                    srp-rsa
+                    srp-dss
+                    psk
+                    dhe-dss)
                   "gnutls_kx_get_name"))
 
 (define %params-enum
   (make-enum-type 'params "gnutls_params_type_t"
-                  '(rsa-export dh)
+                  '(rsa-export
+                    dh)
                   #f))
 
 (define %credentials-enum
   (make-enum-type 'credentials "gnutls_credentials_type_t"
-                  '(certificate anon srp psk ia)
+                  '(certificate
+                    anon
+                    srp
+                    psk
+                    ia)
                   #f
                   "GNUTLS_CRD_"))
 
 (define %mac-enum
   (make-enum-type 'mac "gnutls_mac_algorithm_t"
-                  '(unknown null md5 sha1 rmd160 md2 sha256 sha384 sha512
-                    sha224 sha3-224 sha3-256 sha3-384 sha3-512 md5-sha1
-                    gostr-94 streebog-256 streebog-512 aead umac-96 umac-128
-                    aes-cmac-128 aes-cmac-256
-                    aes-gmac-128 aes-gmac-192 aes-gmac-256
-                    gost28147-tc26z-imit shake-128 shake-256 magma-omac
-                    kuznyechik-omac
-                    )
+                  '(unknown
+                    null
+                    md5
+                    sha1
+                    rmd160
+                    md2
+                    sha256
+                    sha384
+                    sha512
+                    sha224
+                    sha3-224
+                    sha3-256
+                    sha3-384
+                    sha3-512
+                    md5-sha1
+                    gostr-94
+                    streebog-256
+                    streebog-512
+                    aead
+                    umac-96
+                    umac-128
+                    aes-cmac-128
+                    aes-cmac-256
+                    aes-gmac-128
+                    aes-gmac-192
+                    aes-gmac-256
+                    gost28147-tc26z-imit
+                    shake-128
+                    shake-256
+                    magma-omac
+                    kuznyechik-omac)
                   "gnutls_mac_get_name"))
 
 (define %digest-enum
   (make-enum-type 'digest "gnutls_digest_algorithm_t"
-                  '(null md5 sha1 rmd160 md2 sha256 sha384 sha512 sha224
-                    sha3-224 sha3-256 sha3-384 sha3-512 md5-sha1 gostr-94
-                    streebog-256 streebog-512)
+                  '(null
+                    md5
+                    sha1
+                    rmd160
+                    md2
+                    sha256
+                    sha384
+                    sha512
+                    sha224
+                    sha3-224
+                    sha3-256
+                    sha3-384
+                    sha3-512
+                    md5-sha1
+                    gostr-94
+                    streebog-256
+                    streebog-512)
                   #f
                   "GNUTLS_DIG_"))
 
@@ -401,85 +498,145 @@
 
 (define %alert-description-enum
   (make-enum-type 'alert-description "gnutls_alert_description_t"
-                  '(close-notify unexpected-message bad-record-mac
-decryption-failed record-overflow decompression-failure handshake-failure
-ssl3-no-certificate bad-certificate unsupported-certificate
-certificate-revoked certificate-expired certificate-unknown illegal-parameter
-unknown-ca access-denied decode-error decrypt-error export-restriction
-protocol-version insufficient-security internal-error user-canceled
-no-renegotiation unsupported-extension certificate-unobtainable
-unrecognized-name unknown-psk-identity)
+                  '(close-notify
+                    unexpected-message
+                    bad-record-mac
+                    decryption-failed
+                    record-overflow
+                    decompression-failure
+                    handshake-failure
+                    ssl3-no-certificate
+                    bad-certificate
+                    unsupported-certificate
+                    certificate-revoked
+                    certificate-expired
+                    certificate-unknown
+                    illegal-parameter
+                    unknown-ca
+                    access-denied
+                    decode-error
+                    decrypt-error
+                    export-restriction
+                    protocol-version
+                    insufficient-security
+                    internal-error
+                    user-canceled
+                    no-renegotiation
+                    unsupported-extension
+                    certificate-unobtainable
+                    unrecognized-name
+                    unknown-psk-identity)
                   #f
                   "GNUTLS_A_"))
 
 (define %handshake-description-enum
   (make-enum-type 'handshake-description "gnutls_handshake_description_t"
-                  '(hello-request client-hello server-hello certificate-pkt
-                    server-key-exchange certificate-request server-hello-done
-                    certificate-verify client-key-exchange finished)
+                  '(hello-request
+                    client-hello
+                    server-hello
+                    certificate-pkt
+                    server-key-exchange
+                    certificate-request
+                    server-hello-done
+                    certificate-verify
+                    client-key-exchange finished)
                   #f
                   "GNUTLS_HANDSHAKE_"))
 
 (define %certificate-status-enum
   (make-enum-type 'certificate-status "gnutls_certificate_status_t"
-                  '(invalid revoked signer-not-found signer-not-ca
-                    insecure-algorithm not-activated expired
-                    signature-failure revocation-data-superseded
-                    unexpected-owner revocation-data-issued-in-future
-                    signer-constraints-failure mismatch purpose-mismatch
-                    missing-ocsp-status invalid-ocsp-status
+                  '(invalid
+                    revoked
+                    signer-not-found
+                    signer-not-ca
+                    insecure-algorithm
+                    not-activated
+                    expired
+                    signature-failure
+                    revocation-data-superseded
+                    unexpected-owner
+                    revocation-data-issued-in-future
+                    signer-constraints-failure
+                    mismatch
+                    purpose-mismatch
+                    missing-ocsp-status
+                    invalid-ocsp-status
                     unknown-crit-extensions)
                   #f
                   "GNUTLS_CERT_"))
 
 (define %certificate-request-enum
   (make-enum-type 'certificate-request "gnutls_certificate_request_t"
-                  '(ignore request require)
+                  '(ignore
+                    request
+                    require)
                   #f
                   "GNUTLS_CERT_"))
 
 ;; XXX: Broken naming convention.
-; (define %openpgp-key-status-enum
-;   (make-enum-type 'openpgp-key-status "gnutls_openpgp_key_status_t"
-;                   '(key fingerprint)
-;                   #f
-;                   "GNUTLS_OPENPGP_"))
+                                        ; (define %openpgp-key-status-enum
+                                        ;   (make-enum-type 'openpgp-key-status "gnutls_openpgp_key_status_t"
+                                        ;                   '(key fingerprint)
+                                        ;                   #f
+                                        ;                   "GNUTLS_OPENPGP_"))
 
 (define %close-request-enum
   (make-enum-type 'close-request "gnutls_close_request_t"
-                  '(rdwr wr) ;; FIXME: Check the meaning and rename
+                  '(rdwr
+                    wr) ;; FIXME: Check the meaning and rename
                   #f
                   "GNUTLS_SHUT_"))
 
 (define %protocol-enum
   (make-enum-type 'protocol "gnutls_protocol_t"
-                  '(ssl3 tls1-0 tls1-1 version-unknown)
+                  '(ssl3
+                    tls1-0
+                    tls1-1
+                    version-unknown)
                   #f
                   "GNUTLS_"))
 
 (define %certificate-type-enum
   (make-enum-type 'certificate-type "gnutls_certificate_type_t"
-                  '(x509 openpgp)
+                  '(x509
+                    openpgp)
                   "gnutls_certificate_type_get_name"
                   "GNUTLS_CRT_"))
 
 (define %x509-certificate-format-enum
   (make-enum-type 'x509-certificate-format "gnutls_x509_crt_fmt_t"
-                  '(der pem)
+                  '(der
+                    pem)
                   #f
                   "GNUTLS_X509_FMT_"))
 
 (define %x509-subject-alternative-name-enum
   (make-enum-type 'x509-subject-alternative-name
                   "gnutls_x509_subject_alt_name_t"
-                  '(dnsname rfc822name uri ipaddress)
+                  '(dnsname
+                    rfc822name
+                    uri
+                    ipaddress)
                   #f
                   "GNUTLS_SAN_"))
 
 (define %pk-algorithm-enum
   (make-enum-type 'pk-algorithm "gnutls_pk_algorithm_t"
-                  '(unknown rsa dsa dh ecdsa ecc ec ecdh-x25519 ecdhx rsa-pss
-                    eddsa-ed25519 gost-01 gost-12-256 gost-12-512 ecdh-x448
+                  '(unknown
+                    rsa
+                    dsa
+                    dh
+                    ecdsa
+                    ecc
+                    ec
+                    ecdh-x25519
+                    ecdhx
+                    rsa-pss
+                    eddsa-ed25519
+                    gost-01
+                    gost-12-256
+                    gost-12-512
+                    ecdh-x448
                     eddsa-ed448)
                   "gnutls_pk_algorithm_get_name"
                   "GNUTLS_PK_"))
@@ -524,234 +681,244 @@ unrecognized-name unknown-psk-identity)
 (define %key-usage-enum
   ;; Not actually an enum on the C side.
   (make-enum-type 'key-usage "int"
-                  '(digital-signature non-repudiation key-encipherment
-                    data-encipherment key-agreement key-cert-sign
-                    crl-sign encipher-only decipher-only)
+                  '(digital-signature
+                    non-repudiation
+                    key-encipherment
+                    data-encipherment
+                    key-agreement
+                    key-cert-sign
+                    crl-sign
+                    encipher-only
+                    decipher-only)
                   #f
                   "GNUTLS_KEY_"))
 
 (define %certificate-verify-enum
   (make-enum-type 'certificate-verify "gnutls_certificate_verify_flags"
-                  '(disable-ca-sign allow-x509-v1-ca-crt
-                    do-not-allow-same allow-any-x509-v1-ca-crt
-                    allow-sign-rsa-md2 allow-sign-rsa-md5)
+                  '(disable-ca-sign
+                    allow-x509-v1-ca-crt
+                    do-not-allow-same
+                    allow-any-x509-v1-ca-crt
+                    allow-sign-rsa-md2
+                    allow-sign-rsa-md5)
                   #f
                   "GNUTLS_VERIFY_"))
 
 (define %error-enum
   (make-enum-type 'error "int"
                   '(
-;; FIXME: Automate this:
-;; grep '^#define GNUTLS_E_' ../../../lib/includes/gnutls/gnutls.h.in \
-;;  | sed -r -e 's/^#define GNUTLS_E_([^ ]+).*$/\1/' | tr A-Z_ a-z-
-success
-unsupported-version-packet
-tls-packet-decoding-error
-unexpected-packet-length
-invalid-session
-fatal-alert-received
-unexpected-packet
-warning-alert-received
-error-in-finished-packet
-unexpected-handshake-packet
-decryption-failed
-memory-error
-decompression-failed
-compression-failed
-again
-expired
-db-error
-srp-pwd-error
-keyfile-error
-insufficient-credentials
-insuficient-credentials
-insufficient-cred
-insuficient-cred
-hash-failed
-base64-decoding-error
-rehandshake
-got-application-data
-record-limit-reached
-encryption-failed
-pk-encryption-failed
-pk-decryption-failed
-pk-sign-failed
-x509-unsupported-critical-extension
-key-usage-violation
-no-certificate-found
-invalid-request
-short-memory-buffer
-interrupted
-push-error
-pull-error
-received-illegal-parameter
-requested-data-not-available
-pkcs1-wrong-pad
-received-illegal-extension
-internal-error
-dh-prime-unacceptable
-file-error
-too-many-empty-packets
-unknown-pk-algorithm
-too-many-handshake-packets
-received-disallowed-name
-certificate-required
-no-temporary-rsa-params
-no-compression-algorithms
-no-cipher-suites
-openpgp-getkey-failed
-pk-sig-verify-failed
-illegal-srp-username
-srp-pwd-parsing-error
-keyfile-parsing-error
-no-temporary-dh-params
-asn1-element-not-found
-asn1-identifier-not-found
-asn1-der-error
-asn1-value-not-found
-asn1-generic-error
-asn1-value-not-valid
-asn1-tag-error
-asn1-tag-implicit
-asn1-type-any-error
-asn1-syntax-error
-asn1-der-overflow
-openpgp-uid-revoked
-certificate-error
-x509-certificate-error
-certificate-key-mismatch
-unsupported-certificate-type
-x509-unknown-san
-openpgp-fingerprint-unsupported
-x509-unsupported-attribute
-unknown-hash-algorithm
-unknown-pkcs-content-type
-unknown-pkcs-bag-type
-invalid-password
-mac-verify-failed
-constraint-error
-warning-ia-iphf-received
-warning-ia-fphf-received
-ia-verify-failed
-unknown-algorithm
-unsupported-signature-algorithm
-safe-renegotiation-failed
-unsafe-renegotiation-denied
-unknown-srp-username
-premature-termination
-malformed-cidr
-base64-encoding-error
-incompatible-gcrypt-library
-incompatible-crypto-library
-incompatible-libtasn1-library
-openpgp-keyring-error
-x509-unsupported-oid
-random-failed
-base64-unexpected-header-error
-openpgp-subkey-error
-crypto-already-registered
-already-registered
-handshake-too-large
-cryptodev-ioctl-error
-cryptodev-device-error
-channel-binding-not-available
-bad-cookie
-openpgp-preferred-key-error
-incompat-dsa-key-with-tls-protocol
-insufficient-security
-heartbeat-pong-received
-heartbeat-ping-received
-unrecognized-name
-pkcs11-error
-pkcs11-load-error
-parsing-error
-pkcs11-pin-error
-pkcs11-slot-error
-locking-error
-pkcs11-attribute-error
-pkcs11-device-error
-pkcs11-data-error
-pkcs11-unsupported-feature-error
-pkcs11-key-error
-pkcs11-pin-expired
-pkcs11-pin-locked
-pkcs11-session-error
-pkcs11-signature-error
-pkcs11-token-error
-pkcs11-user-error
-crypto-init-failed
-timedout
-user-error
-ecc-no-supported-curves
-ecc-unsupported-curve
-pkcs11-requested-object-not-availble
-certificate-list-unsorted
-illegal-parameter
-no-priorities-were-set
-x509-unsupported-extension
-session-eof
-tpm-error
-tpm-key-password-error
-tpm-srk-password-error
-tpm-session-error
-tpm-key-not-found
-tpm-uninitialized
-tpm-no-lib
-no-certificate-status
-ocsp-response-error
-random-device-error
-auth-error
-no-application-protocol
-sockets-init-error
-key-import-failed
-inappropriate-fallback
-certificate-verification-error
-privkey-verification-error
-unexpected-extensions-length
-asn1-embedded-null-in-string
-self-test-error
-no-self-test
-lib-in-error-state
-pk-generation-error
-idna-error
-need-fallback
-session-user-id-changed
-handshake-during-false-start
-unavailable-during-handshake
-pk-invalid-pubkey
-pk-invalid-privkey
-not-yet-activated
-invalid-utf8-string
-no-embedded-data
-invalid-utf8-email
-invalid-password-string
-certificate-time-error
-record-overflow
-asn1-time-error
-incompatible-sig-with-key
-pk-invalid-pubkey-params
-pk-no-validation-params
-ocsp-mismatch-with-certs
-no-common-key-share
-reauth-request
-too-many-matches
-crl-verification-error
-missing-extension
-db-entry-exists
-early-data-rejected
-unimplemented-feature
-int-ret-0
-int-check-again
-application-error-max
-application-error-min
-)
+                    ;; FIXME: Automate this:
+                    ;; grep '^#define GNUTLS_E_' ../../../lib/includes/gnutls/gnutls.h.in \
+                    ;;  | sed -r -e 's/^#define GNUTLS_E_([^ ]+).*$/\1/' | tr A-Z_ a-z-
+                    success
+                    unsupported-version-packet
+                    tls-packet-decoding-error
+                    unexpected-packet-length
+                    invalid-session
+                    fatal-alert-received
+                    unexpected-packet
+                    warning-alert-received
+                    error-in-finished-packet
+                    unexpected-handshake-packet
+                    decryption-failed
+                    memory-error
+                    decompression-failed
+                    compression-failed
+                    again
+                    expired
+                    db-error
+                    srp-pwd-error
+                    keyfile-error
+                    insufficient-credentials
+                    insuficient-credentials
+                    insufficient-cred
+                    insuficient-cred
+                    hash-failed
+                    base64-decoding-error
+                    rehandshake
+                    got-application-data
+                    record-limit-reached
+                    encryption-failed
+                    pk-encryption-failed
+                    pk-decryption-failed
+                    pk-sign-failed
+                    x509-unsupported-critical-extension
+                    key-usage-violation
+                    no-certificate-found
+                    invalid-request
+                    short-memory-buffer
+                    interrupted
+                    push-error
+                    pull-error
+                    received-illegal-parameter
+                    requested-data-not-available
+                    pkcs1-wrong-pad
+                    received-illegal-extension
+                    internal-error
+                    dh-prime-unacceptable
+                    file-error
+                    too-many-empty-packets
+                    unknown-pk-algorithm
+                    too-many-handshake-packets
+                    received-disallowed-name
+                    certificate-required
+                    no-temporary-rsa-params
+                    no-compression-algorithms
+                    no-cipher-suites
+                    openpgp-getkey-failed
+                    pk-sig-verify-failed
+                    illegal-srp-username
+                    srp-pwd-parsing-error
+                    keyfile-parsing-error
+                    no-temporary-dh-params
+                    asn1-element-not-found
+                    asn1-identifier-not-found
+                    asn1-der-error
+                    asn1-value-not-found
+                    asn1-generic-error
+                    asn1-value-not-valid
+                    asn1-tag-error
+                    asn1-tag-implicit
+                    asn1-type-any-error
+                    asn1-syntax-error
+                    asn1-der-overflow
+                    openpgp-uid-revoked
+                    certificate-error
+                    x509-certificate-error
+                    certificate-key-mismatch
+                    unsupported-certificate-type
+                    x509-unknown-san
+                    openpgp-fingerprint-unsupported
+                    x509-unsupported-attribute
+                    unknown-hash-algorithm
+                    unknown-pkcs-content-type
+                    unknown-pkcs-bag-type
+                    invalid-password
+                    mac-verify-failed
+                    constraint-error
+                    warning-ia-iphf-received
+                    warning-ia-fphf-received
+                    ia-verify-failed
+                    unknown-algorithm
+                    unsupported-signature-algorithm
+                    safe-renegotiation-failed
+                    unsafe-renegotiation-denied
+                    unknown-srp-username
+                    premature-termination
+                    malformed-cidr
+                    base64-encoding-error
+                    incompatible-gcrypt-library
+                    incompatible-crypto-library
+                    incompatible-libtasn1-library
+                    openpgp-keyring-error
+                    x509-unsupported-oid
+                    random-failed
+                    base64-unexpected-header-error
+                    openpgp-subkey-error
+                    crypto-already-registered
+                    already-registered
+                    handshake-too-large
+                    cryptodev-ioctl-error
+                    cryptodev-device-error
+                    channel-binding-not-available
+                    bad-cookie
+                    openpgp-preferred-key-error
+                    incompat-dsa-key-with-tls-protocol
+                    insufficient-security
+                    heartbeat-pong-received
+                    heartbeat-ping-received
+                    unrecognized-name
+                    pkcs11-error
+                    pkcs11-load-error
+                    parsing-error
+                    pkcs11-pin-error
+                    pkcs11-slot-error
+                    locking-error
+                    pkcs11-attribute-error
+                    pkcs11-device-error
+                    pkcs11-data-error
+                    pkcs11-unsupported-feature-error
+                    pkcs11-key-error
+                    pkcs11-pin-expired
+                    pkcs11-pin-locked
+                    pkcs11-session-error
+                    pkcs11-signature-error
+                    pkcs11-token-error
+                    pkcs11-user-error
+                    crypto-init-failed
+                    timedout
+                    user-error
+                    ecc-no-supported-curves
+                    ecc-unsupported-curve
+                    pkcs11-requested-object-not-availble
+                    certificate-list-unsorted
+                    illegal-parameter
+                    no-priorities-were-set
+                    x509-unsupported-extension
+                    session-eof
+                    tpm-error
+                    tpm-key-password-error
+                    tpm-srk-password-error
+                    tpm-session-error
+                    tpm-key-not-found
+                    tpm-uninitialized
+                    tpm-no-lib
+                    no-certificate-status
+                    ocsp-response-error
+                    random-device-error
+                    auth-error
+                    no-application-protocol
+                    sockets-init-error
+                    key-import-failed
+                    inappropriate-fallback
+                    certificate-verification-error
+                    privkey-verification-error
+                    unexpected-extensions-length
+                    asn1-embedded-null-in-string
+                    self-test-error
+                    no-self-test
+                    lib-in-error-state
+                    pk-generation-error
+                    idna-error
+                    need-fallback
+                    session-user-id-changed
+                    handshake-during-false-start
+                    unavailable-during-handshake
+                    pk-invalid-pubkey
+                    pk-invalid-privkey
+                    not-yet-activated
+                    invalid-utf8-string
+                    no-embedded-data
+                    invalid-utf8-email
+                    invalid-password-string
+                    certificate-time-error
+                    record-overflow
+                    asn1-time-error
+                    incompatible-sig-with-key
+                    pk-invalid-pubkey-params
+                    pk-no-validation-params
+                    ocsp-mismatch-with-certs
+                    no-common-key-share
+                    reauth-request
+                    too-many-matches
+                    crl-verification-error
+                    missing-extension
+                    db-entry-exists
+                    early-data-rejected
+                    unimplemented-feature
+                    int-ret-0
+                    int-check-again
+                    application-error-max
+                    application-error-min
+                    )
                   "gnutls_strerror"
                   "GNUTLS_E_"))
 
 
 (define %openpgp-certificate-format-enum
   (make-enum-type 'openpgp-certificate-format "gnutls_openpgp_crt_fmt_t"
-                  '(raw base64)
+                  '(raw
+                    base64)
                   #f
                   "GNUTLS_OPENPGP_FMT_"))
 
@@ -763,55 +930,110 @@ application-error-min
 
 (define %privkey-enum
   (make-enum-type 'privkey "gnutls_privkey_flags_t"
-                  '(import-auto-release import-copy disable-callbacks
-                    sign-flag-tls1-rsa flag-provable flag-export-compat
-                    sign-flag-rsa-pss flag-reproducible flag-ca)
+                  '(import-auto-release
+                    import-copy
+                    disable-callbacks
+                    sign-flag-tls1-rsa
+                    flag-provable
+                    flag-export-compat
+                    sign-flag-rsa-pss
+                    flag-reproducible flag-ca)
                   #f
                   "GNUTLS_PRIVKEY_"))
 
 (define %oid-enum
   ;; Not actually an enum on the C side.
   (make-enum-type 'oid "const char *"
-                  '(x520-country-name x520-organization-name
-                    x520-organizational-unit-name x520-common-name
-                    x520-locality-name x520-state-or-province-name
-                    x520-initials x520-generation-qualifier
-                    x520-surname x520-given-name x520-title
-                    x520-dn-qualifier x520-pseudonym x520-postalcode
-                    x520-name ldap-dc ldap-uid pkcs9-email
-                    pkix-date-of-birth pkix-place-of-birth pkix-gender
-                    pkix-country-of-citizenship pkix-country-of-residence
-                    aia ad-ocsp ad-caissuers)
+                  '(x520-country-name
+                    x520-organization-name
+                    x520-organizational-unit-name
+                    x520-common-name
+                    x520-locality-name
+                    x520-state-or-province-name
+                    x520-initials
+                    x520-generation-qualifier
+                    x520-surname
+                    x520-given-name
+                    x520-title
+                    x520-dn-qualifier
+                    x520-pseudonym
+                    x520-postalcode
+                    x520-name
+                    ldap-dc
+                    ldap-uid
+                    pkcs9-email
+                    pkix-date-of-birth
+                    pkix-place-of-birth
+                    pkix-gender
+                    pkix-country-of-citizenship
+                    pkix-country-of-residence
+                    aia
+                    ad-ocsp
+                    ad-caissuers)
                   #f
                   "GNUTLS_OID_"))
 
 (define %ecc-curve-enum
   (make-enum-type 'ecc-curve "gnutls_ecc_curve_t"
                   '(invalid
-                    secp224r1 secp256r1 secp384r1 secp521r1 secp192r1
-                    x25519 ed25519
-                    gost256cpa gost256cpb gost256cpc gost256cpxa gost256cpxb
-                    gost512a gost512b gost512c
-                    gost256a gost256b gost256c gost256d
-                    x448 ed448)
+                    secp224r1
+                    secp256r1
+                    secp384r1
+                    secp521r1
+                    secp192r1
+                    x25519
+                    ed25519
+                    gost256cpa
+                    gost256cpb
+                    gost256cpc
+                    gost256cpxa
+                    gost256cpxb
+                    gost512a
+                    gost512b
+                    gost512c
+                    gost256a
+                    gost256b
+                    gost256c
+                    gost256d
+                    x448
+                    ed448)
                   "gnutls_ecc_curve_get_name"
                   "GNUTLS_ECC_CURVE_"))
 
 (define %gnutls-enums
   ;; All enums.
-  (list %cipher-enum %kx-enum %params-enum %credentials-enum %mac-enum
-        %digest-enum %compression-method-enum
-        %connection-end-enum %connection-flag-enum
-        %alert-level-enum %alert-description-enum %handshake-description-enum
-        %certificate-status-enum %certificate-request-enum
-        %close-request-enum %protocol-enum %certificate-type-enum
-        %x509-certificate-format-enum %x509-subject-alternative-name-enum
-        %pk-algorithm-enum %sign-algorithm-enum %server-name-type-enum
-        %psk-key-format-enum %key-usage-enum %certificate-verify-enum
-        %error-enum %privkey-enum %oid-enum %ecc-curve-enum
-        %random-level-enum
-
-        %openpgp-certificate-format-enum))
+  (list
+   %cipher-enum
+   %kx-enum
+   %params-enum
+   %credentials-enum
+   %mac-enum
+   %digest-enum
+   %compression-method-enum
+   %connection-end-enum
+   %connection-flag-enum
+   %alert-level-enum
+   %alert-description-enum
+   %handshake-description-enum
+   %certificate-status-enum
+   %certificate-request-enum
+   %close-request-enum
+   %protocol-enum
+   %certificate-type-enum
+   %x509-certificate-format-enum
+   %x509-subject-alternative-name-enum
+   %pk-algorithm-enum
+   %sign-algorithm-enum
+   %server-name-type-enum
+   %psk-key-format-enum
+   %key-usage-enum
+   %certificate-verify-enum
+   %error-enum
+   %privkey-enum
+   %oid-enum
+   %ecc-curve-enum
+   %random-level-enum
+   %openpgp-certificate-format-enum))
 
 ;;; Local Variables:
 ;;; mode: scheme

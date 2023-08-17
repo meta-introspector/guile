@@ -23,13 +23,18 @@
   :use-module (srfi srfi-9)
   :use-module (srfi srfi-13)
   :use-module (gnutls build utils)
-  :export (make-smob-type smob-type-tag smob-free-function
+  :export (make-smob-type
+           smob-type-tag
+           smob-free-function
            smob-type-predicate-scheme-name
-           smob-type-from-c-function smob-type-to-c-function
+           smob-type-from-c-function
+           smob-type-to-c-function
 
-           output-smob-type-definition output-smob-type-declaration
+           output-smob-type-definition
+           output-smob-type-declaration
            output-smob-type-predicate
-           output-c->smob-converter output-smob->c-converter
+           output-c->smob-converter
+           output-smob->c-converter
 
            %gnutls-smobs))
 

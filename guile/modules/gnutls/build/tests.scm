@@ -25,7 +25,8 @@
   "Call `(exit (THUNK))'.  If THUNK raises an exception, then call `(exit 1)' and
 display a backtrace.  Otherwise, return THUNK's return value."
   (exit
-   (catch #t
+   (catch
+    #t
      thunk
      (lambda (key . args)
        ;; Never reached.

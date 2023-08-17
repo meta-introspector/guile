@@ -24,17 +24,18 @@
            ;; Return a hasher of a string as a 1-argument function,
            ;; by first adding a prefix to it.
            (let ((tag (make-prompt-tag)))
-             (call-with-prompt tag
-               (lambda ()
-                 (let ((state (make-hmac mac/sha256 secret)))
-                   (hmac! state prefix)
-                   (let ((line (abort-to-prompt tag)))
-                     ;; The flow may reenter multiple times here, so
-                     ;; we have to copy the hmac state.
-                     (let ((copy (hmac-copy state)))
-                       (hmac! copy line)
-                       (hmac-output copy)))))
-               (lambda (k) k))))))
+             (call-with-prompt
+              tag
+              (lambda ()
+                (let ((state (make-hmac mac/sha256 secret)))
+                  (hmac! state prefix)
+                  (let ((line (abort-to-prompt tag)))
+                    ;; The flow may reenter multiple times here, so
+                    ;; we have to copy the hmac state.
+                    (let ((copy (hmac-copy state)))
+                      (hmac! copy line)
+                      (hmac-output copy)))))
+              (lambda (k) k))))))
 
     ;; So if "Prefix " is the prefix, it will be hashed only once.
     (let ((expected-output-1

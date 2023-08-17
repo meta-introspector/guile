@@ -23,8 +23,10 @@
   :use-module (srfi srfi-39)
   :autoload   (system documentation c-snarf) (run-cpp-and-extract-snarfing)
 
-  :export (schemify-name scheme-procedure-texi-line
-           procedure-gdf-string procedure-texi-documentation
+  :export (schemify-name
+           scheme-procedure-texi-line
+           procedure-gdf-string
+           procedure-texi-documentation
            output-procedure-texi-documentation-from-c-file
            *document-c-functions?*))
 

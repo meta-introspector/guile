@@ -23,27 +23,34 @@
   :use-module (gnutls)
 
   :re-export (;; OpenPGP keys
-           openpgp-certificate? openpgp-private-key?
-           import-openpgp-certificate import-openpgp-private-key
-           openpgp-certificate-id openpgp-certificate-id!
-           openpgp-certificate-fingerprint openpgp-certificate-fingerprint!
-           openpgp-certificate-name openpgp-certificate-names
-           openpgp-certificate-algorithm openpgp-certificate-version
-           openpgp-certificate-usage
+              openpgp-certificate?
+              openpgp-private-key?
+              import-openpgp-certificate
+              import-openpgp-private-key
+              openpgp-certificate-id
+              openpgp-certificate-id!
+              openpgp-certificate-fingerprint
+              openpgp-certificate-fingerprint!
+              openpgp-certificate-name
+              openpgp-certificate-names
+              openpgp-certificate-algorithm
+              openpgp-certificate-version
+              openpgp-certificate-usage
 
-           ;; OpenPGP keyrings
-           openpgp-keyring? import-openpgp-keyring
-           openpgp-keyring-contains-key-id?
+              ;; OpenPGP keyrings
+              openpgp-keyring?
+              import-openpgp-keyring
+              openpgp-keyring-contains-key-id?
 
-           ;; certificate credentials
-           set-certificate-credentials-openpgp-keys!
+              ;; certificate credentials
+              set-certificate-credentials-openpgp-keys!
 
-           ;; enum->string functions
-           openpgp-certificate-format->string
+              ;; enum->string functions
+              openpgp-certificate-format->string
 
-           ;; enum values
-           openpgp-certificate-format/raw
-           openpgp-certificate-format/base64))
+              ;; enum values
+              openpgp-certificate-format/raw
+              openpgp-certificate-format/base64))
 
 
 
