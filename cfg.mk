@@ -41,3 +41,13 @@ exclude_file_name_regexp--sc_readme_link_copying = ^guile/modules/system/documen
 exclude_file_name_regexp--sc_readme_link_install = $(exclude_file_name_regexp--sc_readme_link_copying)
 
 VC_LIST_ALWAYS_EXCLUDE_REGEX = ^maint.mk|m4/lib-link.m4|m4/lib-prefix.m4|gl/top/|build-aux/gnupload$$
+
+indent-guile:
+	-$(AM_V_at)find . -name \*.scm | xargs emacs -Q --batch --eval '(mapc (lambda (file) (find-file file) (indent-region (point-min) (point-max)) (untabify (point-min) (point-max)) (delete-trailing-whitespace) (save-buffer) (kill-buffer)) command-line-args-left)' 2>&1 | grep -v '^Indenting region...'
+
+sc_indent_guile:
+	@if test -d $(srcdir)/.git				\
+		&& git --version >/dev/null 2>&1			\
+		&& command -v emacs > /dev/null; then \
+	  $(MAKE) -s indent-guile && git diff --exit-code; \
+	fi

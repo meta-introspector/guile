@@ -13,14 +13,16 @@ default:
     - ./config.h
     - ./**/*.log
 
-Guix-git:
+Guix-git-indent:
   image: debian:12-slim
   stage: build
   before_script:
   - apt-get update -q
-  - apt-get install -qqy guix daemonize git
+  - apt-get install -qqy guix daemonize git make emacs-nox
   - service guix-daemon start
   script:
+  - make -f cfg.mk srcdir=. indent-guile sc_indent_guile
+  - git diff --exit-code # nothing should change version controlled files
   - git fetch origin
   - git checkout $CI_COMMIT_BRANCH
   - guix build -f guix.scm
