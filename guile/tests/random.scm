@@ -25,11 +25,9 @@
 (run-test
  (lambda ()
    (let ((output
-          (call-with-output-string
-           (lambda (port)
-             (with-output-to-port port
-               (lambda ()
-                 (load-from-path "random-example.scm")))))))
+          (with-output-to-string
+            (lambda ()
+              (load-from-path "random-example.scm")))))
      (match output
             ((or "You roll a 1.\n"
                  "You roll a 2.\n"
