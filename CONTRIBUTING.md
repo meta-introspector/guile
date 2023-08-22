@@ -104,3 +104,53 @@ two things must be done:
 
 Note that, for constants and enums, "schemefied" names are used, as
 noted under the "Guile API Conventions" node of the manual.
+
+## Checked manual examples
+
+There are a few examples in the manual. To run these examples as part
+of the test suite, you need to create 2 scheme files: the example
+itself, and a test runner for the example. The
+`guile/examples/random-example.scm` and `guile/tests/random.scm` show
+how to proceed.
+
+ 1. Save the example code to a new scheme file under `guile/examples`,
+    for instance `guile/examples/new-example.scm`.
+
+ 2. In the `EXTRA_DIST` variable in `guile/Makefile.am`, add your example, like this:
+    ```Makefile
+    EXTRA_DIST +=                 \
+      ...                         \
+      examples/new-example.scm
+    ```
+
+ 3. Include the example in the manual:
+    ```texinfo
+    @example
+    @verbatiminclude @value{abs_top_srcdir}/guile/examples/new-example.scm
+    @end example
+    ```
+
+ 4. Create a test file to run the example, for instance
+    `guile/tests/new-test.scm`. It should set up some environment, and
+    load the example file. For instance:
+    ```scheme
+    (use-modules (gnutls) (gnutls build tests))
+    (run-test
+     (lambda ()
+       (load-from-path "new-example.scm")))
+    ```
+    You can control what the example receives as standard input and
+    check its standard output with `with-input-from-string` and
+    `with-output-to-string`. Refer to the `guile/tests/random.scm` for
+    a simple case where the output is checked.
+
+ 5. Register the test file in the `TESTS` variable in `guile/Makefile.am`:
+    ```Makefile
+    TESTS +=                      \
+      ...                         \
+      tests/new-test.scm
+    ```
+
+These steps ensure that the examples in the manual work as expected,
+but not that they are stand-alone, since the test may load more
+modules.
