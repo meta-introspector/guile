@@ -1,5 +1,8 @@
 Guile-GnuTLS NEWS                                    -*- outline -*-
 
+* Noteworthy changes in release ?.? (????-??-??) [?]
+
+
 * Noteworthy changes in release 4.0.0 (2023-08-24) [stable]
 
 ** Fix automake warnings.
