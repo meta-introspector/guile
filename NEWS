@@ -2,6 +2,13 @@ Guile-GnuTLS NEWS                                    -*- outline -*-
 
 * Noteworthy changes in release ?.? (????-??-??) [?]
 
+** Fix automake warnings.
+
+** Indent Guile code.
+
+** Work around GnuTLS 3.8.1 bug wrt missing GNUTLS_NO_EXTENSIONS.
+
+** Changed encoding of source files from ISO-8859-1 to UTF-8.
 
 * Noteworthy changes in release 3.7.14 (2023-07-22) [beta]
 
