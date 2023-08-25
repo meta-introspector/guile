@@ -744,6 +744,9 @@
 
            fatal-error?
 
+           ;; base16
+           hex-encode hex-decode
+
            ;; base64
            base64-encode base64-decode
 

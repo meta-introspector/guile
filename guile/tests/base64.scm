@@ -38,4 +38,25 @@
      (error "decoding failed"))
    (unless (equal? (base64-decode (string->utf8 "SGVsbG8sIHdvcmxkIQ=="))
                    (base64-decode "SGVsbG8sIHdvcmxkIQ=="))
-     (error "decoding a bytevector failed"))))
+     (error "decoding a bytevector failed"))
+   (unless (equal? (with-output-to-string
+                     (lambda ()
+                       (load-from-path "base16-example.scm")))
+                   "\
+The base16 encoding is: \"48656c6c6f2c20776f726c6421\"\n\
+Decoding it back gives: \"Hello, world!\"\n")
+     (error "base16 failed"))
+   (unless (equal? (with-output-to-string
+                     (lambda ()
+                       (load-from-path "base64-example.scm")))
+                   "\
+The base64 encoding is: \"SGVsbG8sIHdvcmxkIQ==\"\n\
+Decoding it back gives: \"Hello, world!\"\n")
+     (error "base64 failed"))
+   (unless (equal? (with-output-to-string
+                     (lambda ()
+                       (load-from-path "base64url-example.scm")))
+                   "\
+The base64-url encoding is: \"fn4gSGVsbG8sIHdvcmxkISB-fg\"\n\
+Decoding it back gives: \"~~ Hello, world! ~~\"\n")
+     (error "base64-url failed"))))

@@ -154,4 +154,7 @@ EXTRA_DIST +=					\
   examples/low-level-cipher-example.scm         \
   examples/use-private-key.scm                  \
   examples/generate-private-key.scm             \
-  examples/random-example.scm
+  examples/random-example.scm                   \
+  examples/base16-example.scm                   \
+  examples/base64-example.scm                   \
+  examples/base64url-example.scm

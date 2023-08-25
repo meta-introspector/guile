@@ -5055,6 +5055,45 @@ SCM_DEFINE (scm_ecc_curve_size, "ecc-curve-size", 1, 0, 0,
 
 #undef FUNC_NAME
 
+SCM_DEFINE (scm_hex_encode, "hex-encode", 1, 0, 0,
+	    (SCM data),
+	    "Return as an ASCII string the base16 encoding of @var{data}.")
+#define FUNC_NAME s_scm_hex_encode
+{
+  if (scm_is_string (data))
+    {
+      data = scm_string_to_utf8 (data);
+    }
+  gnutls_datum_t c_data_d;
+  const char *c_data;
+  size_t c_data_len;
+  scm_t_array_handle c_data_handle;
+  c_data = scm_gnutls_get_array (data, &c_data_handle, &c_data_len,
+				 FUNC_NAME);
+  c_data_d.data = (unsigned char *) c_data;
+  c_data_d.size = c_data_len;
+  gnutls_datum_t c_result;
+  SCM result;
+  int err = gnutls_hex_encode2 (&c_data_d, &c_result);
+  scm_gnutls_release_array (&c_data_handle);
+  scm_dynwind_begin (0);
+  scm_dynwind_unwind_handler (gnutls_free, c_result.data,
+			      SCM_F_WIND_EXPLICITLY);
+  if (EXPECT_FALSE (err))
+    {
+      scm_gnutls_error (err, FUNC_NAME);
+    }
+  else
+    {
+      result =
+	scm_from_latin1_stringn ((char *) c_result.data, c_result.size);
+    }
+  scm_dynwind_end ();
+  return result;
+}
+
+#undef FUNC_NAME
+
 SCM_DEFINE (scm_base64_encode, "base64-encode", 1, 0, 0,
 	    (SCM data),
 	    "Return as an ASCII string the base64 encoding of @var{data}.")
@@ -5114,6 +5153,45 @@ SCM_DEFINE (scm_base64_decode, "base64-decode", 1, 0, 0,
   gnutls_datum_t c_result;
   SCM result;
   int err = gnutls_base64_decode2 (&c_data_d, &c_result);
+  scm_gnutls_release_array (&c_data_handle);
+  scm_dynwind_begin (0);
+  scm_dynwind_unwind_handler (gnutls_free, c_result.data,
+			      SCM_F_WIND_EXPLICITLY);
+  if (EXPECT_FALSE (err))
+    {
+      scm_gnutls_error (err, FUNC_NAME);
+    }
+  else
+    {
+      result = scm_c_make_bytevector (c_result.size);
+      memcpy (SCM_BYTEVECTOR_CONTENTS (result), c_result.data, c_result.size);
+    }
+  scm_dynwind_end ();
+  return result;
+}
+
+#undef FUNC_NAME
+
+SCM_DEFINE (scm_hex_decode, "hex-decode", 1, 0, 0,
+	    (SCM data),
+	    "Try and decode @var{data} from base16, return it as a bytevector.")
+#define FUNC_NAME s_scm_hex_decode
+{
+  if (scm_is_string (data))
+    {
+      data = scm_string_to_utf8 (data);
+    }
+  gnutls_datum_t c_data_d;
+  const char *c_data;
+  size_t c_data_len;
+  scm_t_array_handle c_data_handle;
+  c_data = scm_gnutls_get_array (data, &c_data_handle, &c_data_len,
+				 FUNC_NAME);
+  c_data_d.data = (unsigned char *) c_data;
+  c_data_d.size = c_data_len;
+  gnutls_datum_t c_result;
+  SCM result;
+  int err = gnutls_hex_decode2 (&c_data_d, &c_result);
   scm_gnutls_release_array (&c_data_handle);
   scm_dynwind_begin (0);
   scm_dynwind_unwind_handler (gnutls_free, c_result.data,

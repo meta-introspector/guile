@@ -2,6 +2,7 @@ Guile-GnuTLS NEWS                                    -*- outline -*-
 
 * Noteworthy changes in release ?.? (????-??-??) [?]
 
+** Bind hex-encode and hex-decode
 
 * Noteworthy changes in release 4.0.0 (2023-08-24) [stable]
 

@@ -558,6 +558,7 @@ The low-level functions in GnuTLS can be accessed for various tasks.
 * Low-lovel encryption API:: Block-by-block encryption of data.
 * Public key cryptography:: Using private and public keys.
 * Generating random numbers:: Pseudo-random number generation.
+* Encoding binary data:: Base16, base64.
 @end menu
 
 @node Hash Message Authentication Code
@@ -672,6 +673,34 @@ generate a random number with the lowest security requirements:
 
 @example
 @verbatiminclude @value{abs_top_srcdir}/guile/examples/random-example.scm
+@end example
+
+@node Encoding binary data
+@subsection Encoding binary data
+When working with gnutls, you may come across a lot of binary data, in
+the form of guile bytevectors. Base16 and base64 are popular encoding
+schemes for binary data.
+
+This example shows how to encode and decode binary data to and from
+base16.
+
+@example
+@verbatiminclude @value{abs_top_srcdir}/guile/examples/base16-example.scm
+@end example
+
+This example shows how to encode and decode binary data to and from
+base64.
+
+@example
+@verbatiminclude @value{abs_top_srcdir}/guile/examples/base64-example.scm
+@end example
+
+Unfortunately, gnutls does not provide an API to encode data to the
+popular base64-url encoding. However, it is possible to convert from
+base64 to base64-url and back.
+
+@example
+@verbatiminclude @value{abs_top_srcdir}/guile/examples/base64url-example.scm
 @end example
 
 @c *********************************************************************
