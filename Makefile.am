@@ -1,3 +1,4 @@
+
 ## Process this file with automake to produce Makefile.in
 # Copyright (C) 2007-2023 Free Software Foundation, Inc.
 #
@@ -18,6 +19,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this file; if not, write to the Free Software Foundation,
 # Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+
+#ACLOCAL_AMFLAGS='-I ./m4'
 
 AM_DISTCHECK_CONFIGURE_FLAGS = \
 	--with-guile-site-dir='$$(datarootdir)/guile/site/$$(GUILE_EFFECTIVE_VERSION)' \
