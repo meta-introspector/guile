@@ -25,8 +25,8 @@ include $(srcdir)/lightening/lightening.am
 
 AUTOMAKE_OPTIONS = gnu
 
-AM_CXXFLAGS = -std=c++20 -save-temps --verbose
-AM_CFLAGS = -std=c11 -save-temps --verbose
+
+
 #CXXFLAGS="--verbose -save-temps" make introspector.o
 
 ## Prevent automake from adding extra -I options
@@ -48,7 +48,9 @@ if ENABLE_JIT
 AM_CPPFLAGS += -I$(top_srcdir)/libguile/lightening
 endif
 
-AM_CFLAGS = $(GCC_CFLAGS) $(CFLAG_VISIBILITY)
+AM_CXXFLAGS = -std=c++20 -save-temps --verbose  -fdump-tree-all
+AM_CFLAGS1 = -std=c11 -save-temps --verbose  -fdump-tree-all
+AM_CFLAGS = $(GCC_CFLAGS) $(CFLAG_VISIBILITY) $(AM_CFLAGS1)
 
 ## The Gnulib Libtool archive.
 gnulib_library = $(top_builddir)/lib/libgnu.la

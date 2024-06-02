@@ -71,6 +71,9 @@ REFL_END
 REFL_TYPE(scm_t_c_hook_type)
 REFL_END
 
+//REFL_TYPE(scm_t_subr) (int)
+//REFL_END
+
 REFL_TYPE(scm_t_c_hook_function)
 REFL_END
 
