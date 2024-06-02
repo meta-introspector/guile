@@ -62,7 +62,11 @@ AC_CANONICAL_HOST
 
 AC_PROG_INSTALL
 AC_PROG_CC
+AC_PROG_CXX
 gl_EARLY
+
+AM_CXXFLAGS = -std=c++20
+AM_CFLAGS = -std=c11
 
 AC_MSG_CHECKING([whether the compiler supports -flto])
 old_CFLAGS="$CFLAGS"
