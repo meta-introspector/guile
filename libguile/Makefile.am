@@ -178,6 +178,7 @@ libguile_@GUILE_EFFECTIVE_VERSION@_la_SOURCES =				\
 	instructions.c				\
 	integers.c				\
 	intrinsics.c				\
+	introspector.cc				\
 	ioext.c					\
 	jit.c					\
 	keywords.c				\
