@@ -25,6 +25,10 @@ include $(srcdir)/lightening/lightening.am
 
 AUTOMAKE_OPTIONS = gnu
 
+AM_CXXFLAGS = -std=c++20 -save-temps --verbose
+AM_CFLAGS = -std=c11 -save-temps --verbose
+#CXXFLAGS="--verbose -save-temps" make introspector.o
+
 ## Prevent automake from adding extra -I options
 DEFS = @DEFS@
 

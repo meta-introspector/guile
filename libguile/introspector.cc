@@ -1,3 +1,4 @@
+#include "config.h"  
 /*
   c++ meta template programming magic for
   * extracting of named entities
@@ -21,9 +22,14 @@ template <
   class GuileIntrospectorSelf
   > class GuileConfig {
 #include "config.h"  
+
+  //#include "strings.h"
+  //#include "symbols.h"
+  //#include "vports.h"
+
 };
 
-
+#include "config.h"  
 #include "strings.h"
 #include "symbols.h"
 #include "vports.h"
@@ -33,10 +39,43 @@ template <
 #include "scm.h"
 #include "intrinsics.h"
 #include "loader.h"
+
 //#include "vm-operationss.h"
 
-//REFL_TYPE(s )
-//REFL_END
+REFL_TYPE(SCM)
+REFL_END
+REFL_TYPE(scm_t_subr)
+REFL_END
+
+REFL_TYPE(scm_t_dynamic_state)
+REFL_END
+
+REFL_TYPE(scm_print_state)
+REFL_END
+
+REFL_TYPE(scm_t_dynstack)
+REFL_END
+
+REFL_TYPE(scm_frame)
+REFL_END
+
+REFL_TYPE(scm_vm)
+REFL_END
+
+REFL_TYPE(scm_vm_stack_element)
+REFL_END
+
+REFL_TYPE(scm_thread)
+REFL_END
+
+REFL_TYPE(scm_t_c_hook_type)
+REFL_END
+
+REFL_TYPE(scm_t_c_hook_function)
+REFL_END
+
+REFL_TYPE(scm_t_c_hook_entry)
+REFL_END
 
 template <
   class Ansible,
