@@ -56,6 +56,27 @@ extern "C" {
 #include "threads.h"
 
 #include "strings.h"
+#include "vm.h"
+#include "atomic.h"
+#include "bytevectors.h"
+#include "filesys.h"
+#include "fluids.h"
+#include "foreign.h"
+#include "frames.h"
+#include "hashtab.h"
+#include "numbers.h"
+#include "ports.h"
+#include "programs.h"
+#include "scm.h"
+#include "smob.h"
+#include "srfi-14.h"
+#include "strings.h"
+#include "symbols.h"
+#include "values.h"
+#include "variable.h"
+#include "vectors.h"
+#include "vm.h"
+#include "weak-vector.h"
 }
 
 struct SCMField : refl::attr::usage::field { };
@@ -272,14 +293,56 @@ template <
 template<class T>
 void spct(const T& t);
 
+#define DEBUG_TYPE(X) else if (X (c)) {std::cerr << "SWITCH " #X ":\n";}
 template<>void spct<scm_thread>(scm_thread const&){}
 template<>void spct<scm_unused_struct*>(scm_unused_struct* const& c){
   // this is the SCM
   if (scm_is_string (c)) {
     char * str = scm_to_locale_string((SCM)(void*)c);
-      std::cerr << "DEBUG STR: " << str << "\n";
-    } else {
-    std::cerr << "DEBUG ERR: " << c << "\n";
+    std::cerr << "DEBUG STR: " << str << "\n";
+  }
+  DEBUG_TYPE(scm_is_bytevector)
+    DEBUG_TYPE(scm_is_vector)
+    //    DEBUG_TYPE(scm_is_exact)
+    //    DEBUG_TYPE(scm_is_inexact)
+    DEBUG_TYPE(scm_is_integer)
+    DEBUG_TYPE(scm_is_exact_integer)
+    //    DEBUG_TYPE(scm_is_signed_integer)
+    //    DEBUG_TYPE(scm_is_unsigned_integer)  uintmax_t, uintmax_t)’
+    DEBUG_TYPE(scm_is_real)
+    DEBUG_TYPE(scm_is_rational)
+    DEBUG_TYPE(scm_is_complex)
+    DEBUG_TYPE(scm_is_number)
+    DEBUG_TYPE(scm_is_bool)
+    DEBUG_TYPE(scm_is_pair  )
+    DEBUG_TYPE(scm_is_mutable_pair   )
+    DEBUG_TYPE(scm_is_array   )
+    //    DEBUG_TYPE(scm_is_typed_array ) 
+    DEBUG_TYPE(scm_is_bytevector)
+    //    DEBUG_TYPE(SCM_DIR)
+    //    DEBUG_TYPE(SCM_FLUID)
+    //    DEBUG_TYPE(SCM_POINTER_P)
+    //    DEBUG_TYPE(SCM_VM_FRAME_P)
+    DEBUG_TYPE(SCM_HASHTABLE_P)
+    DEBUG_TYPE(SCM_REALP)
+    DEBUG_TYPE(SCM_COMPLEXP)
+    DEBUG_TYPE(SCM_BIGP)
+    DEBUG_TYPE(SCM_NUMP)
+    DEBUG_TYPE(SCM_FRACTIONP)
+    DEBUG_TYPE(SCM_PORTP)
+    DEBUG_TYPE(SCM_PROGRAM_P)
+    DEBUG_TYPE(SCM_CHARSETP)
+    DEBUG_TYPE(scm_is_symbol)
+    DEBUG_TYPE(SCM_VARIABLEP)
+    DEBUG_TYPE(SCM_I_IS_VECTOR)
+    DEBUG_TYPE(SCM_VM_CONT_P)
+    DEBUG_TYPE(SCM_I_WVECTP)    
+  else {
+    std::cerr << "DEBUG OTHER Type: " << c;
+      if (SCM_NIMP(c)){
+	std::cerr << " type:"   << SCM_CELL_TYPE (c);
+	std::cerr << " unpack:" << SCM_UNPACK (c) << "\n";
+      }
   }
   //  typedef struct scm_unused_struct { char scm_unused_field; } *SCM;
 }
@@ -295,7 +358,7 @@ void print_fields(const T& t) {
   constexpr auto membertype = refl::member_list<T>();
 
   constexpr auto members = get_members(type);
-  std::cerr << "DEBUG Type: " << type.name.c_str() << " VALUE=";
+  std::cerr << "NODE Type: " << type.name.c_str() << " VALUE=";
   refl::runtime::debug(std::cerr, t);;
   std::cerr  << "\n";
   // std::cerr << "\nDEBUG Type2: " << typeid(membertype).name() << "\n";
@@ -338,16 +401,21 @@ spct_scm_call_n (
 		 union scm_vm_stack_element *return_fp
 		 )
 {
+  std::cerr << "(spct_scm_call_n proc=";  
   print_fields(proc);
-
   for (int i = 0; i < nargs; i++) {
+    std::cerr << "arg_" << i << "=";
     print_fields(argv[i]);
   }
-
+  std::cerr << "ret=";
   print_fields(ret);
+  std::cerr << "vp=";
   print_fields(*vp);
+  std::cerr << "thread=";
   print_fields(*thread);
+  std::cerr << "call_fp=";
   print_fields(*call_fp);
+  std::cerr << "return_fp=";
   print_fields(*return_fp);
-
+  std::cerr << "spct_scm_call_n_DONE )";
 }
