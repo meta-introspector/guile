@@ -76,6 +76,8 @@
 
 #include <gc/gc_mark.h>
 
+#include "introspector.h"
+
 #if (defined __GNUC__)
 # define SCM_NOINLINE __attribute__ ((__noinline__))
 #else
@@ -625,7 +627,7 @@ scm_i_vm_prepare_stack (struct scm_vm *vp)
   vp->fp = vp->stack_top;
   vp->compare_result = SCM_F_COMPARE_NONE;
   vp->engine = vm_default_engine;
-  vp->trace_level = 0;
+  vp->trace_level = 1;
 #define INIT_HOOK(h) vp->h##_hook = SCM_BOOL_F;
   FOR_EACH_HOOK (INIT_HOOK)
 #undef INIT_HOOK
@@ -1541,7 +1543,8 @@ get_callee_vcode (scm_thread *thread)
 
 SCM
 scm_call_n (SCM proc, SCM *argv, size_t nargs)
-{
+{  
+
   scm_thread *thread;
   struct scm_vm *vp;
   union scm_vm_stack_element *return_fp, *call_fp;
@@ -1613,7 +1616,19 @@ scm_call_n (SCM proc, SCM *argv, size_t nargs)
     else
       vp->ip = get_callee_vcode (thread);
 
+
+    
     ret = vm_engines[vp->engine](thread);
+
+    spct_scm_call_n (proc,
+                     argv,
+                     nargs,
+                     ret,
+                     vp,
+                     thread,
+                     call_fp,
+                     return_fp);
+        
     thread->vm.registers = prev_registers;
 
     return ret;

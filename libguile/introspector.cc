@@ -1,4 +1,4 @@
-#include "config.h"  
+#include "config.h"
 /*
   c++ meta template programming magic for
   * extracting of named entities
@@ -21,7 +21,7 @@ template <
   class Introspection,
   class GuileIntrospectorSelf
   > class GuileConfig {
-#include "config.h"  
+#include "config.h"
 
   //#include "strings.h"
   //#include "symbols.h"
@@ -29,7 +29,8 @@ template <
 
 };
 
-#include "config.h"  
+extern "C" {
+#include "config.h"
 #include "strings.h"
 #include "symbols.h"
 #include "vports.h"
@@ -40,44 +41,175 @@ template <
 #include "intrinsics.h"
 #include "loader.h"
 
+#include "chars.h"
+#include "deprecation.h"
+#include "error.h"
+#include "generalized-vectors.h"
+#include "gsubr.h"
+#include "numbers.h"
+#include "pairs.h"
+#include "ports-internal.h"
+#include "ports.h"
+#include "private-options.h"
+#include "striconveh.h"
+#include "symbols.h"
+#include "threads.h"
+
+#include "strings.h"
+}
+
+struct SCMField : refl::attr::usage::field { };
+
 //#include "vm-operationss.h"
+typedef void* test16 [16];
+REFL_TYPE(test16)
+REFL_END
+
+typedef int test2 [2];
+REFL_TYPE(test2)
+REFL_END
 
 REFL_TYPE(SCM)
+//REFL_FIELD(n)
+void spct(){  std::cerr << "DEBUG";}
 REFL_END
+
 REFL_TYPE(scm_t_subr)
+  void spct(){  std::cerr << "DEBUG";}
 REFL_END
 
 REFL_TYPE(scm_t_dynamic_state)
+  void spct(){  std::cerr << "DEBUG";}
 REFL_END
 
 REFL_TYPE(scm_print_state)
+  void spct(){  std::cerr << "DEBUG";}
 REFL_END
 
 REFL_TYPE(scm_t_dynstack)
+  void spct(){  std::cerr << "DEBUG";}
 REFL_END
 
-REFL_TYPE(scm_frame)
+//REFL_TYPE(scm_t_bits)
+//REFL_END
+
+REFL_TYPE(scm_vm_stack_element)
+//  void spct2(const scm_vm_stack_element & t){
+  //  std::cerr << "DEBUG" << t;
+//}
+// REFL_FIELD(as_uint)
+// REFL_FIELD(as_vcode)
+// REFL_FIELD(as_mcode)
+// REFL_FIELD( as_scm)
+// REFL_FIELD(as_f64)
+// REFL_FIELD( as_u64)
+// REFL_FIELD( as_s64)
+// REFL_FIELD(as_ptr)
+// REFL_FIELD( as_bits)
+
+REFL_END
+
+//REFL_TYPE(scm_vm_frame_kind)
+//REFL_END
+
+REFL_TYPE(jmp_buf)
+  void spct(){  std::cerr << "DEBUG";}
 REFL_END
 
 REFL_TYPE(scm_vm)
+  void spct(){  std::cerr << "DEBUG";}
+REFL_FIELD( ip)/* instruction pointer */
+REFL_FIELD(sp); /* stack pointer */
+REFL_FIELD(fp); /* frame pointer */
+REFL_FIELD(stack_limit); /* stack limit address */
+REFL_FIELD(compare_result);       /* flags register: a value from scm_compare */
+REFL_FIELD(apply_hook_enabled);   /* if apply hook is enabled */
+REFL_FIELD(return_hook_enabled);  /* if return hook is enabled */
+REFL_FIELD(next_hook_enabled);    /* if next hook is enabled */
+REFL_FIELD(abort_hook_enabled);   /* if abort hook is enabled */
+REFL_FIELD(disable_mcode);        /* if mcode is disabled (because debugging) */
+REFL_FIELD(engine);               /* which vm engine we're using */
+//REFL_FIELD(unused;               /* padding */
+REFL_FIELD( stack_size);		/* stack size */
+REFL_FIELD(stack_bottom); /* lowest address in allocated stack */
+REFL_FIELD( apply_hook);               /* apply hook */
+REFL_FIELD(return_hook);              /* return hook */
+REFL_FIELD(next_hook);                /* next hook */
+REFL_FIELD( abort_hook);               /* abort hook */
+REFL_FIELD( stack_top); /* highest address in allocated stack */
+REFL_FIELD( overflow_handler_stack);   /* alist of max-stack-size -> thunk */
+REFL_FIELD(registers);           /* registers captured at latest vm entry  */
+REFL_FIELD(mra_after_abort)     /* mra to resume after nonlocal exit, or NULL */
+REFL_FIELD(trace_level)              /* traces enabled if trace_level > 0 */
+
 REFL_END
 
-REFL_TYPE(scm_vm_stack_element)
+REFL_TYPE(scm_frame)
+void spct(){  std::cerr << "DEBUG";}
 REFL_END
+
+REFL_TYPE(scm_jit_state)
+  void spct(){  std::cerr << "DEBUG";}
+REFL_END
+
+REFL_TYPE(scm_thread_wake_data)
+  void spct(){  std::cerr << "DEBUG";}
+REFL_END
+
+REFL_TYPE(scm_vm_cont)
+  void spct(){  std::cerr << "DEBUG";}
+REFL_END
+
+//REFL_TYPE(SCM_STACKITEM)
+//REFL_END
+
+//REFL_TYPE(pthread_t)
+//REFL_END
+
+REFL_TYPE(  pthread_cond_t)
+  void spct(){  std::cerr << "DEBUG";}
+REFL_END
+
 
 REFL_TYPE(scm_thread)
+  void spct(){  std::cerr << "DEBUG";}
+REFL_FIELD( next_thread)
+REFL_FIELD( vm)
+REFL_FIELD( pending_asyncs)
+REFL_FIELD( block_asyncs)
+REFL_FIELD(freelists)
+REFL_FIELD(pointerless_freelists)
+REFL_FIELD( handle)
+REFL_FIELD(pthread)
+REFL_FIELD(result)
+REFL_FIELD(exited)
+REFL_FIELD(guile_mode);
+REFL_FIELD(needs_unregister);
+REFL_FIELD(wake)
+REFL_FIELD(sleep_cond)
+REFL_FIELD(sleep_pipe)
+REFL_FIELD(dynamic_state)
+REFL_FIELD(dynstack)
+REFL_FIELD(continuation_root)
+REFL_FIELD(continuation_base)
+REFL_FIELD(base)
+REFL_FIELD(jit_state)
+
 REFL_END
 
 REFL_TYPE(scm_t_c_hook_type)
+void spct(){  std::cerr << "DEBUG";}
 REFL_END
 
 //REFL_TYPE(scm_t_subr) (int)
 //REFL_END
 
 REFL_TYPE(scm_t_c_hook_function)
+  void spct(){  std::cerr << "DEBUG";}
 REFL_END
 
 REFL_TYPE(scm_t_c_hook_entry)
+  void spct(){  std::cerr << "DEBUG";}
 REFL_END
 
 template <
@@ -134,5 +266,88 @@ template <
   class Swarm,
   class GuileIntrospectorSelf
   > class GuileIntrospector {
-  
+
 };
+
+template<class T>
+void spct(const T& t);
+
+template<>void spct<scm_thread>(scm_thread const&){}
+template<>void spct<scm_unused_struct*>(scm_unused_struct* const& c){
+  // this is the SCM
+  if (scm_is_string (c)) {
+    char * str = scm_to_locale_string((SCM)(void*)c);
+      std::cerr << "DEBUG STR: " << str << "\n";
+    } else {
+    std::cerr << "DEBUG ERR: " << c << "\n";
+  }
+  //  typedef struct scm_unused_struct { char scm_unused_field; } *SCM;
+}
+template<>void spct<scm_vm_stack_element>(scm_vm_stack_element const&){}
+template<>void spct<scm_vm>(scm_vm const&){}
+
+
+template<typename T>
+void print_fields(const T& t) {
+  //runtime2::debug(std::cerr, t);
+  constexpr auto type = refl::reflect<T>();
+  spct<T>(t);;
+  constexpr auto membertype = refl::member_list<T>();
+
+  constexpr auto members = get_members(type);
+  std::cerr << "DEBUG Type: " << type.name.c_str() << " VALUE=";
+  refl::runtime::debug(std::cerr, t);;
+  std::cerr  << "\n";
+  // std::cerr << "\nDEBUG Type2: " << typeid(membertype).name() << "\n";
+  // std::cerr << "DEBUG Type3: " << typeid(members).name() << "\n";
+
+
+  
+  // refl::util::for_each(members, [&](auto member, [[maybe_unused]] auto index) {
+
+  //   //refl::descriptor::has_attribute<mylib::PrimaryKey>(member);
+  //   //std::cout << member.name.str() << (is_pk ? "(Primary Key)\n" : "\n");
+
+
+  //      //using member_t = decltype(member::value_type);
+  //      //typename type3 = member::value_type;
+  //      //typename trait::remove_qualifiers_t<member_t>::value_type>;
+  //      //constexpr auto type2 = refl::reflect(type3);
+  // 	 //std::cerr  << "Auto:" << foo <<"\n";
+  //   std::cerr  << "Auto: " << member.name<< "\n";
+  //   auto member_val = member(t);
+  //   print_fields(member_val);
+  //   //std::cerr << member_val
+  //   //refl::runtime::debug(std::cerr, member_val);;
+  //   std::cerr <<"\n";
+  //      //std::cerr << "DEBUG Typea2: " << typeid(member_t).name() << "\n";
+  //     //std::cerr << "DEBUG Type2: " << type2.name.c_str() << "\n";
+  //    });
+     std::cerr << "\n";
+}
+
+extern "C" void
+spct_scm_call_n (
+		 SCM proc,
+		 SCM *argv,
+		 size_t nargs,
+		 SCM ret,
+		 struct scm_vm *vp,
+		 scm_thread * thread,
+		 union scm_vm_stack_element *call_fp,
+		 union scm_vm_stack_element *return_fp
+		 )
+{
+  print_fields(proc);
+
+  for (int i = 0; i < nargs; i++) {
+    print_fields(argv[i]);
+  }
+
+  print_fields(ret);
+  print_fields(*vp);
+  print_fields(*thread);
+  print_fields(*call_fp);
+  print_fields(*return_fp);
+
+}

@@ -48,8 +48,9 @@ if ENABLE_JIT
 AM_CPPFLAGS += -I$(top_srcdir)/libguile/lightening
 endif
 
-AM_CXXFLAGS = -std=c++20 -save-temps --verbose  -fdump-tree-all
-AM_CFLAGS1 = -std=c11 -save-temps --verbose  -fdump-tree-all
+AM_CXXFLAGS = -std=c++20 -save-temps --verbose  -fdump-tree-all  -g
+# -std=c11 not working
+AM_CFLAGS1 =  -save-temps --verbose  -fdump-tree-all -g
 AM_CFLAGS = $(GCC_CFLAGS) $(CFLAG_VISIBILITY) $(AM_CFLAGS1)
 
 ## The Gnulib Libtool archive.

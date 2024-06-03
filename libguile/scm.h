@@ -36,7 +36,7 @@
    defined debugging options.  This allows, for example, to enable most
    of the debugging options by simply defining SCM_DEBUG as 1.  */
 #ifndef SCM_DEBUG
-#define SCM_DEBUG 0
+#define SCM_DEBUG 1
 #endif
 
 /* If SCM_DEBUG_PAIR_ACCESSES is set to 1, accesses to cons cells will
