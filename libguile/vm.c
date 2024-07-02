@@ -82,6 +82,8 @@
 # define SCM_NOINLINE /* noinline */
 #endif
 
+#include "introspector.h"
+
 static int vm_default_engine = SCM_VM_REGULAR_ENGINE;
 
 /* Unfortunately we can't snarf these: snarfed things are only loaded up from
@@ -209,13 +211,13 @@ scm_i_capture_current_stack (void)
 static void
 vm_hook_compute_enabled (scm_thread *thread, SCM hook, uint8_t *enabled)
 {
-  if (thread->vm.trace_level <= 0
-      || thread->vm.engine == SCM_VM_REGULAR_ENGINE
-      || scm_is_false (hook)
-      || scm_is_true (scm_hook_empty_p (hook)))
-    *enabled = 0;
-  else
-    *enabled = 1;
+  /* if (thread->vm.trace_level <= 0 */
+  /*     || thread->vm.engine == SCM_VM_REGULAR_ENGINE */
+  /*     || scm_is_false (hook) */
+  /*     || scm_is_true (scm_hook_empty_p (hook))) */
+  /*   *enabled = 0; */
+  /* else */
+  *enabled = 1;
 }
 
 static void
@@ -262,62 +264,6 @@ set_vm_trace_level (scm_thread *thread, int level)
 #define ROUND_UP(len, align)					\
   ((align) ? (((len) - 1UL) | ((align) - 1UL)) + 1UL : (len))
 
-static void
-invoke_hook (scm_thread *thread, SCM hook)
-{
-  struct scm_vm *vp = &thread->vm;
-  struct scm_frame c_frame;
-  scm_t_cell *frame;
-  SCM scm_frame;
-  int saved_trace_level;
-  uint8_t saved_compare_result;
-
-  if (scm_is_false (hook) || scm_is_null (SCM_HOOK_PROCEDURES (hook)))
-    return;
-
-  saved_trace_level = set_vm_trace_level (thread, 0);
-  saved_compare_result = vp->compare_result;
-
-  /* Allocate a frame object on the stack.  This is more efficient than calling
-     `scm_c_make_frame ()' to allocate on the heap, but it forces hooks to not
-     capture frame objects.
-
-     At the same time, procedures such as `frame-procedure' make sense only
-     while the stack frame represented by the frame object is visible, so it
-     seems reasonable to limit the lifetime of frame objects.  */
-
-  c_frame.stack_holder = vp;
-  c_frame.fp_offset = vp->stack_top - vp->fp;
-  c_frame.sp_offset = vp->stack_top - vp->sp;
-  c_frame.ip = vp->ip;
-
-  /* Arrange for FRAME to be 8-byte aligned, like any other cell.  */
-  frame = alloca (sizeof (*frame) + 8);
-  frame = (scm_t_cell *) ROUND_UP ((uintptr_t) frame, 8UL);
-
-  frame->word_0 = SCM_PACK (scm_tc7_frame | (SCM_VM_FRAME_KIND_VM << 8));
-  frame->word_1 = SCM_PACK_POINTER (&c_frame);
-
-  scm_frame = SCM_PACK_POINTER (frame);
-  scm_c_run_hookn (hook, &scm_frame, 1);
-
-  vp->compare_result = saved_compare_result;
-  set_vm_trace_level (thread, saved_trace_level);
-}
-
-#define DEFINE_INVOKE_HOOK(h) \
-  static void                                             \
-  invoke_##h##_hook (scm_thread *thread) SCM_NOINLINE;    \
-  static void                                             \
-  invoke_##h##_hook (scm_thread *thread)                  \
-  {                                                       \
-    if (thread->vm.h##_hook_enabled)                      \
-      return invoke_hook (thread, thread->vm.h##_hook);   \
-  }
-
-FOR_EACH_HOOK (DEFINE_INVOKE_HOOK)
-
-#undef DEFINE_INVOKE_HOOK
 
 
 /*
@@ -625,7 +571,7 @@ scm_i_vm_prepare_stack (struct scm_vm *vp)
   vp->fp = vp->stack_top;
   vp->compare_result = SCM_F_COMPARE_NONE;
   vp->engine = vm_default_engine;
-  vp->trace_level = 0;
+  vp->trace_level = 1;
 #define INIT_HOOK(h) vp->h##_hook = SCM_BOOL_F;
   FOR_EACH_HOOK (INIT_HOOK)
 #undef INIT_HOOK
@@ -1604,7 +1550,7 @@ scm_call_n (SCM proc, SCM *argv, size_t nargs)
         scm_gc_after_nonlocal_exit ();
         /* Non-local return.  */
         if (vp->abort_hook_enabled)
-          invoke_abort_hook (thread);
+          spct_invoke_abort_hook (thread);
 #if ENABLE_JIT
         if (mcode && !vp->disable_mcode)
           scm_jit_enter_mcode (thread, mcode);
@@ -1744,12 +1690,12 @@ SCM_DEFINE (scm_set_vm_trace_level_x, "set-vm-trace-level!", 1, 0, 0,
 static int
 symbol_to_vm_engine (SCM engine, const char *FUNC_NAME)
 {
-  if (scm_is_eq (engine, sym_regular))
-    return SCM_VM_REGULAR_ENGINE;
-  else if (scm_is_eq (engine, sym_debug))
+  //  if (scm_is_eq (engine, sym_regular))
+  //    return SCM_VM_REGULAR_ENGINE;
+  //  else if (scm_is_eq (engine, sym_debug))
     return SCM_VM_DEBUG_ENGINE;
-  else
-    SCM_MISC_ERROR ("Unknown VM engine: ~a", scm_list_1 (engine));
+    //  else
+    //    SCM_MISC_ERROR ("Unknown VM engine: ~a", scm_list_1 (engine));
 }
   
 static SCM
@@ -1757,14 +1703,14 @@ vm_engine_to_symbol (int engine, const char *FUNC_NAME)
 {
   switch (engine)
     {
-    case SCM_VM_REGULAR_ENGINE:
-      return sym_regular;
+      //    case SCM_VM_REGULAR_ENGINE:
+      //      return sym_regular;
     case SCM_VM_DEBUG_ENGINE:
       return sym_debug;
-    default:
+      //    default:
       /* ? */
-      SCM_MISC_ERROR ("Unknown VM engine: ~a",
-                      scm_list_1 (scm_from_int (engine)));
+      //      SCM_MISC_ERROR ("Unknown VM engine: ~a",
+      //                scm_list_1 (scm_from_int (engine)));
     }
 }
   
