@@ -1078,27 +1078,27 @@ main (int argc, char **argv)
 # Boehm's GC library
 #
 #--------------------------------------------------------------------
-AC_MSG_CHECKING(for which bdw-gc pkg-config file to use)
-AC_ARG_WITH(bdw_gc, [  --with-bdw-gc=PKG       name of BDW-GC pkg-config file],
-            [bdw_gc="$withval"], [bdw_gc=bdw-gc])
-AC_MSG_RESULT($bdw_gc)
-PKG_CHECK_MODULES([BDW_GC], [$bdw_gc >= 7.2])
+dnl AC_MSG_CHECKING(for which bdw-gc pkg-config file to use)
+dnl AC_ARG_WITH(bdw_gc, [  --with-bdw-gc=PKG       name of BDW-GC pkg-config file],
+dnl             [bdw_gc="$withval"], [bdw_gc=bdw-gc])
+dnl AC_MSG_RESULT($bdw_gc)
+dnl PKG_CHECK_MODULES([BDW_GC], [$bdw_gc >= 7.2])
 
-save_LIBS="$LIBS"
-LIBS="$BDW_GC_LIBS $LIBS"
-CFLAGS="$BDW_GC_CFLAGS $CFLAGS"
+dnl save_LIBS="$LIBS"
+dnl LIBS="$BDW_GC_LIBS $LIBS"
+dnl CFLAGS="$BDW_GC_CFLAGS $CFLAGS"
 
-# Functions that might not be defined, depending on configuration.
-AC_CHECK_FUNCS([GC_pthread_exit GC_pthread_cancel GC_pthread_sigmask])
+dnl # Functions that might not be defined, depending on configuration.
+dnl AC_CHECK_FUNCS([GC_pthread_exit GC_pthread_cancel GC_pthread_sigmask])
 
-# Functions from GC 7.3.
-AC_CHECK_FUNCS([GC_move_disappearing_link GC_is_heap_ptr])
+dnl # Functions from GC 7.3.
+dnl AC_CHECK_FUNCS([GC_move_disappearing_link GC_is_heap_ptr])
 
-# See if there's an auxiliary stack, as in ia64.
-AC_CHECK_MEMBER([struct GC_stack_base.reg_base],
-  [SCM_I_GSC_HAVE_AUXILIARY_STACK=1], [SCM_I_GSC_HAVE_AUXILIARY_STACK=0],
-  [#include <gc/gc.h>])
-AC_SUBST([SCM_I_GSC_HAVE_AUXILIARY_STACK])
+dnl # See if there's an auxiliary stack, as in ia64.
+dnl AC_CHECK_MEMBER([struct GC_stack_base.reg_base],
+dnl   [SCM_I_GSC_HAVE_AUXILIARY_STACK=1], [SCM_I_GSC_HAVE_AUXILIARY_STACK=0],
+dnl   [#include <gc/gc.h>])
+dnl AC_SUBST([SCM_I_GSC_HAVE_AUXILIARY_STACK])
 
 LIBS="$save_LIBS"
 

@@ -45,7 +45,7 @@
 
 #endif
 
-#include <gc/gc.h>
+//#include <gc/gc.h>
 
 /* Return true if PTR points to the heap.  */
 #define SCM_I_IS_POINTER_TO_THE_HEAP(ptr)	\
