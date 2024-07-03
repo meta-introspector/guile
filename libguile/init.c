@@ -357,12 +357,12 @@ scm_i_init_guile (void *base)
   if (scm_initialized_p)
     return;
 
-  scm_storage_prehistory ();
-  scm_threads_prehistory (base);  /* requires storage_prehistory */
-  scm_weak_table_prehistory ();        /* requires storage_prehistory */
-#ifdef GUILE_DEBUG_MALLOC
-  scm_debug_malloc_prehistory ();
-#endif
+  //  scm_storage_prehistory ();
+  //  scm_threads_prehistory (base);  /* requires storage_prehistory */
+  //  scm_weak_table_prehistory ();        /* requires storage_prehistory */
+
+  //  scm_debug_malloc_prehistory ();
+
   scm_symbols_prehistory ();      /* requires weak_table_prehistory */
   scm_modules_prehistory ();
   scm_init_array_handle ();

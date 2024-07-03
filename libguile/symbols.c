@@ -454,8 +454,11 @@ scm_from_utf8_symboln (const char *sym, size_t len)
     {
       SCM str = scm_from_utf8_stringn (sym, len);
       ret = scm_i_str2symbol (str);
+      if (sym){
+        printf("symbol %s -> %p -> %p\n", sym, (void*)str,(void*)ret);
+      }
     }
-
+  //  printf("Symbol: '%s' -> %n\n", sym, ret);
   return ret;
 }
 

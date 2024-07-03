@@ -475,7 +475,7 @@ BUILT_SOURCES = cpp-E.c cpp-SIG.c $(BUILT_INCLUDES) \
 
 # Force the generation of `guile-procedures.texi' because the top-level
 # Makefile expects it to be built.
-all-local: guile-procedures.texi
+#all-local: guile-procedures.texi
 
 EXTRA_libguile_@GUILE_EFFECTIVE_VERSION@_la_SOURCES = \
     syscalls.h					\
@@ -853,11 +853,11 @@ alldotdocfiles    = $(DOT_DOC_FILES) $(EXTRA_DOT_DOC_FILES)
 snarf2checkedtexi = GUILE_AUTO_COMPILE=0 $(top_builddir)/meta/build-env guild snarf-check-and-output-texi
 dotdoc2texi       = cat $(alldotdocfiles) | $(snarf2checkedtexi)
 
-guile.texi: $(alldotdocfiles) guile$(EXEEXT)
-	$(dotdoc2texi) --manual > $@ || { rm $@; false; }
+#guile.texi: $(alldotdocfiles) guile$(EXEEXT)
+#	$(dotdoc2texi) --manual > $@ || { rm $@; false; }
 
-guile-procedures.texi: $(alldotdocfiles) guile$(EXEEXT)
-	$(AM_V_GEN)$(dotdoc2texi)          > $@ || { rm $@; false; }
+#guile-procedures.texi: $(alldotdocfiles) guile$(EXEEXT)
+#	$(AM_V_GEN)$(dotdoc2texi)          > $@ || { rm $@; false; }
 
 c-tokenize.c: c-tokenize.lex
 	flex -t $(srcdir)/c-tokenize.lex > $@ || { rm $@; false; }
@@ -924,7 +924,8 @@ chknew-E chknew-SIG:
 MOSTLYCLEANFILES = \
 	scmconfig.h scmconfig.h.tmp
 
-CLEANFILES = libpath.h *.x *.doc srfi-14.i.c guile-procedures.txt	\
-     guile-procedures.texi guile.texi
+CLEANFILES = libpath.h *.x *.doc srfi-14.i.c
+#guile-procedures.txt	\
+#     guile-procedures.texi guile.texi
 
 MAINTAINERCLEANFILES = c-tokenize.c

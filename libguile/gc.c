@@ -445,65 +445,65 @@ scm_gc_unregister_roots (SCM *b, unsigned long n)
 void
 scm_storage_prehistory ()
 {
-  GC_set_all_interior_pointers (0);
-  GC_set_finalize_on_demand (1);
+/*   GC_set_all_interior_pointers (0); */
+/*   GC_set_finalize_on_demand (1); */
 
-#if (GC_VERSION_MAJOR == 7 && GC_VERSION_MINOR == 4	\
-     && GC_VERSION_MICRO == 0)
-  /* BDW-GC 7.4.0 has a bug making it loop indefinitely when using more
-     than one marker thread: <https://github.com/ivmai/bdwgc/pull/30>.
-     Work around it by asking for one marker thread.  */
-  setenv ("GC_MARKERS", "1", 1);
-#endif
+/* #if (GC_VERSION_MAJOR == 7 && GC_VERSION_MINOR == 4	\ */
+/*      && GC_VERSION_MICRO == 0) */
+/*   /\* BDW-GC 7.4.0 has a bug making it loop indefinitely when using more */
+/*      than one marker thread: <https://github.com/ivmai/bdwgc/pull/30>. */
+/*      Work around it by asking for one marker thread.  *\/ */
+/*   setenv ("GC_MARKERS", "1", 1); */
+/* #endif */
 
-#if SCM_I_GSC_USE_NULL_THREADS
-  /* If we have disabled threads in Guile, ensure that the GC doesn't
-     spawn any marker threads.  */
-  setenv ("GC_MARKERS", "1", 1);
-#endif
+/* #if SCM_I_GSC_USE_NULL_THREADS */
+/*   /\* If we have disabled threads in Guile, ensure that the GC doesn't */
+/*      spawn any marker threads.  *\/ */
+/*   setenv ("GC_MARKERS", "1", 1); */
+/* #endif */
 
-  GC_INIT ();
+  //  GC_INIT ();
 
-  size_t heap_size = GC_get_heap_size ();
-  if (heap_size < DEFAULT_INITIAL_HEAP_SIZE)
-    GC_expand_hp (DEFAULT_INITIAL_HEAP_SIZE - heap_size);
+  /* size_t heap_size = GC_get_heap_size (); */
+  /* if (heap_size < DEFAULT_INITIAL_HEAP_SIZE) */
+  /*   GC_expand_hp (DEFAULT_INITIAL_HEAP_SIZE - heap_size); */
 
   /* We only need to register a displacement for those types for which the
      higher bits of the type tag are used to store a pointer (that is, a
      pointer to an 8-octet aligned region).  */
-  GC_REGISTER_DISPLACEMENT (scm_tc3_cons);
-  GC_REGISTER_DISPLACEMENT (scm_tc3_struct);
+  // GC_REGISTER_DISPLACEMENT (scm_tc3_cons);
+  //GC_REGISTER_DISPLACEMENT (scm_tc3_struct);
   /* GC_REGISTER_DISPLACEMENT (scm_tc3_unused); */
 
   /* Sanity check.  */
-  if (!GC_is_visible (&scm_protects))
-    abort ();
+  //if (!GC_is_visible (&scm_protects))
+  //  abort ();
 
-  scm_c_hook_init (&scm_before_gc_c_hook, 0, SCM_C_HOOK_NORMAL);
-  scm_c_hook_init (&scm_before_mark_c_hook, 0, SCM_C_HOOK_NORMAL);
-  scm_c_hook_init (&scm_before_sweep_c_hook, 0, SCM_C_HOOK_NORMAL);
-  scm_c_hook_init (&scm_after_sweep_c_hook, 0, SCM_C_HOOK_NORMAL);
-  scm_c_hook_init (&scm_after_gc_c_hook, 0, SCM_C_HOOK_NORMAL);
+  /* scm_c_hook_init (&scm_before_gc_c_hook, 0, SCM_C_HOOK_NORMAL); */
+  /* scm_c_hook_init (&scm_before_mark_c_hook, 0, SCM_C_HOOK_NORMAL); */
+  /* scm_c_hook_init (&scm_before_sweep_c_hook, 0, SCM_C_HOOK_NORMAL); */
+  /* scm_c_hook_init (&scm_after_sweep_c_hook, 0, SCM_C_HOOK_NORMAL); */
+  /* scm_c_hook_init (&scm_after_gc_c_hook, 0, SCM_C_HOOK_NORMAL); */
 }
 
 void
 scm_init_gc_protect_object ()
 {
-  scm_protects = scm_c_make_hash_table (31);
+  //  scm_protects = scm_c_make_hash_table (31);
 
-#if 0
-  /* We can't have a cleanup handler since we have no thread to run it
-     in. */
+/* #if 0 */
+/*   /\* We can't have a cleanup handler since we have no thread to run it */
+/*      in. *\/ */
 
-#ifdef HAVE_ATEXIT
-  atexit (cleanup);
-#else
-#ifdef HAVE_ON_EXIT
-  on_exit (cleanup, 0);
-#endif
-#endif
+/* #ifdef HAVE_ATEXIT */
+/*   atexit (cleanup); */
+/* #else */
+/* #ifdef HAVE_ON_EXIT */
+/*   on_exit (cleanup, 0); */
+/* #endif */
+/* #endif */
 
-#endif
+/* #endif */
 }
 
 
@@ -519,9 +519,9 @@ static SCM after_gc_async_cell;
 static SCM
 after_gc_async_thunk (void)
 {
-  /* Fun, no? Hook-run *and* run-hook?  */
-  scm_c_hook_run (&scm_after_gc_c_hook, NULL);
-  scm_c_run_hook (scm_after_gc_hook, SCM_EOL);
+  /* /\* Fun, no? Hook-run *and* run-hook?  *\/ */
+  /* scm_c_hook_run (&scm_after_gc_c_hook, NULL); */
+  /* scm_c_run_hook (scm_after_gc_hook, SCM_EOL); */
   return SCM_UNSPECIFIED;
 }
 
@@ -536,13 +536,13 @@ queue_after_gc_hook (void * hook_data SCM_UNUSED,
                      void *fn_data SCM_UNUSED,
                      void *data SCM_UNUSED)
 {
-  scm_thread *t = SCM_I_CURRENT_THREAD;
+  /* scm_thread *t = SCM_I_CURRENT_THREAD; */
 
-  if (scm_is_false (SCM_CDR (after_gc_async_cell)))
-    {
-      SCM_SETCDR (after_gc_async_cell, t->pending_asyncs);
-      t->pending_asyncs = after_gc_async_cell;
-    }
+  /* if (scm_is_false (SCM_CDR (after_gc_async_cell))) */
+  /*   { */
+  /*     SCM_SETCDR (after_gc_async_cell, t->pending_asyncs); */
+  /*     t->pending_asyncs = after_gc_async_cell; */
+  /*   } */
 
   return NULL;
 }
@@ -554,8 +554,8 @@ start_gc_timer (void * hook_data SCM_UNUSED,
                 void *fn_data SCM_UNUSED,
                 void *data SCM_UNUSED)
 {
-  if (!gc_start_time)
-    gc_start_time = scm_c_get_internal_run_time ();
+  /* if (!gc_start_time) */
+  /*   gc_start_time = scm_c_get_internal_run_time (); */
 
   return NULL;
 }
@@ -565,12 +565,12 @@ accumulate_gc_timer (void * hook_data SCM_UNUSED,
                 void *fn_data SCM_UNUSED,
                 void *data SCM_UNUSED)
 {
-  if (gc_start_time)
-    {
-      long now = scm_c_get_internal_run_time ();
-      gc_time_taken += now - gc_start_time;
-      gc_start_time = 0;
-    }
+  /* if (gc_start_time) */
+  /*   { */
+  /*     long now = scm_c_get_internal_run_time (); */
+  /*     gc_time_taken += now - gc_start_time; */
+  /*     gc_start_time = 0; */
+  /*   } */
 
   return NULL;
 }
@@ -581,18 +581,18 @@ static scm_i_pthread_mutex_t bytes_until_gc_lock = SCM_I_PTHREAD_MUTEX_INITIALIZ
 void
 scm_gc_register_allocation (size_t size)
 {
-  scm_i_pthread_mutex_lock (&bytes_until_gc_lock);
-  if (size > bytes_until_gc)
-    {
-      bytes_until_gc = GC_get_heap_size ();
-      scm_i_pthread_mutex_unlock (&bytes_until_gc_lock);
-      GC_gcollect ();
-    }
-  else
-    {
-      bytes_until_gc -= size;
-      scm_i_pthread_mutex_unlock (&bytes_until_gc_lock);
-    }
+  /* scm_i_pthread_mutex_lock (&bytes_until_gc_lock); */
+  /* if (size > bytes_until_gc) */
+  /*   { */
+  /*     bytes_until_gc = GC_get_heap_size (); */
+  /*     scm_i_pthread_mutex_unlock (&bytes_until_gc_lock); */
+  /*     GC_gcollect (); */
+  /*   } */
+  /* else */
+  /*   { */
+  /*     bytes_until_gc -= size; */
+  /*     scm_i_pthread_mutex_unlock (&bytes_until_gc_lock); */
+  /*   } */
 }
 
 
@@ -602,24 +602,24 @@ scm_init_gc ()
 {
   /* `GC_INIT ()' was invoked in `scm_storage_prehistory ()'.  */
 
-  scm_after_gc_hook = scm_make_hook (SCM_INUM0);
-  scm_c_define ("after-gc-hook", scm_after_gc_hook);
+/*   scm_after_gc_hook = scm_make_hook (SCM_INUM0); */
+/*   scm_c_define ("after-gc-hook", scm_after_gc_hook); */
 
-  /* When the async is to run, the cdr of the gc_async pair gets set to
-     the asyncs queue of the current thread.  */
-  after_gc_async_cell = scm_cons (scm_c_make_gsubr ("%after-gc-thunk", 0, 0, 0,
-                                                    after_gc_async_thunk),
-                                  SCM_BOOL_F);
+/*   /\* When the async is to run, the cdr of the gc_async pair gets set to */
+/*      the asyncs queue of the current thread.  *\/ */
+/*   after_gc_async_cell = scm_cons (scm_c_make_gsubr ("%after-gc-thunk", 0, 0, 0, */
+/*                                                     after_gc_async_thunk), */
+/*                                   SCM_BOOL_F); */
 
-  scm_c_hook_add (&scm_before_gc_c_hook, queue_after_gc_hook, NULL, 0);
-  scm_c_hook_add (&scm_before_gc_c_hook, start_gc_timer, NULL, 0);
-  scm_c_hook_add (&scm_after_gc_c_hook, accumulate_gc_timer, NULL, 0);
+/*   scm_c_hook_add (&scm_before_gc_c_hook, queue_after_gc_hook, NULL, 0); */
+/*   scm_c_hook_add (&scm_before_gc_c_hook, start_gc_timer, NULL, 0); */
+/*   scm_c_hook_add (&scm_after_gc_c_hook, accumulate_gc_timer, NULL, 0); */
 
-  GC_set_oom_fn (scm_oom_fn);
-  GC_set_warn_proc (scm_gc_warn_proc);
-  GC_set_start_callback (run_before_gc_c_hook);
+/*   GC_set_oom_fn (scm_oom_fn); */
+/*   GC_set_warn_proc (scm_gc_warn_proc); */
+/*   GC_set_start_callback (run_before_gc_c_hook); */
 
-#include "gc.x"
+/* #include "gc.x" */
 }
 
 

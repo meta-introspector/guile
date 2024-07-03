@@ -1,0 +1,1 @@
+echo "  BOOTSTRAP(stage0) GUILEC" ice-9/eval.go; GUILE_BOOTSTRAP_STAGE=stage0 ../meta/build-env guild compile --target="x86_64-pc-linux-gnu" -W0 -O1 -L "/home/mdupont/2024/06/30/guile/module" -o "ice-9/eval.go" "../module/ice-9/eval.scm"

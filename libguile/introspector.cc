@@ -24,6 +24,7 @@ template <
 };
 
 extern "C" {
+  //#include "stacks.h"
 #include "strings.h"
 #include "symbols.h"
 #include "vports.h"
@@ -223,17 +224,20 @@ spct_invoke_generic_hook (const char * name, scm_thread * thread) {
 
   auto port = scm_current_output_port ();
 
+  ///  scm_backtrace();
+
+
   auto stack_depth = vp->stack_top - vp->sp;
   std::cout << "depth: " << stack_depth <<  std::endl;
   for (int i = 0; i < stack_depth; i++) {
 
     std::cout << " Item: " <<  i << ":";
     auto s  = vp->sp[i].as_scm;
-    std::cout << "unpack16:";
-    scm_uintprint (SCM_UNPACK (s), 16, port);
+    //std::cout << "unpack16:";
+    //    scm_uintprint (SCM_UNPACK (s), 16, port);
 
-    std::cout << "DISP:";
-    scm_display (s, port);
+    //std::cout << "DISP:";
+    //scm_display (s, port);
 
     std::cout << "DEBUG:";
     refl::runtime::debug(std::cout,s);

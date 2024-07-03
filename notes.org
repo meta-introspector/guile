@@ -74,3 +74,21 @@ like a compiler or oracle, we can extend this
 for gathering machine facts. it can be one of the simplist services
 we want to mine it for every configuration. rewards are payed for being
 the first to have it on new hardward. 
+
+
+an engimatic self creating self replicating quine meta meme that is open source and written in scheme,
+it should encorporate information from its environment into its own dna.
+
+an engimatic self creating self replicating emoji based quine meta meme that is open source and written in scheme,it should encorporate information from its environment into its own dna.
+
+
+an engimatic, self bootstrapping,
+self creating,
+self manifesting,
+self replicating,emoji based, quine,
+meta meme, open source, lisp based,
+artificial life, genetic code,
+transpiler,
+comprehensive, auto semiotic, autocratic,
+auto poetic idea represented in
+a finite polynomial .

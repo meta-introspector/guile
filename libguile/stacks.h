@@ -54,7 +54,7 @@ SCM_API SCM scm_stack_type;
 
 
 SCM_API SCM scm_stack_p (SCM obj);
-SCM_API SCM scm_make_stack (SCM obj, SCM args);
+SCM_API SCM scm_make_staock (SCM obj, SCM args);
 SCM_API SCM scm_stack_id (SCM stack);
 SCM_API SCM scm_stack_ref (SCM stack, SCM i);
 SCM_API SCM scm_stack_length (SCM stack);
