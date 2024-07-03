@@ -171,21 +171,21 @@ finalize_guarded (void *ptr, void *finalizer_data)
     {
       /* Re-register the finalizer that was in place before we installed this
 	 one.  */
-      GC_finalization_proc finalizer, prev_finalizer;
-      void *finalizer_data, *prev_finalizer_data;
+      //GC_finalization_proc finalizer, prev_finalizer;
+      //void *finalizer_data, *prev_finalizer_data;
 
-      finalizer = (GC_finalization_proc) SCM_UNPACK_POINTER (SCM_CAR (proxied_finalizer));
-      finalizer_data = SCM_UNPACK_POINTER (SCM_CDR (proxied_finalizer));
+/*       finalizer = (GC_finalization_proc) SCM_UNPACK_POINTER (SCM_CAR (proxied_finalizer)); */
+/*       finalizer_data = SCM_UNPACK_POINTER (SCM_CDR (proxied_finalizer)); */
 
-      if (finalizer == NULL)
-	abort ();
+/*       if (finalizer == NULL) */
+/* 	abort (); */
 
-      GC_REGISTER_FINALIZER_NO_ORDER (ptr, finalizer, finalizer_data,
-				      &prev_finalizer, &prev_finalizer_data);
+/*       GC_REGISTER_FINALIZER_NO_ORDER (ptr, finalizer, finalizer_data, */
+/* 				      &prev_finalizer, &prev_finalizer_data); */
 
-#ifdef DEBUG_GUARDIANS
-      printf ("  reinstalled proxied finalizer %p for %p\n", finalizer, ptr);
-#endif
+/* #ifdef DEBUG_GUARDIANS */
+/*       printf ("  reinstalled proxied finalizer %p for %p\n", finalizer, ptr); */
+/* #endif */
     }
 
 #ifdef DEBUG_GUARDIANS
@@ -211,57 +211,57 @@ scm_i_guard (SCM guardian, SCM obj)
 	 assuming here that finalizers are only used internally, either at
 	 the very beginning of an object's lifetime (e.g., see `SCM_NEWSMOB')
 	 or by this function.  */
-      GC_finalization_proc prev_finalizer;
+      //      GC_finalization_proc prev_finalizer;
       void *prev_data;
       SCM guardians_for_obj, finalizer_data;
 
-      scm_i_pthread_mutex_lock (&g->mutex);
+      /* scm_i_pthread_mutex_lock (&g->mutex); */
 
-      g->live++;
+      /* g->live++; */
 
       /* Note: GUARDIANS_FOR_OBJ holds weak references to guardians so
 	 that a guardian can be collected before the objects it guards
 	 (see `guardians.test').  */
-      guardians_for_obj = scm_cons (scm_make_weak_vector (SCM_INUM1, guardian),
-                                    SCM_EOL);
-      finalizer_data = scm_cons (SCM_BOOL_F, guardians_for_obj);
+      /* guardians_for_obj = scm_cons (scm_make_weak_vector (SCM_INUM1, guardian), */
+      /*                               SCM_EOL); */
+      /* finalizer_data = scm_cons (SCM_BOOL_F, guardians_for_obj); */
 
-      GC_REGISTER_FINALIZER_NO_ORDER (SCM_UNPACK_POINTER (obj), finalize_guarded,
-				      SCM_UNPACK_POINTER (finalizer_data),
-				      &prev_finalizer, &prev_data);
+      /* GC_REGISTER_FINALIZER_NO_ORDER (SCM_UNPACK_POINTER (obj), finalize_guarded, */
+      /*   			      SCM_UNPACK_POINTER (finalizer_data), */
+      /*   			      &prev_finalizer, &prev_data); */
 
-      if (prev_finalizer == finalize_guarded)
-	{
-	  /* OBJ is already guarded by another guardian: add GUARDIAN to its
-	     list of guardians.  */
-	  SCM prev_guardian_list, prev_finalizer_data;
+      /* if (prev_finalizer == finalize_guarded) */
+      /*   { */
+      /*     /\* OBJ is already guarded by another guardian: add GUARDIAN to its */
+      /*        list of guardians.  *\/ */
+      /*     SCM prev_guardian_list, prev_finalizer_data; */
 
-	  if (prev_data == NULL)
-	    abort ();
+      /*     if (prev_data == NULL) */
+      /*       abort (); */
 
-	  prev_finalizer_data = SCM_PACK_POINTER (prev_data);
-	  if (!scm_is_pair (prev_finalizer_data))
-	    abort ();
+      /*     prev_finalizer_data = SCM_PACK_POINTER (prev_data); */
+      /*     if (!scm_is_pair (prev_finalizer_data)) */
+      /*       abort (); */
 
-	  prev_guardian_list = SCM_CDR (prev_finalizer_data);
-	  SCM_SETCDR (guardians_for_obj, prev_guardian_list);
+      /*     prev_guardian_list = SCM_CDR (prev_finalizer_data); */
+      /*     SCM_SETCDR (guardians_for_obj, prev_guardian_list); */
 
-	  /* Also copy information about proxied finalizers.  */
-	  SCM_SETCAR (finalizer_data, SCM_CAR (prev_finalizer_data));
-	}
-      else if (prev_finalizer != NULL)
-	{
-	  /* There was already a finalizer registered for OBJ so we will
-	     ``proxy'' it, i.e., record it so that we can re-register it once
-	     `finalize_guarded ()' has finished.  */
-	  SCM proxied_finalizer;
+      /*     /\* Also copy information about proxied finalizers.  *\/ */
+      /*     SCM_SETCAR (finalizer_data, SCM_CAR (prev_finalizer_data)); */
+      /*   } */
+      /* else if (prev_finalizer != NULL) */
+      /*   { */
+      /*     /\* There was already a finalizer registered for OBJ so we will */
+      /*        ``proxy'' it, i.e., record it so that we can re-register it once */
+      /*        `finalize_guarded ()' has finished.  *\/ */
+      /*     SCM proxied_finalizer; */
 
-	  proxied_finalizer = scm_cons (SCM_PACK_POINTER (prev_finalizer),
-					SCM_PACK_POINTER (prev_data));
-	  SCM_SETCAR (finalizer_data, proxied_finalizer);
-	}
+      /*     proxied_finalizer = scm_cons (SCM_PACK_POINTER (prev_finalizer), */
+      /*   				SCM_PACK_POINTER (prev_data)); */
+      /*     SCM_SETCAR (finalizer_data, proxied_finalizer); */
+      /*   } */
 
-      scm_i_pthread_mutex_unlock (&g->mutex);
+      //      scm_i_pthread_mutex_unlock (&g->mutex);
     }
 }
 
@@ -370,7 +370,7 @@ void
 scm_init_guardians ()
 {
   /* We use unordered finalization `a la Java.  */
-  GC_set_java_finalization (1);
+  //GC_set_java_finalization (1);
 
   tc16_guardian = scm_make_smob_type ("guardian", 0);
 

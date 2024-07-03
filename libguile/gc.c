@@ -113,7 +113,7 @@ scm_gc_after_nonlocal_exit (void)
   if (needs_gc_after_nonlocal_exit)
     {
       needs_gc_after_nonlocal_exit = 0;
-      GC_gcollect_and_unmap ();
+      //      GC_gcollect_and_unmap ();
     }
 }
 
@@ -131,11 +131,11 @@ scm_t_c_hook scm_after_gc_c_hook;
 static void
 run_before_gc_c_hook (void)
 {
-  if (!SCM_I_CURRENT_THREAD)
-    /* GC while a thread is spinning up; punt.  */
-    return;
+  /* if (!SCM_I_CURRENT_THREAD) */
+  /*   /\* GC while a thread is spinning up; punt.  *\/ */
+  /*   return; */
 
-  scm_c_hook_run (&scm_before_gc_c_hook, NULL);
+  /* scm_c_hook_run (&scm_before_gc_c_hook, NULL); */
 }
 
 
@@ -166,26 +166,26 @@ SCM_DEFINE (scm_gc_stats, "gc-stats", 0, 0, 0,
 	    "use of storage.\n")
 #define FUNC_NAME s_scm_gc_stats
 {
-  SCM answer;
-  GC_word heap_size, free_bytes, unmapped_bytes, bytes_since_gc, total_bytes;
-  size_t gc_times;
+  SCM answer= SCM_UNDEFINED;
+  /* GC_word heap_size, free_bytes, unmapped_bytes, bytes_since_gc, total_bytes; */
+  /* size_t gc_times; */
 
-  GC_get_heap_usage_safe (&heap_size, &free_bytes, &unmapped_bytes,
-                          &bytes_since_gc, &total_bytes);
-  gc_times = GC_get_gc_no ();
+  /* GC_get_heap_usage_safe (&heap_size, &free_bytes, &unmapped_bytes, */
+  /*                         &bytes_since_gc, &total_bytes); */
+  /* gc_times = GC_get_gc_no (); */
 
-  answer =
-    scm_list_n (scm_cons (sym_gc_time_taken, scm_from_long (gc_time_taken)),
-		scm_cons (sym_heap_size, scm_from_size_t (heap_size)),
-		scm_cons (sym_heap_free_size, scm_from_size_t (free_bytes)),
-		scm_cons (sym_heap_total_allocated,
-			  scm_from_size_t (total_bytes)),
-                scm_cons (sym_heap_allocated_since_gc,
-			  scm_from_size_t (bytes_since_gc)),
-		scm_cons (sym_protected_objects,
-			  scm_from_ulong (protected_obj_count)),
-		scm_cons (sym_times, scm_from_size_t (gc_times)),
-		SCM_UNDEFINED);
+  /* answer = */
+  /*   scm_list_n (scm_cons (sym_gc_time_taken, scm_from_long (gc_time_taken)), */
+  /*       	scm_cons (sym_heap_size, scm_from_size_t (heap_size)), */
+  /*       	scm_cons (sym_heap_free_size, scm_from_size_t (free_bytes)), */
+  /*       	scm_cons (sym_heap_total_allocated, */
+  /*       		  scm_from_size_t (total_bytes)), */
+  /*               scm_cons (sym_heap_allocated_since_gc, */
+  /*       		  scm_from_size_t (bytes_since_gc)), */
+  /*       	scm_cons (sym_protected_objects, */
+  /*       		  scm_from_ulong (protected_obj_count)), */
+  /*       	scm_cons (sym_times, scm_from_size_t (gc_times)), */
+  /*       	SCM_UNDEFINED); */
 
   return answer;
 }
@@ -198,7 +198,7 @@ SCM_DEFINE (scm_gc_dump, "gc-dump", 0, 0, 0,
 	    "structures and memory usage to the standard output.")
 #define FUNC_NAME s_scm_gc_dump
 {
-  GC_dump ();
+  //  GC_dump ();
 
   return SCM_UNSPECIFIED;
 }
@@ -223,7 +223,7 @@ SCM_DEFINE (scm_gc_disable, "gc-disable", 0, 0, 0,
 	    "same number of times @code{gc-disable} was called.")
 #define FUNC_NAME s_scm_gc_disable
 {
-  GC_disable ();
+  //  GC_disable ();
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
@@ -233,7 +233,7 @@ SCM_DEFINE (scm_gc_enable, "gc-enable", 0, 0, 0,
 	    "Enables the garbage collector.")
 #define FUNC_NAME s_scm_gc_enable
 {
-  GC_enable ();
+  //GC_enable ();
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
@@ -248,7 +248,7 @@ SCM_DEFINE (scm_gc, "gc", 0, 0, 0,
   scm_i_gc ("call");
   /* If you're calling scm_gc(), you probably want synchronous
      finalization.  */
-  GC_invoke_finalizers ();
+  //GC_invoke_finalizers ();
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
@@ -256,7 +256,7 @@ SCM_DEFINE (scm_gc, "gc", 0, 0, 0,
 void
 scm_i_gc (const char *what)
 {
-  GC_gcollect ();
+  //GC_gcollect ();
 }
 
 

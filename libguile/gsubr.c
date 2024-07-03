@@ -116,7 +116,7 @@ record_subr_name (uint32_t idx, SCM name)
       else
         new_size = expected_subr_count;
 
-      new_names = SCM_GC_MALLOC (new_size * sizeof (SCM));
+      new_names = malloc (new_size * sizeof (SCM));
       memcpy (new_names, names, names_array_size * sizeof (SCM));
       while (names_array_size < new_size)
         new_names[names_array_size++] = SCM_BOOL_F;

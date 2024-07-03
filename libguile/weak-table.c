@@ -103,7 +103,7 @@ read_weak_entry (scm_t_weak_entry *entry, scm_t_bits *key, scm_t_bits *value)
   struct weak_entry_data data;
 
   data.entry = entry;
-  GC_call_with_alloc_lock (do_read_weak_entry, &data);
+  //GC_call_with_alloc_lock (do_read_weak_entry, &data);
 
   *key = data.key;
   *value = data.value;
@@ -114,28 +114,28 @@ register_disappearing_links (scm_t_weak_entry *entry,
                              SCM k, SCM v,
                              scm_t_weak_table_kind kind)
 {
-  if (SCM_UNPACK (k) && SCM_HEAP_OBJECT_P (k)
-      && (kind == SCM_WEAK_TABLE_KIND_KEY
-          || kind == SCM_WEAK_TABLE_KIND_BOTH))
-    SCM_I_REGISTER_DISAPPEARING_LINK ((void **) &entry->key,
-                                      SCM2PTR (k));
+  /* if (SCM_UNPACK (k) && SCM_HEAP_OBJECT_P (k) */
+  /*     && (kind == SCM_WEAK_TABLE_KIND_KEY */
+  /*         || kind == SCM_WEAK_TABLE_KIND_BOTH)) */
+    //    SCM_I_REGISTER_DISAPPEARING_LINK ((void **) &entry->key,
+    //                                      SCM2PTR (k));
 
-  if (SCM_UNPACK (v) && SCM_HEAP_OBJECT_P (v)
-      && (kind == SCM_WEAK_TABLE_KIND_VALUE
-          || kind == SCM_WEAK_TABLE_KIND_BOTH))
-    SCM_I_REGISTER_DISAPPEARING_LINK ((void **) &entry->value,
-                                      SCM2PTR (v));
+  /* if (SCM_UNPACK (v) && SCM_HEAP_OBJECT_P (v) */
+  /*     && (kind == SCM_WEAK_TABLE_KIND_VALUE */
+  /*         || kind == SCM_WEAK_TABLE_KIND_BOTH)) */
+  /*   SCM_I_REGISTER_DISAPPEARING_LINK ((void **) &entry->value, */
+  /*                                     SCM2PTR (v)); */
 }
 
 static void
 unregister_disappearing_links (scm_t_weak_entry *entry,
                                scm_t_weak_table_kind kind)
 {
-  if (kind == SCM_WEAK_TABLE_KIND_KEY || kind == SCM_WEAK_TABLE_KIND_BOTH)
-    GC_unregister_disappearing_link ((void **) &entry->key);
+  //  if (kind == SCM_WEAK_TABLE_KIND_KEY || kind == SCM_WEAK_TABLE_KIND_BOTH)
+  //    GC_unregister_disappearing_link ((void **) &entry->key);
 
-  if (kind == SCM_WEAK_TABLE_KIND_VALUE || kind == SCM_WEAK_TABLE_KIND_BOTH)
-    GC_unregister_disappearing_link ((void **) &entry->value);
+  //  if (kind == SCM_WEAK_TABLE_KIND_VALUE || kind == SCM_WEAK_TABLE_KIND_BOTH)
+  //    GC_unregister_disappearing_link ((void **) &entry->value);
 }
 
 typedef struct {
@@ -173,13 +173,13 @@ allocate_entry (scm_t_weak_table_kind kind)
   switch (kind)
     {
     case SCM_WEAK_TABLE_KIND_KEY:
-      ret = GC_malloc_explicitly_typed (sizeof (*ret), weak_key_descr);
+      ret = malloc (sizeof (*ret));
       break;
     case SCM_WEAK_TABLE_KIND_VALUE:
-      ret = GC_malloc_explicitly_typed (sizeof (*ret), weak_value_descr);
+      ret = malloc(sizeof (*ret));
       break;
     case SCM_WEAK_TABLE_KIND_BOTH:
-      ret = GC_malloc_explicitly_typed (sizeof (*ret), doubly_weak_descr);
+      ret = malloc (sizeof (*ret));
       break;
     default:
       abort ();
@@ -283,39 +283,39 @@ resize_table (scm_t_weak_table *table)
 static void
 vacuum_weak_table (scm_t_weak_table *table)
 {
-  GC_word gc_no = GC_get_gc_no ();
-  unsigned long k;
+  /* GC_word gc_no = GC_get_gc_no (); */
+  /* unsigned long k; */
 
-  if (gc_no == table->last_gc_no)
-    return;
+  /* if (gc_no == table->last_gc_no) */
+  /*   return; */
 
-  table->last_gc_no = gc_no;
+  /* table->last_gc_no = gc_no; */
 
-  for (k = 0; k < table->n_buckets; k++)
-    {
-      scm_t_weak_entry **loc = table->buckets + k;
-      scm_t_weak_entry *entry;
+  /* for (k = 0; k < table->n_buckets; k++) */
+  /*   { */
+  /*     scm_t_weak_entry **loc = table->buckets + k; */
+  /*     scm_t_weak_entry *entry; */
 
-      for (entry = *loc; entry; entry = *loc)
-        {
-          scm_t_bits key, value;
+  /*     for (entry = *loc; entry; entry = *loc) */
+  /*       { */
+  /*         scm_t_bits key, value; */
 
-          read_weak_entry (entry, &key, &value);
-          if (!key || !value)
-            /* Lost weak reference; prune entry.  */
-            {
-              *loc = entry->next;
-              table->n_items--;
-              entry->next = NULL;
-              unregister_disappearing_links (entry, table->kind);
-            }
-          else
-            loc = &entry->next;
-        }
-    }
+  /*         read_weak_entry (entry, &key, &value); */
+  /*         if (!key || !value) */
+  /*           /\* Lost weak reference; prune entry.  *\/ */
+  /*           { */
+  /*             *loc = entry->next; */
+  /*             table->n_items--; */
+  /*             entry->next = NULL; */
+  /*             unregister_disappearing_links (entry, table->kind); */
+  /*           } */
+  /*         else */
+  /*           loc = &entry->next; */
+  /*       } */
+  /*   } */
 
-  if (table->n_items < table->lower)
-    resize_table (table);
+  /* if (table->n_items < table->lower) */
+  /*   resize_table (table); */
 }
 
 
@@ -441,7 +441,7 @@ make_weak_table (unsigned long k, scm_t_weak_table_kind kind)
   table->upper = 9 * n / 10;
   table->size_index = i;
   table->min_size_index = i;
-  table->last_gc_no = GC_get_gc_no ();
+  //  table->last_gc_no = GC_get_gc_no ();
   scm_i_pthread_mutex_init (&table->lock, NULL);
 
   return scm_cell (scm_tc7_weak_table, (scm_t_bits)table);
@@ -627,7 +627,7 @@ scm_weak_table_clear_x (SCM table)
 
   scm_i_pthread_mutex_lock (&t->lock);
 
-  t->last_gc_no = GC_get_gc_no ();
+  //  t->last_gc_no = GC_get_gc_no ();
 
   for (k = 0; k < t->n_buckets; k++)
     {
@@ -817,23 +817,23 @@ SCM_DEFINE (scm_doubly_weak_hash_table_p, "doubly-weak-hash-table?", 1, 0, 0,
 void
 scm_weak_table_prehistory (void)
 {
-  GC_word weak_key_bitmap[GC_BITMAP_SIZE (scm_t_weak_entry)] = { 0 };
-  GC_word weak_value_bitmap[GC_BITMAP_SIZE (scm_t_weak_entry)] = { 0 };
-  GC_word doubly_weak_bitmap[GC_BITMAP_SIZE (scm_t_weak_entry)] = { 0 };
+  /* GC_word weak_key_bitmap[GC_BITMAP_SIZE (scm_t_weak_entry)] = { 0 }; */
+  /* GC_word weak_value_bitmap[GC_BITMAP_SIZE (scm_t_weak_entry)] = { 0 }; */
+  /* GC_word doubly_weak_bitmap[GC_BITMAP_SIZE (scm_t_weak_entry)] = { 0 }; */
 
-  GC_set_bit (weak_key_bitmap, GC_WORD_OFFSET (scm_t_weak_entry, next));
-  GC_set_bit (weak_value_bitmap, GC_WORD_OFFSET (scm_t_weak_entry, next));
-  GC_set_bit (doubly_weak_bitmap, GC_WORD_OFFSET (scm_t_weak_entry, next));
+  /* GC_set_bit (weak_key_bitmap, GC_WORD_OFFSET (scm_t_weak_entry, next)); */
+  /* GC_set_bit (weak_value_bitmap, GC_WORD_OFFSET (scm_t_weak_entry, next)); */
+  /* GC_set_bit (doubly_weak_bitmap, GC_WORD_OFFSET (scm_t_weak_entry, next)); */
 
-  GC_set_bit (weak_key_bitmap, GC_WORD_OFFSET (scm_t_weak_entry, value));
-  GC_set_bit (weak_value_bitmap, GC_WORD_OFFSET (scm_t_weak_entry, key));
+  /* GC_set_bit (weak_key_bitmap, GC_WORD_OFFSET (scm_t_weak_entry, value)); */
+  /* GC_set_bit (weak_value_bitmap, GC_WORD_OFFSET (scm_t_weak_entry, key)); */
 
-  weak_key_descr = GC_make_descriptor (weak_key_bitmap,
-                                       GC_WORD_LEN (scm_t_weak_entry));
-  weak_value_descr = GC_make_descriptor (weak_value_bitmap,
-                                         GC_WORD_LEN (scm_t_weak_entry));
-  doubly_weak_descr = GC_make_descriptor (doubly_weak_bitmap,
-                                          GC_WORD_LEN (scm_t_weak_entry));
+  /* weak_key_descr = GC_make_descriptor (weak_key_bitmap, */
+  /*                                      GC_WORD_LEN (scm_t_weak_entry)); */
+  /* weak_value_descr = GC_make_descriptor (weak_value_bitmap, */
+  /*                                        GC_WORD_LEN (scm_t_weak_entry)); */
+  /* doubly_weak_descr = GC_make_descriptor (doubly_weak_bitmap, */
+  /*                                         GC_WORD_LEN (scm_t_weak_entry)); */
 }
 
 void

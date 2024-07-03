@@ -198,7 +198,7 @@ scm_c_weak_vector_ref (SCM wv, size_t k)
   if (k >= SCM_I_VECTOR_LENGTH (wv))
     scm_out_of_range ("weak-vector-ref", scm_from_size_t (k)); 
 
-  ret = GC_call_with_alloc_lock (weak_vector_ref, &d);
+  //  ret = GC_call_with_alloc_lock (weak_vector_ref, &d);
   
   if (ret)
     return SCM_PACK_POINTER (ret);
@@ -236,18 +236,18 @@ scm_c_weak_vector_set_x (SCM wv, size_t k, SCM x)
   if (k >= SCM_I_VECTOR_LENGTH (wv))
     scm_out_of_range ("weak-vector-set!", scm_from_size_t (k)); 
   
-  prev = GC_call_with_alloc_lock (weak_vector_ref, &d);
+  //  prev = GC_call_with_alloc_lock (weak_vector_ref, &d);
 
   elts = SCM_I_VECTOR_WELTS (wv);
 
-  if (prev && SCM_HEAP_OBJECT_P (SCM_PACK_POINTER (prev)))
-    GC_unregister_disappearing_link ((void **) &elts[k]);
+  //  if (prev && SCM_HEAP_OBJECT_P (SCM_PACK_POINTER (prev)))
+  //  GC_unregister_disappearing_link ((void **) &elts[k]);
   
   elts[k] = x;
 
-  if (SCM_HEAP_OBJECT_P (x))
-    SCM_I_REGISTER_DISAPPEARING_LINK ((void **) &elts[k],
-                                      SCM2PTR (x));
+  /* if (SCM_HEAP_OBJECT_P (x)) */
+  /*   SCM_I_REGISTER_DISAPPEARING_LINK ((void **) &elts[k], */
+  /*                                     SCM2PTR (x)); */
 }
 #undef FUNC_NAME
 

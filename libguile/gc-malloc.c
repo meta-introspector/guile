@@ -83,25 +83,26 @@ do_gc_malloc (size_t size, const char *what)
 {
   /* Ensure nonzero size to be compatible with always-nonzero return of
      glibc malloc.  */
-  return GC_MALLOC (size ? size : sizeof (void *));
+  return malloc (size ? size : sizeof (void *));
 }
 
 static void*
 do_gc_malloc_atomic (size_t size, const char *what)
 {
-  return GC_MALLOC_ATOMIC (size ? size : sizeof (void *));
+  return malloc (size ? size : sizeof (void *));
 }
 
 static void*
 do_gc_realloc (void *from, size_t size, const char *what)
 {
-  return GC_REALLOC (from, size ? size : sizeof (void *));
+  return realloc (from, size ? size : sizeof (void *));
 }
 
 static void
 do_gc_free (void *ptr)
 {
-  GC_FREE (ptr);
+  //GC_FREE (ptr);
+  // just keep all the memory for now:)
 }
 
 
@@ -120,7 +121,7 @@ scm_realloc (void *mem, size_t size)
     return ptr;
 
   /* Time is hard: trigger a full, ``stop-the-world'' GC, and try again.  */
-  GC_gcollect_and_unmap ();
+  //  GC_gcollect_and_unmap ();
 
   ptr = do_realloc (mem, size);
   if (ptr)

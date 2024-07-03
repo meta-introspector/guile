@@ -125,7 +125,7 @@ copy_weak_entry (scm_t_weak_entry *src, scm_t_weak_entry *dst)
   data.in = src;
   data.out = dst;
       
-  GC_call_with_alloc_lock (do_copy_weak_entry, &data);
+  //  GC_call_with_alloc_lock (do_copy_weak_entry, &data);
 }
   
 
@@ -169,8 +169,8 @@ entry_distance (unsigned long hash, unsigned long k, unsigned long size)
 static void
 GC_move_disappearing_link (void **from, void **to)
 {
-  GC_unregister_disappearing_link (from);
-  SCM_I_REGISTER_DISAPPEARING_LINK (to, *to);
+  //  GC_unregister_disappearing_link (from);
+  //SCM_I_REGISTER_DISAPPEARING_LINK (to, *to);
 }
 #endif
 
@@ -419,9 +419,10 @@ resize_set (scm_t_weak_set *set)
       new_entries[new_k].hash = copy.hash;
       new_entries[new_k].key = copy.key;
 
-      if (SCM_HEAP_OBJECT_P (SCM_PACK (copy.key)))
-        SCM_I_REGISTER_DISAPPEARING_LINK ((void **) &new_entries[new_k].key,
-                                          (void *) new_entries[new_k].key);
+      //      if (SCM_HEAP_OBJECT_P (SCM_PACK (copy.key)))
+        //        SCM_I_REGISTER_DISAPPEARING_LINK ((void **) &new_entries[new_k].key,
+        //                                          (void *) new_entries[new_k].key);
+      //}
     }
 }
 
@@ -581,9 +582,9 @@ weak_set_add_x (scm_t_weak_set *set, unsigned long hash,
   entries[k].hash = hash;
   entries[k].key = SCM_UNPACK (obj);
 
-  if (SCM_HEAP_OBJECT_P (obj))
-    SCM_I_REGISTER_DISAPPEARING_LINK ((void **) &entries[k].key,
-                                      (void *) SCM2PTR (obj));
+  //  if (SCM_HEAP_OBJECT_P (obj))
+    //    SCM_I_REGISTER_DISAPPEARING_LINK ((void **) &entries[k].key,
+    //                                      (void *) SCM2PTR (obj));
 
   return obj;
 }
@@ -633,8 +634,8 @@ weak_set_remove_x (scm_t_weak_set *set, unsigned long hash,
               entries[k].hash = 0;
               entries[k].key = 0;
 
-              if (SCM_HEAP_OBJECT_P (SCM_PACK (copy.key)))
-                GC_unregister_disappearing_link ((void **) &entries[k].key);
+              //              if (SCM_HEAP_OBJECT_P (SCM_PACK (copy.key)))
+                //                GC_unregister_disappearing_link ((void **) &entries[k].key);
 
               if (--set->n_items < set->lower)
                 resize_set (set);

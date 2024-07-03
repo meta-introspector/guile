@@ -139,14 +139,16 @@ SCM_API char *scm_gc_strndup (const char *str, size_t n, const char *what)
 
 #define scm_gc_typed_calloc(t) ((t *) scm_gc_calloc (sizeof (t), #t))
 
-#ifdef BUILDING_LIBGUILE
-#include "libguile/bdw-gc.h"
-#define SCM_GC_MALLOC(size) GC_MALLOC (size)
-#define SCM_GC_MALLOC_POINTERLESS(size) GC_MALLOC_ATOMIC (size)
-#else
-#define SCM_GC_MALLOC(size) scm_gc_malloc (size, NULL)
-#define SCM_GC_MALLOC_POINTERLESS(size) scm_gc_malloc_pointerless (size, NULL)
-#endif
+#define SCM_GC_MALLOC(size) malloc (size)
+#define SCM_GC_MALLOC_POINTERLESS(size) malloc (size) 
+/* #ifdef BUILDING_LIBGUILE */
+/* #include "libguile/bdw-gc.h" */
+/* #define SCM_GC_MALLOC(size) GC_MALLOC (size) */
+/* #define SCM_GC_MALLOC_POINTERLESS(size) GC_MALLOC_ATOMIC (size) */
+/* #else */
+/* #define SCM_GC_MALLOC(size) scm_gc_malloc (size, NULL) */
+/* #define SCM_GC_MALLOC_POINTERLESS(size) scm_gc_malloc_pointerless (size, NULL) */
+/* #endif */
 
 
 SCM_INLINE SCM scm_cell (scm_t_bits car, scm_t_bits cdr);

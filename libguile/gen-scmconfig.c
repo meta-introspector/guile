@@ -361,7 +361,7 @@ main (int argc, char *argv[])
 
   pf ("\n");
   pf ("/* Define to 1 if there is an auxiliary stack, as in ia64.  */\n");
-  pf ("#define SCM_HAVE_AUXILIARY_STACK %d\n", SCM_I_GSC_HAVE_AUXILIARY_STACK);
+  //  pf ("#define SCM_HAVE_AUXILIARY_STACK %d\n", SCM_I_GSC_HAVE_AUXILIARY_STACK);
 
   pf ("\n");
   pf ("/* Define to 1 to use mini GMP.  */\n");

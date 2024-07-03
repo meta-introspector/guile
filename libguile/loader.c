@@ -340,8 +340,8 @@ process_dynamic_segment (char *base, Elf_Phdr *dyn_phdr,
       return "missing DT_GUILE_VM_VERSION";
     }
 
-  if (gc_root)
-    GC_add_roots (gc_root, gc_root + gc_root_size);
+  //  if (gc_root)
+    //GC_add_roots (gc_root, gc_root + gc_root_size);
 
   *init_out = init ? pointer_to_procedure (bytecode_kind, init) : SCM_BOOL_F;
   *entry_out = pointer_to_procedure (bytecode_kind, entry);

@@ -43,7 +43,7 @@
 #include "libguile/bdw-gc.h"
 #include "libguile/threads.h"
 
-#include <gc/gc_inline.h> /* GC_generic_malloc_many */
+//#include <gc/gc_inline.h> /* GC_generic_malloc_many */
 
 
 
@@ -68,47 +68,49 @@ typedef enum scm_inline_gc_kind
     SCM_INLINE_GC_KIND_NORMAL
   } scm_inline_gc_kind;
 
-static inline void *
-scm_inline_gc_alloc (void **freelist, size_t idx, scm_inline_gc_kind kind)
-{
-  void *head = *freelist;
+/* static inline void * */
+/* scm_inline_gc_alloc (void **freelist, size_t idx, scm_inline_gc_kind kind) */
+/* { */
+/*   void *head = *freelist; */
 
-  if (SCM_UNLIKELY (!head))
-    {
-      size_t bytes = scm_inline_gc_freelist_object_size (idx);
-      GC_generic_malloc_many (bytes, kind, freelist);
-      head = *freelist;
-      if (SCM_UNLIKELY (!head))
-        return (*GC_get_oom_fn ()) (bytes);
-    }
+/*   if (SCM_UNLIKELY (!head)) */
+/*     { */
+/*       size_t bytes = scm_inline_gc_freelist_object_size (idx); */
+/*       GC_generic_malloc_many (bytes, kind, freelist); */
+/*       head = *freelist; */
+/*       if (SCM_UNLIKELY (!head)) */
+/*         return (*GC_get_oom_fn ()) (bytes); */
+/*     } */
 
-  *freelist = *(void **)(head);
+/*   *freelist = *(void **)(head); */
 
-  return head;
-}
+/*   return head; */
+/* } */
 
 static inline void *
 scm_inline_gc_malloc_pointerless (scm_thread *thread, size_t bytes)
 {
-  size_t idx = scm_inline_gc_bytes_to_freelist_index (bytes);
+  /* size_t idx = scm_inline_gc_bytes_to_freelist_index (bytes); */
 
-  if (SCM_UNLIKELY (idx >= SCM_INLINE_GC_FREELIST_COUNT))
-    return GC_malloc_atomic (bytes);
+  /* if (SCM_UNLIKELY (idx >= SCM_INLINE_GC_FREELIST_COUNT)) */
+  /*   return GC_malloc_atomic (bytes); */
+  return malloc (bytes);
 
-  return scm_inline_gc_alloc
-    (&thread->pointerless_freelists[idx], idx, SCM_INLINE_GC_KIND_POINTERLESS);
+  /* return scm_inline_gc_alloc */
+  /*   (&thread->pointerless_freelists[idx], idx, SCM_INLINE_GC_KIND_POINTERLESS); */
 }
 
 static inline void *
 scm_inline_gc_malloc (scm_thread *thread, size_t bytes)
 {
-  size_t idx = scm_inline_gc_bytes_to_freelist_index (bytes);
+  /* size_t idx = scm_inline_gc_bytes_to_freelist_index (bytes); */
 
-  if (SCM_UNLIKELY (idx >= SCM_INLINE_GC_FREELIST_COUNT))
-    return GC_malloc (bytes);
+  /* if (SCM_UNLIKELY (idx >= SCM_INLINE_GC_FREELIST_COUNT)) */
+  /*   return GC_malloc (bytes); */
+  return malloc (bytes);
 
-  return scm_inline_gc_alloc
-    (&thread->freelists[idx], idx, SCM_INLINE_GC_KIND_NORMAL);
+  /* return scm_inline_gc_alloc */
+  /*   (&thread->freelists[idx], idx, SCM_INLINE_GC_KIND_NORMAL); */
 }
 
 static inline void *

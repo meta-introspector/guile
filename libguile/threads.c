@@ -91,27 +91,27 @@ thread_mark (GC_word *addr, struct GC_ms_entry *mark_stack_ptr,
     return mark_stack_ptr;
 
   /* Mark T.  We could be more precise, but it doesn't matter.  */
-  for (word = 0; word * sizeof (*addr) < sizeof (*t); word++)
-    mark_stack_ptr = GC_MARK_AND_PUSH ((void *) addr[word],
-				       mark_stack_ptr, mark_stack_limit,
-				       NULL);
+  //  for (word = 0; word * sizeof (*addr) < sizeof (*t); word++)
+    //    mark_stack_ptr = GC_MARK_AND_PUSH ((void *) addr[word],
+    //				       mark_stack_ptr, mark_stack_limit,
+    //				       NULL);
 
   /* The pointerless freelists are threaded through their first word,
      but GC doesn't know to trace them (as they are pointerless), so we
      need to do that here.  See the comments at the top of libgc's
      gc_inline.h.  */
-  for (size_t n = 0; n < SCM_INLINE_GC_FREELIST_COUNT; n++)
-    {
-      void *chain = t->pointerless_freelists[n];
-      if (chain)
-        {
-          /* The first link is already marked by the thread itsel, so we
-             just have to mark the tail.  */
-          while ((chain = *(void **)chain))
-            mark_stack_ptr = GC_mark_and_push (chain, mark_stack_ptr,
-                                               mark_stack_limit, NULL);
-        }
-    }
+  /* for (size_t n = 0; n < SCM_INLINE_GC_FREELIST_COUNT; n++) */
+  /*   { */
+  /*     void *chain = t->pointerless_freelists[n]; */
+  /*     if (chain) */
+  /*       { */
+  /*         /\* The first link is already marked by the thread itsel, so we */
+  /*            just have to mark the tail.  *\/ */
+  /*       /\*   while ((chain = *(void **)chain)) *\/ */
+  /*       /\*     //            mark_stack_ptr = GC_mark_and_push (chain, mark_stack_ptr, *\/ */
+  /*       /\*                                        mark_stack_limit, NULL); *\/ */
+  /*       /\* } *\/ */
+  /*   } */
 
   mark_stack_ptr = scm_i_vm_mark_stack (&t->vm, mark_stack_ptr,
                                         mark_stack_limit);
@@ -408,8 +408,8 @@ guilify_self_1 (struct GC_stack_base *base, int needs_unregister)
   {
     scm_thread *t_ptr = &t;
     
-    GC_disable ();
-    t_ptr = GC_generic_malloc (sizeof (*t_ptr), thread_gc_kind);
+    //    GC_disable ();
+    t_ptr = malloc (sizeof (*t_ptr));
     memcpy (t_ptr, &t, sizeof t);
 
     scm_i_pthread_setspecific (scm_i_thread_key, t_ptr);
@@ -425,7 +425,7 @@ guilify_self_1 (struct GC_stack_base *base, int needs_unregister)
     thread_count++;
     scm_i_pthread_mutex_unlock (&thread_admin_mutex);
 
-    GC_enable ();
+    //GC_enable ();
   }
 }
 
@@ -454,7 +454,7 @@ guilify_self_2 (SCM dynamic_state)
   t->block_asyncs = 0;
 
   /* See note in finalizers.c:queue_finalizer_async().  */
-  GC_invoke_finalizers ();
+  //  GC_invoke_finalizers ();
 }
 
 
@@ -501,8 +501,8 @@ on_thread_exit (void *v)
 
   /* Although this thread has exited, the thread object might still be
      alive.  Release unused memory.  */
-  for (size_t n = 0; n < SCM_INLINE_GC_FREELIST_COUNT; n++)
-    t->freelists[n] = t->pointerless_freelists[n] = NULL;
+  /* for (size_t n = 0; n < SCM_INLINE_GC_FREELIST_COUNT; n++) */
+  /*   t->freelists[n] = t->pointerless_freelists[n] = NULL; */
   t->dynamic_state = NULL;
   t->dynstack.base = NULL;
   t->dynstack.top = NULL;
@@ -518,8 +518,8 @@ on_thread_exit (void *v)
 #endif
 
 #if SCM_USE_PTHREAD_THREADS
-  if (t->needs_unregister)
-    GC_unregister_my_thread ();
+  // if (t->needs_unregister)
+    //GC_unregister_my_thread ();
 #endif
 }
 
@@ -574,7 +574,7 @@ scm_i_init_thread_for_guile (struct GC_stack_base *base,
 
 #if SCM_USE_PTHREAD_THREADS
           /* Allow other threads to come in later.  */
-          GC_allow_register_threads ();
+          //GC_allow_register_threads ();
 #endif
 
 	  scm_i_pthread_mutex_unlock (&scm_i_init_mutex);
@@ -590,8 +590,8 @@ scm_i_init_thread_for_guile (struct GC_stack_base *base,
 
           /* Register this thread with libgc.  */
 #if SCM_USE_PTHREAD_THREADS
-          if (GC_register_my_thread (base) == GC_SUCCESS)
-            needs_unregister = 1;
+          //          if (GC_register_my_thread (base) == GC_SUCCESS)
+          //            needs_unregister = 1;
 #endif
 
 	  guilify_self_1 (base, needs_unregister);
@@ -606,9 +606,9 @@ scm_init_guile ()
 {
   struct GC_stack_base stack_base;
   
-  if (GC_get_stack_base (&stack_base) == GC_SUCCESS)
-    scm_i_init_thread_for_guile (&stack_base, default_dynamic_state);
-  else
+  //  if (GC_get_stack_base (&stack_base) == GC_SUCCESS)
+  //    scm_i_init_thread_for_guile (&stack_base, default_dynamic_state);
+  //else
     {
       fprintf (stderr, "Failed to get stack base for current thread.\n");
       exit (EXIT_FAILURE);
@@ -688,13 +688,14 @@ scm_i_with_guile (void *(*func)(void *), void *data, SCM dynamic_state)
   args.data = data;
   args.dynamic_state = dynamic_state;
   
-  return GC_call_with_stack_base (with_guile, &args);
+  return 0; //GC_call_with_stack_base (with_guile, &args);
 }
 
 void *
 scm_with_guile (void *(*func)(void *), void *data)
 {
-  return scm_i_with_guile (func, data, default_dynamic_state);
+  //return scm_i_with_guile (func, data, default_dynamic_state);
+  return 0;
 }
 
 void *
@@ -706,7 +707,7 @@ scm_without_guile (void *(*func)(void *), void *data)
   if (t->guile_mode)
     {
       SCM_I_CURRENT_THREAD->guile_mode = 0;
-      result = GC_do_blocking (func, data);
+      //      result = GC_do_blocking (func, data);
       SCM_I_CURRENT_THREAD->guile_mode = 1;
     }
   else
@@ -787,7 +788,7 @@ launch_thread (void *d)
 {
   launch_data *data = (launch_data *)d;
   scm_i_pthread_detach (scm_i_pthread_self ());
-  scm_i_with_guile (really_launch, d, data->dynamic_state);
+  //  scm_i_with_guile (really_launch, d, data->dynamic_state);
   return NULL;
 }
 
@@ -802,7 +803,7 @@ SCM_DEFINE (scm_sys_call_with_new_thread, "%call-with-new-thread", 1, 0, 0,
 
   SCM_ASSERT (scm_is_true (scm_thunk_p (thunk)), thunk, SCM_ARG1, FUNC_NAME);
 
-  GC_collect_a_little ();
+  // GC_collect_a_little ();
   data = scm_gc_typed_calloc (launch_data);
   data->dynamic_state = scm_current_dynamic_state ();
   data->thunk = thunk;
@@ -1783,10 +1784,10 @@ scm_threads_prehistory (void *base)
   scm_i_pthread_mutex_init (&scm_i_misc_mutex, NULL);
   scm_i_pthread_cond_init (&wake_up_cond, NULL);
 
-  thread_gc_kind =
-    GC_new_kind (GC_new_free_list (),
-		 GC_MAKE_PROC (GC_new_proc (thread_mark), 0),
-		 0, 1);
+  /* thread_gc_kind = */
+  /*   GC_new_kind (GC_new_free_list (), */
+  /*       	 GC_MAKE_PROC (GC_new_proc (thread_mark), 0), */
+  /*       	 0, 1); */
 
   guilify_self_1 ((struct GC_stack_base *) base, 0);
 }

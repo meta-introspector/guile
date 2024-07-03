@@ -658,8 +658,8 @@ scm_i_vm_mark_stack (struct scm_vm *vp, struct GC_ms_entry *mark_stack_ptr,
      providing slot maps for all points in a program would take a
      prohibitive amount of space.  */
   const uint8_t *slot_map = NULL;
-  void *upper = (void *) GC_greatest_plausible_heap_addr;
-  void *lower = (void *) GC_least_plausible_heap_addr;
+  //  void *upper = (void *) GC_greatest_plausible_heap_addr;
+  //  void *lower = (void *) GC_least_plausible_heap_addr;
   struct slot_map_cache cache;
 
   memset (&cache, 0, sizeof (cache));
@@ -683,12 +683,13 @@ scm_i_vm_mark_stack (struct scm_vm *vp, struct GC_ms_entry *mark_stack_ptr,
               break;
             case SLOT_DESC_UNUSED:
             case SLOT_DESC_LIVE_GC:
-              if (SCM_NIMP (sp->as_scm) &&
-                  sp->as_ptr >= lower && sp->as_ptr <= upper)
-                mark_stack_ptr = GC_mark_and_push (sp->as_ptr,
-                                                   mark_stack_ptr,
-                                                   mark_stack_limit,
-                                                   NULL);
+              
+              //if (SCM_NIMP (sp->as_scm) &&
+              //   sp->as_ptr >= lower && sp->as_ptr <= upper)
+                /* mark_stack_ptr = GC_mark_and_push (sp->as_ptr, */
+                /*                                    mark_stack_ptr, */
+                /*                                    mark_stack_limit, */
+                /*                                    NULL); */
               break;
             case SLOT_DESC_DEAD:
               /* This value may become dead as a result of GC,
@@ -822,9 +823,9 @@ vm_expand_stack (struct scm_vm *vp, union scm_vm_stack_element *new_sp)
       data.stack_size = stack_size;
       data.new_sp = new_sp;
       
-      if (!GC_call_with_alloc_lock (vm_expand_stack_inner, &data))
-        /* Throw an unwind-only exception.  */
-        scm_report_stack_overflow ();
+      /* if (!GC_call_with_alloc_lock (vm_expand_stack_inner, &data)) */
+      /*   /\* Throw an unwind-only exception.  *\/ */
+      /*   scm_report_stack_overflow (); */
 
       new_sp = data.new_sp;
     }
@@ -1079,7 +1080,7 @@ reinstate_continuation_x (scm_thread *thread, SCM cont)
 
   data.cp = cp;
   data.vp = vp;
-  GC_call_with_alloc_lock (vm_return_to_continuation_inner, &data);
+  //  GC_call_with_alloc_lock (vm_return_to_continuation_inner, &data);
 
   /* Now we have the continuation properly copied over.  We just need to
      copy on an empty frame and the return values, as the continuation
@@ -1168,7 +1169,7 @@ compose_continuation (scm_thread *thread, SCM cont)
 
   data.vp = vp;
   data.cp = cp;
-  mra = GC_call_with_alloc_lock (compose_continuation_inner, &data);
+  //  mra = GC_call_with_alloc_lock (compose_continuation_inner, &data);
 
   /* The resumed continuation will expect ARGS on the stack as if from a
      multiple-value return.  */

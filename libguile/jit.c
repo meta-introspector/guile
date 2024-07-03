@@ -2310,16 +2310,16 @@ compile_allocate_words_immediate (scm_jit_state *j, uint32_t dst, uint32_t nword
   size_t bytes = nwords * sizeof(SCM);
   size_t idx = scm_inline_gc_bytes_to_freelist_index (bytes);
 
-  if (SCM_UNLIKELY (idx >= SCM_INLINE_GC_FREELIST_COUNT))
-    {
-      jit_gpr_t t = T0;
-      emit_store_current_ip (j, t);
-      emit_call_1 (j, GC_malloc, jit_operand_imm (JIT_OPERAND_ABI_WORD, bytes));
-      emit_retval (j, t);
-      emit_reload_sp (j);
-      emit_sp_set_scm (j, dst, t);
-    }
-  else
+  /* if (SCM_UNLIKELY (idx >= SCM_INLINE_GC_FREELIST_COUNT)) */
+  /*   { */
+  /*     jit_gpr_t t = T0; */
+  /*     emit_store_current_ip (j, t); */
+  /*     emit_call_1 (j, GC_malloc, jit_operand_imm (JIT_OPERAND_ABI_WORD, bytes)); */
+  /*     emit_retval (j, t); */
+  /*     emit_reload_sp (j); */
+  /*     emit_sp_set_scm (j, dst, t); */
+  /*   } */
+  /* else */
     {
       jit_gpr_t res = T0;
       ptrdiff_t offset = offsetof(struct scm_thread, freelists);
@@ -2338,16 +2338,16 @@ compile_allocate_words_immediate_slow (scm_jit_state *j, uint32_t dst, uint32_t 
   size_t bytes = nwords * sizeof(SCM);
   size_t idx = scm_inline_gc_bytes_to_freelist_index (bytes);
 
-  if (SCM_UNLIKELY (idx >= SCM_INLINE_GC_FREELIST_COUNT))
-    {
-    }
-  else
+  /* if (SCM_UNLIKELY (idx >= SCM_INLINE_GC_FREELIST_COUNT)) */
+  /*   { */
+  /*   } */
+  /* else */
     {
       jit_gpr_t res = T0;
       emit_store_current_ip (j, res);
-      emit_call_2 (j, scm_vm_intrinsics.allocate_words_with_freelist,
-                   thread_operand (),
-                   jit_operand_imm (JIT_OPERAND_ABI_WORD, idx));
+      /* emit_call_2 (j, scm_vm_intrinsics.allocate_words_with_freelist, */
+      /*              thread_operand (), */
+      /*              jit_operand_imm (JIT_OPERAND_ABI_WORD, idx)); */
       emit_retval (j, res);
       emit_reload_sp (j);
       emit_sp_set_scm (j, dst, res);
@@ -2361,8 +2361,8 @@ compile_allocate_pointerless_words (scm_jit_state *j, uint32_t dst, uint32_t nwo
   jit_gpr_t t = T0;
 
   emit_store_current_ip (j, t);
-  emit_call_2 (j, scm_vm_intrinsics.allocate_pointerless_words, thread_operand (),
-               sp_sz_operand (j, nwords));
+  //  emit_call_2 (j, scm_vm_intrinsics.allocate_pointerless_words, thread_operand (),
+  //               sp_sz_operand (j, nwords));
   emit_retval (j, t);
   record_gpr_clobber (j, t);
   emit_reload_sp (j);
@@ -2379,16 +2379,16 @@ compile_allocate_pointerless_words_immediate (scm_jit_state *j, uint32_t dst, ui
   size_t bytes = nwords * sizeof(SCM);
   size_t idx = scm_inline_gc_bytes_to_freelist_index (bytes);
 
-  if (SCM_UNLIKELY (idx >= SCM_INLINE_GC_FREELIST_COUNT))
-    {
-      jit_gpr_t t = T0;
-      emit_store_current_ip (j, t);
-      emit_call_1 (j, GC_malloc_atomic, jit_operand_imm (JIT_OPERAND_ABI_WORD, bytes));
-      emit_retval (j, t);
-      emit_reload_sp (j);
-      emit_sp_set_scm (j, dst, t);
-    }
-  else
+  /* if (SCM_UNLIKELY (idx >= SCM_INLINE_GC_FREELIST_COUNT)) */
+  /*   { */
+  /*     jit_gpr_t t = T0; */
+  /*     emit_store_current_ip (j, t); */
+  /*     //      emit_call_1 (j, GC_malloc_atomic, jit_operand_imm (JIT_OPERAND_ABI_WORD, bytes)); */
+  /*     emit_retval (j, t); */
+  /*     emit_reload_sp (j); */
+  /*     emit_sp_set_scm (j, dst, t); */
+  /*   } */
+  /* else */
     {
       jit_gpr_t res = T0;
       ptrdiff_t offset = offsetof(struct scm_thread, pointerless_freelists);
@@ -2407,16 +2407,16 @@ compile_allocate_pointerless_words_immediate_slow (scm_jit_state *j, uint32_t ds
   size_t bytes = nwords * sizeof(SCM);
   size_t idx = scm_inline_gc_bytes_to_freelist_index (bytes);
 
-  if (SCM_UNLIKELY (idx >= SCM_INLINE_GC_FREELIST_COUNT))
-    {
-    }
-  else
+  /* if (SCM_UNLIKELY (idx >= SCM_INLINE_GC_FREELIST_COUNT)) */
+  /*   { */
+  /*   } */
+  /* else */
     {
       jit_gpr_t res = T0;
       emit_store_current_ip (j, res);
-      emit_call_2 (j, scm_vm_intrinsics.allocate_pointerless_words_with_freelist,
-                   thread_operand (),
-                   jit_operand_imm (JIT_OPERAND_ABI_WORD, idx));
+      /* emit_call_2 (j, scm_vm_intrinsics.allocate_pointerless_words_with_freelist, */
+      /*              thread_operand (), */
+      /*              jit_operand_imm (JIT_OPERAND_ABI_WORD, idx)); */
       emit_retval (j, res);
       emit_reload_sp (j);
       emit_sp_set_scm (j, dst, res);

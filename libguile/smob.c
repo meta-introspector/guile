@@ -314,15 +314,15 @@ smob_mark (GC_word *addr, struct GC_ms_entry *mark_stack_ptr,
     /* The first word looks corrupt.  */
     abort ();
 
-  mark_stack_ptr = GC_MARK_AND_PUSH (SCM2PTR (SCM_CELL_OBJECT_1 (cell)),
-				     mark_stack_ptr,
-				     mark_stack_limit, NULL);
-  mark_stack_ptr = GC_MARK_AND_PUSH (SCM2PTR (SCM_CELL_OBJECT_2 (cell)),
-				     mark_stack_ptr,
-				     mark_stack_limit, NULL);
-  mark_stack_ptr = GC_MARK_AND_PUSH (SCM2PTR (SCM_CELL_OBJECT_3 (cell)),
-				     mark_stack_ptr,
-				     mark_stack_limit, NULL);
+  //  mark_stack_ptr = GC_MARK_AND_PUSH (SCM2PTR (SCM_CELL_OBJECT_1 (cell)),
+  //				     mark_stack_ptr,
+  //				     mark_stack_limit, NULL);
+  //  mark_stack_ptr = GC_MARK_AND_PUSH (SCM2PTR (SCM_CELL_OBJECT_2 (cell)),
+  //				     mark_stack_ptr,
+  //				     mark_stack_limit, NULL);
+  //  mark_stack_ptr = GC_MARK_AND_PUSH (SCM2PTR (SCM_CELL_OBJECT_3 (cell)),
+  //				     mark_stack_ptr,
+  //mark_stack_limit, NULL);
 
   if (scm_smobs[smobnum].mark)
     {
@@ -339,9 +339,9 @@ smob_mark (GC_word *addr, struct GC_ms_entry *mark_stack_ptr,
 
       if (SCM_HEAP_OBJECT_P (obj))
 	/* Mark the returned object.  */
-	mark_stack_ptr = GC_MARK_AND_PUSH (SCM2PTR (obj),
-					   mark_stack_ptr,
-					   mark_stack_limit, NULL);
+	/* mark_stack_ptr = GC_MARK_AND_PUSH (SCM2PTR (obj), */
+	/* 				   mark_stack_ptr, */
+	/* 				   mark_stack_limit, NULL); */
 
       scm_i_pthread_setspecific (current_mark_stack_pointer, NULL);
       scm_i_pthread_setspecific (current_mark_stack_limit, NULL);
@@ -367,9 +367,9 @@ scm_gc_mark (SCM o)
 	/* The function was not called from a mark procedure.  */
 	abort ();
 
-      mark_stack_ptr = GC_MARK_AND_PUSH (SCM2PTR (o),
-					 mark_stack_ptr, mark_stack_limit,
-					 NULL);
+      /* mark_stack_ptr = GC_MARK_AND_PUSH (SCM2PTR (o), */
+      /*   				 mark_stack_ptr, mark_stack_limit, */
+      /*   				 NULL); */
       scm_i_pthread_setspecific (current_mark_stack_pointer, mark_stack_ptr);
     }
 }
@@ -405,7 +405,7 @@ finalize_smob (void *ptr, void *data)
   size_t (* free_smob) (SCM);
 
   smob = SCM_PACK_POINTER (ptr);
-  smobnum = (scm_t_bits) GC_call_with_alloc_lock (clear_smobnum, ptr);
+  //  smobnum = (scm_t_bits) GC_call_with_alloc_lock (clear_smobnum, ptr);
 
 #if 0
   printf ("finalizing SMOB %p (smobnum: %u)\n", ptr, smobnum);
@@ -428,10 +428,10 @@ scm_i_new_smob (scm_t_bits tc, scm_t_bits data)
      run.  Since the marker only deals with double cells, that case
      allocates a double cell.  We leave words 2 and 3 to there initial
      values, which is 0.  */
-  if (scm_smobs [smobnum].mark)
-    ret = SCM_PACK_POINTER (GC_generic_malloc (2 * sizeof (scm_t_cell), smob_gc_kind));
-  else
-    ret = SCM_PACK_POINTER (GC_MALLOC (sizeof (scm_t_cell)));
+  //  if (scm_smobs [smobnum].mark)
+    //    ret = SCM_PACK_POINTER (GC_generic_malloc (2 * sizeof (scm_t_cell), smob_gc_kind));
+  //else
+  ret = SCM_PACK_POINTER (malloc (sizeof (scm_t_cell)));
   
   SCM_SET_CELL_WORD_1 (ret, data);
   SCM_SET_CELL_WORD_0 (ret, tc);
@@ -453,10 +453,10 @@ scm_i_new_double_smob (scm_t_bits tc, scm_t_bits data1,
 
   /* Use the smob_gc_kind if needed to allow the mark procedure to
      run.  */
-  if (scm_smobs [smobnum].mark)
-    ret = SCM_PACK_POINTER (GC_generic_malloc (2 * sizeof (scm_t_cell), smob_gc_kind));
-  else
-    ret = SCM_PACK_POINTER (GC_MALLOC (2 * sizeof (scm_t_cell)));
+  //  if (scm_smobs [smobnum].mark)
+    //    ret = SCM_PACK_POINTER (GC_generic_malloc (2 * sizeof (scm_t_cell), smob_gc_kind));
+  //else
+  ret = SCM_PACK_POINTER (malloc (2 * sizeof (scm_t_cell)));
   
   SCM_SET_CELL_WORD_3 (ret, data3);
   SCM_SET_CELL_WORD_2 (ret, data2);
@@ -491,12 +491,12 @@ scm_smob_prehistory ()
   scm_i_pthread_key_create (&current_mark_stack_pointer, NULL);
   scm_i_pthread_key_create (&current_mark_stack_limit, NULL);
 
-  smob_gc_kind = GC_new_kind (GC_new_free_list (),
-			      GC_MAKE_PROC (GC_new_proc (smob_mark), 0),
-			      0,
-			      /* Clear new objects.  As of version 7.1, libgc
-				 doesn't seem to support passing 0 here.  */
-			      1);
+  /* smob_gc_kind = GC_new_kind (GC_new_free_list (), */
+  /*       		      GC_MAKE_PROC (GC_new_proc (smob_mark), 0), */
+  /*       		      0, */
+  /*       		      /\* Clear new objects.  As of version 7.1, libgc */
+  /*       			 doesn't seem to support passing 0 here.  *\/ */
+  /*       		      1); */
 
   scm_numsmob = 0;
   for (i = 0; i < MAX_SMOB_COUNT; ++i)

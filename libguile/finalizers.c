@@ -55,9 +55,9 @@ static SCM run_finalizers_subr;
 void
 scm_i_set_finalizer (void *obj, scm_t_finalizer_proc proc, void *data)
 {
-  GC_finalization_proc prev;
-  void *prev_data;
-  GC_REGISTER_FINALIZER_NO_ORDER (obj, proc, data, &prev, &prev_data);
+  //GC_finalization_proc prev;
+  //void *prev_data;
+  //GC_REGISTER_FINALIZER_NO_ORDER (obj, proc, data, &prev, &prev_data);
 }
 
 struct scm_t_chained_finalizer
@@ -95,9 +95,9 @@ scm_i_add_resuscitator (void *obj, scm_t_finalizer_proc proc, void *data)
   chained_data->resuscitating_p = 1;
   chained_data->proc = proc;
   chained_data->data = data;
-  GC_REGISTER_FINALIZER_NO_ORDER (obj, chained_finalizer, chained_data,
-                                  &chained_data->prev,
-                                  &chained_data->prev_data);
+  //GC_REGISTER_FINALIZER_NO_ORDER (obj, chained_finalizer, chained_data,
+  //                                  &chained_data->prev,
+  //                                  &chained_data->prev_data);
 }
 
 static void
@@ -132,10 +132,10 @@ scm_i_add_finalizer (void *obj, scm_t_finalizer_proc proc, void *data)
   chained_data->resuscitating_p = 0;
   chained_data->proc = proc;
   chained_data->data = data;
-  GC_REGISTER_FINALIZER_NO_ORDER (obj, chained_finalizer, chained_data,
-                                  &chained_data->prev,
-                                  &chained_data->prev_data);
-  shuffle_resuscitators_to_front (chained_data);
+  /* GC_REGISTER_FINALIZER_NO_ORDER (obj, chained_finalizer, chained_data, */
+  /*                                 &chained_data->prev, */
+  /*                                 &chained_data->prev_data); */
+  /* shuffle_resuscitators_to_front (chained_data); */
 }
 
 
@@ -283,7 +283,7 @@ start_finalization_thread (void)
 	}
       else
 	{
-	  GC_set_finalizer_notifier (notify_finalizers_to_run);
+          //	  GC_set_finalizer_notifier (notify_finalizers_to_run);
 	  finalization_thread_is_running = 1;
 	}
     }
@@ -324,7 +324,7 @@ scm_i_finalizer_pre_fork (void)
   if (automatic_finalization_p)
     {
       stop_finalization_thread ();
-      GC_set_finalizer_notifier (spawn_finalizer_thread);
+      //      GC_set_finalizer_notifier (spawn_finalizer_thread);
     }
 #endif
 }
@@ -367,11 +367,11 @@ async_gc_finalizer (void *ptr, void *data)
 void
 scm_i_register_async_gc_callback (void (*callback) (void))
 {
-  void **obj = GC_MALLOC_ATOMIC (sizeof (void*));
+  /* void **obj = GC_MALLOC_ATOMIC (sizeof (void*)); */
 
-  obj[0] = (void*)callback;
+  /* obj[0] = (void*)callback; */
 
-  scm_i_set_finalizer (obj, async_gc_finalizer, NULL);
+  /* scm_i_set_finalizer (obj, async_gc_finalizer, NULL); */
 }
 
 
@@ -392,14 +392,14 @@ scm_set_automatic_finalization_enabled (int enabled_p)
   if (enabled_p)
     {
 #if SCM_USE_PTHREAD_THREADS
-      GC_set_finalizer_notifier (spawn_finalizer_thread);
+      //      GC_set_finalizer_notifier (spawn_finalizer_thread);
 #else
-      GC_set_finalizer_notifier (queue_finalizer_async);
+      //      GC_set_finalizer_notifier (queue_finalizer_async);
 #endif
     }
   else
     {
-      GC_set_finalizer_notifier (0);
+      //      GC_set_finalizer_notifier (0);
 
 #if SCM_USE_PTHREAD_THREADS
       stop_finalization_thread ();
@@ -414,11 +414,11 @@ scm_set_automatic_finalization_enabled (int enabled_p)
 int
 scm_run_finalizers (void)
 {
-  int finalized = GC_invoke_finalizers ();
+  //  int finalized = GC_invoke_finalizers ();
 
-  finalization_count += finalized;
+  //  finalization_count += finalized;
 
-  return finalized;
+  return 0;
 }
 
 
@@ -432,15 +432,15 @@ scm_init_finalizers (void)
   run_finalizers_subr = scm_c_make_gsubr ("%run-finalizers", 0, 0, 0,
                                           run_finalizers_async_thunk);
 
-  if (automatic_finalization_p)
-    GC_set_finalizer_notifier (queue_finalizer_async);
+  //  if (automatic_finalization_p)
+    //    GC_set_finalizer_notifier (queue_finalizer_async);
 }
 
 void
 scm_init_finalizer_thread (void)
 {
 #if SCM_USE_PTHREAD_THREADS
-  if (automatic_finalization_p)
-    GC_set_finalizer_notifier (spawn_finalizer_thread);
+  //  if (automatic_finalization_p)
+    //    GC_set_finalizer_notifier (spawn_finalizer_thread);
 #endif
 }

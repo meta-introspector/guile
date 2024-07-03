@@ -200,13 +200,15 @@ scm_cdr (SCM x)
 #endif
 
 #ifdef BUILDING_LIBGUILE
-#ifndef HAVE_GC_IS_HEAP_PTR
-static int
-GC_is_heap_ptr (void *ptr)
-{
-  return GC_base (ptr) != NULL;
-}
-#endif
+
+/* #ifndef HAVE_GC_IS_HEAP_PTR */
+/* static int */
+/* GC_is_heap_ptr (void *ptr) */
+/* { */
+/*   //return GC_base (ptr) != NULL; */
+/*   return ptr != NULL; */
+/* } */
+/* #endif */
 
 static inline int
 scm_is_mutable_pair (SCM x)
@@ -219,7 +221,7 @@ scm_is_mutable_pair (SCM x)
      read-only, shareable section of the file.  Attempting to mutate a
      pair in the read-only section would cause a segmentation fault, so
      to avoid that, we really do need to enforce the restriction.  */
-  return scm_is_pair (x) && GC_is_heap_ptr (SCM2PTR (x));
+  return scm_is_pair (x);
 }
 #endif /* BUILDING_LIBGUILE */
 

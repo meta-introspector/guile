@@ -466,29 +466,29 @@ allocate_words (scm_thread *thread, size_t n)
   return SCM_PACK_POINTER (scm_inline_gc_malloc_words (thread, n));
 }
 
-static SCM
-allocate_words_with_freelist (scm_thread *thread, size_t freelist_idx)
-{
-  return SCM_PACK_POINTER
-    (scm_inline_gc_alloc (&thread->freelists[freelist_idx],
-                          freelist_idx,
-                          SCM_INLINE_GC_KIND_NORMAL));
-}
+/* static SCM */
+/* allocate_words_with_freelist (scm_thread *thread, size_t freelist_idx) */
+/* { */
+/*   return SCM_PACK_POINTER */
+/*     (scm_inline_gc_alloc (&thread->freelists[freelist_idx], */
+/*                           freelist_idx, */
+/*                           SCM_INLINE_GC_KIND_NORMAL)); */
+/* } */
 
-static SCM
-allocate_pointerless_words (scm_thread *thread, size_t n)
-{
-  return SCM_PACK_POINTER (scm_inline_gc_malloc_pointerless_words (thread, n));
-}
+/* static SCM */
+/* allocate_pointerless_words (scm_thread *thread, size_t n) */
+/* { */
+/*   return SCM_PACK_POINTER (scm_inline_gc_malloc_pointerless_words (thread, n)); */
+/* } */
 
-static SCM
-allocate_pointerless_words_with_freelist (scm_thread *thread, size_t freelist_idx)
-{
-  return SCM_PACK_POINTER
-    (scm_inline_gc_alloc (&thread->pointerless_freelists[freelist_idx],
-                          freelist_idx,
-                          SCM_INLINE_GC_KIND_POINTERLESS));
-}
+/* static SCM */
+/* allocate_pointerless_words_with_freelist (scm_thread *thread, size_t freelist_idx) */
+/* { */
+/*   return SCM_PACK_POINTER */
+/*     (scm_inline_gc_alloc (&thread->pointerless_freelists[freelist_idx], */
+/*                           freelist_idx, */
+/*                           SCM_INLINE_GC_KIND_POINTERLESS)); */
+/* } */
 
 static SCM
 current_module (scm_thread *thread)
@@ -641,7 +641,7 @@ scm_bootstrap_intrinsics (void)
   scm_vm_intrinsics.allocate_words = allocate_words;
   scm_vm_intrinsics.current_module = current_module;
   scm_vm_intrinsics.push_prompt = push_prompt;
-  scm_vm_intrinsics.allocate_words_with_freelist = allocate_words_with_freelist;
+  //  scm_vm_intrinsics.allocate_words_with_freelist = allocate_words_with_freelist;
   scm_vm_intrinsics.abs = scm_abs;
   scm_vm_intrinsics.sqrt = scm_sqrt;
   scm_vm_intrinsics.fabs = fabs;
@@ -664,9 +664,9 @@ scm_bootstrap_intrinsics (void)
   scm_vm_intrinsics.facos = acos;
   scm_vm_intrinsics.fatan = atan;
   scm_vm_intrinsics.fatan2 = atan2;
-  scm_vm_intrinsics.allocate_pointerless_words = allocate_pointerless_words;
-  scm_vm_intrinsics.allocate_pointerless_words_with_freelist =
-    allocate_pointerless_words_with_freelist;
+  //  scm_vm_intrinsics.allocate_pointerless_words = allocate_pointerless_words;
+  //  scm_vm_intrinsics.allocate_pointerless_words_with_freelist =
+    //    allocate_pointerless_words_with_freelist;
   scm_vm_intrinsics.inexact = scm_exact_to_inexact;
   scm_vm_intrinsics.string_to_utf8 = scm_string_to_utf8;
   scm_vm_intrinsics.string_utf8_length = INT64_INTRINSIC (string_utf8_length);

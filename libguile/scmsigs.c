@@ -164,7 +164,7 @@ signal_delivery_thread (void *data)
      anything.  So in that case, libgc will want to suspend the signal
      delivery thread, so we need to allow it to do so by unmasking the
      suspend signal.  */
-  sigdelset (&all_sigs, GC_get_suspend_signal ());
+  //  sigdelset (&all_sigs, GC_get_suspend_signal ());
   scm_i_pthread_sigmask (SIG_SETMASK, &all_sigs, NULL);
 #endif
 
