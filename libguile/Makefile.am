@@ -44,7 +44,8 @@ if ENABLE_JIT
 AM_CPPFLAGS += -I$(top_srcdir)/libguile/lightening
 endif
 
-AM_CFLAGS = $(GCC_CFLAGS) $(CFLAG_VISIBILITY)
+AM_CFLAGS = $(GCC_CFLAGS) $(CFLAG_VISIBILITY) -pg -g
+AM_CXXFLAGS= -pg -g
 
 ## The Gnulib Libtool archive.
 gnulib_library = $(top_builddir)/lib/libgnu.la
