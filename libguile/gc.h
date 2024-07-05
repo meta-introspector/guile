@@ -24,6 +24,7 @@
 
 #include "libguile/inline.h"
 #include "libguile/chooks.h"
+#include <stdio.h>
 
 
 /* Before Guile 2.0, Guile had a custom garbage collector and memory
@@ -167,6 +168,7 @@ scm_cell (scm_t_bits car, scm_t_bits cdr)
   SCM_GC_SET_CELL_WORD (cell, 1, cdr);
   SCM_GC_SET_CELL_WORD (cell, 0, car);
 
+  printf("cell cdr=%lu, car=%lu -> cell %p\n",cdr,car, cell);
   return cell;
 }
 

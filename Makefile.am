@@ -45,7 +45,7 @@ libguileincludedir = $(pkgincludedir)/$(GUILE_EFFECTIVE_VERSION)
 libguileinclude_HEADERS = libguile.h
 
 schemelibdir = $(pkgdatadir)/$(GUILE_EFFECTIVE_VERSION)
-schemelib_DATA = libguile/guile-procedures.txt
+#schemelib_DATA = libguile/guile-procedures.txt
 
 # Our own implementation of Gnulib's lock interface.
 noinst_HEADERS = lib/glthread/lock.h
@@ -59,13 +59,13 @@ libguile/scmconfig.h:
 
 # Build it from here so that all the modules are compiled by the time we
 # build it.
-libguile/guile-procedures.txt: libguile/guile-procedures.texi
-	$(AM_V_GEN)						\
-	$(top_builddir)/meta/guile --no-auto-compile		\
-	  "$(srcdir)/libguile/texi-fragments-to-docstrings"	\
-	  "$(builddir)/libguile/guile-procedures.texi"		\
-	  > $@.tmp
-	@mv $@.tmp $@
+# libguile/guile-procedures.txt: libguile/guile-procedures.texi
+# 	$(AM_V_GEN)						\
+# 	$(top_builddir)/meta/guile --no-auto-compile		\
+# 	  "$(srcdir)/libguile/texi-fragments-to-docstrings"	\
+# 	  "$(builddir)/libguile/guile-procedures.texi"		\
+# 	  > $@.tmp
+# 	@mv $@.tmp $@
 
 EXTRA_DIST = LICENSE HACKING GUILE-VERSION			\
 	     am/maintainer-dirs					\
@@ -87,7 +87,7 @@ EXTRA_DIST = LICENSE HACKING GUILE-VERSION			\
 
 ACLOCAL_AMFLAGS = -I m4
 
-CLEANFILES = libguile/guile-procedures.txt
+#CLEANFILES = libguile/guile-procedures.txt
 DISTCLEANFILES = check-guile.log
 
 DISTCHECK_CONFIGURE_FLAGS = --enable-error-on-warning --enable-mini-gmp

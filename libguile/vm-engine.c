@@ -115,7 +115,7 @@
     if (SCM_UNLIKELY (VP->h##_hook_enabled))                 \
       {                                                      \
         SYNC_IP ();                                          \
-        invoke_##h##_hook (thread);                          \
+        spct_invoke_##h##_hook (thread);                          \
         CACHE_SP ();                                         \
       }                                                      \
   } while (0)

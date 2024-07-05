@@ -82,6 +82,8 @@
 # define SCM_NOINLINE /* noinline */
 #endif
 
+#include "introspector.h"
+
 static int vm_default_engine = SCM_VM_REGULAR_ENGINE;
 
 /* Unfortunately we can't snarf these: snarfed things are only loaded up from
@@ -625,7 +627,7 @@ scm_i_vm_prepare_stack (struct scm_vm *vp)
   vp->fp = vp->stack_top;
   vp->compare_result = SCM_F_COMPARE_NONE;
   vp->engine = vm_default_engine;
-  vp->trace_level = 0;
+  vp->trace_level = 1;
 #define INIT_HOOK(h) vp->h##_hook = SCM_BOOL_F;
   FOR_EACH_HOOK (INIT_HOOK)
 #undef INIT_HOOK
@@ -1604,7 +1606,7 @@ scm_call_n (SCM proc, SCM *argv, size_t nargs)
         scm_gc_after_nonlocal_exit ();
         /* Non-local return.  */
         if (vp->abort_hook_enabled)
-          invoke_abort_hook (thread);
+          spct_invoke_abort_hook (thread);
 #if ENABLE_JIT
         if (mcode && !vp->disable_mcode)
           scm_jit_enter_mcode (thread, mcode);

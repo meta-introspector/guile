@@ -154,3 +154,7 @@ INSTALL
 /test-suite/standalone/test-smob-mark
 /test-suite/standalone/test-smob-mark-race
 /test-suite/standalone/test-srfi-4
+/libguile/*.c*.*t.*
+/libguile/*.[is]
+/libguile/introspector.ii
+/libguile/guile-procedures.txt.tmp

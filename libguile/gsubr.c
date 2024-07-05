@@ -125,7 +125,7 @@ record_subr_name (uint32_t idx, SCM name)
     }
 
   names[idx] = name;
-
+  printf("record_subr_name idx=%d, name=%p)\n",idx,(void*)name);
   scm_i_pthread_mutex_unlock (&admin_mutex);
 }
 
@@ -357,6 +357,15 @@ create_subr (int define, const char *name,
   if (define)
     scm_define (sname, ret);
 
+  printf("create_subr (define %d, name=%s, nreq %d,  nopt %d, rest %d, fcn %p, generic_loc %p) -> %p\n",
+         define,
+         name,
+         nreq,
+         nopt,
+         rest,
+         fcn, generic_loc,
+         ret);
+  
   return ret;
 }
 

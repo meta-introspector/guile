@@ -382,24 +382,26 @@ _GL_CXXALIAS_SYS (tzfree, void, (timezone_t __tz));
    time zone TZ.
    This function is like 'localtime_r', but relies on the argument TZ instead
    of an implicit global time zone.  */
+#if !(defined __cplusplus )
 _GL_FUNCDECL_SYS (localtime_rz, struct tm *,
                   (timezone_t __tz, time_t const *restrict __timer,
                    struct tm *restrict __result) _GL_ARG_NONNULL ((2, 3)));
 _GL_CXXALIAS_SYS (localtime_rz, struct tm *,
                   (timezone_t __tz, time_t const *restrict __timer,
                    struct tm *restrict __result));
-
+#endif
 /* mktime_z (tz, &tm)
    Normalizes the broken-down time TM and converts it to an absolute time,
    assuming the time zone TZ.  Returns the absolute time.
    This function is like 'mktime', but relies on the argument TZ instead
    of an implicit global time zone.  */
+#if !(defined __cplusplus )
 _GL_FUNCDECL_SYS (mktime_z, time_t,
                   (timezone_t __tz, struct tm *restrict __tm)
                   _GL_ARG_NONNULL ((2)));
 _GL_CXXALIAS_SYS (mktime_z, time_t,
                   (timezone_t __tz, struct tm *restrict __tm));
-
+#endif
 /* Time zone abbreviation strings (returned by 'localtime_rz' or 'mktime_z'
    in the 'tm_zone' member of 'struct tm') are valid as long as
      - the 'struct tm' argument is not destroyed or overwritten,
